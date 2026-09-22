@@ -28,6 +28,6 @@ case 'dp':shape=`<path d="M10 22h14v5h50v-5h14v20H74v-5H24v5H10z" fill="${steel}
 case 'jar':shape=`<rect x="10" y="26" width="78" height="12" rx="2" fill="${steel}"/><rect x="37" y="19" width="30" height="26" rx="3" fill="${gold}" stroke="${line}"/><path d="M41 32h22 M54 24v16" stroke="#65431d"/>`;break;
 case 'reamer':shape=`<rect x="10" y="27" width="78" height="10" rx="2" fill="${steel}"/><path d="M33 25l10-11 10 11 10-11 10 11v14L63 50 53 39 43 50 33 39z" fill="${gold}" stroke="${line}"/>`;break;
 }
-return `<svg viewBox="0 0 100 64" role="img" aria-label="Icône schématique ${type}" xmlns="http://www.w3.org/2000/svg"><path d="M2 32h96" stroke="#294c60" stroke-dasharray="3 3"/>${shape}</svg>`;}
+return `<svg viewBox="0 0 100 64" role="img" aria-label="Schematic icon: ${type}" xmlns="http://www.w3.org/2000/svg"><path d="M2 32h96" stroke="#294c60" stroke-dasharray="3 3"/>${shape}</svg>`;}
 root.BhaIcons={library,typeOf,svg};
 })(typeof window!=='undefined'?window:globalThis);

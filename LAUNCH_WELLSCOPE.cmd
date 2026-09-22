@@ -2,7 +2,7 @@
 setlocal
 set "INDEX=%~dp0app\index.html"
 if not exist "%INDEX%" (
- echo ERREUR : app\index.html introuvable. Decompressez le ZIP complet avant ouverture.
+ echo ERROR: app\index.html not found. Extract the complete ZIP before launching.
  pause
  exit /b 1
 )

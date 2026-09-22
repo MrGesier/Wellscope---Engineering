@@ -24,7 +24,7 @@
   "soff": 10,
   "bha": [
     {
-      "name": "Trépan PDC",
+      "name": "PDC bit",
       "length": 0.45,
       "od": 0.216,
       "id": 0.025,

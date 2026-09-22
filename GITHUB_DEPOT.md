@@ -1,8 +1,7 @@
-# Publication GitHub de WellScope Engineering Alpha 0.3
+# Repository deployment
 
-1. Créer un nouveau dépôt **privé et vide** sur https://github.com/new, par exemple `WellScope-Engineering` ; ne pas préremplir README, .gitignore ni licence.
-2. Décompresser cette archive, double-cliquer sur `PUSH_GITHUB.cmd`, puis coller l'URL HTTPS ou SSH de ce nouveau dépôt.
-3. Si Git demande une authentification, utiliser la connexion GitHub de Git Credential Manager ou son authentification SSH habituelle (ne jamais coller de token dans un fichier du projet).
-4. Vérifier l'onglet Code du dépôt. Pour lancer l'application localement, double-cliquer sur `OUVRIR_WELLSCOPE.cmd`.
+This distributable package contains only original WellScope code, synthetic datasets and illustrative screenshots. It deliberately excludes private engineering documents, proprietary DrillScan/WellScan executables, DLL/BPL files, and real-well data.
 
-Seuls le code original du prototype, les données **synthétiques**, les captures d'écran de l'application et les notes de limites sont inclus. Les rapports confidentiels du Drive, les PDF d'études et les binaires tiers DrillScan/WellScan ne sont pas redistribués. Aucun modèle ne doit être utilisé pour autoriser une opération de forage.
+If publishing from a cloned repository, copy the updated source files into the clone, then commit and push on a feature branch or the existing `main` after reviewing the changes. Avoid creating a new unrelated Git history and force-pushing over existing commits.
+
+GitHub repository: https://github.com/MrGesier/Wellscope---Engineering

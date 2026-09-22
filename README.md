@@ -1,43 +1,37 @@
-# WellScope Engineering — ALPHA 0.3 · Démo multi-puits
+# WellScope Engineering — Alpha 0.3 (English interface + contextual help)
 
-## Démarrage Windows
+## Getting started on Windows
 
-1. Décompresser **tout** le ZIP dans un dossier normal (ne pas exécuter depuis l'aperçu du ZIP).
-2. Double-cliquer sur `OUVRIR_WELLSCOPE.cmd`. Windows ouvre `app/index.html` dans votre navigateur par défaut. Sinon, ouvrir `app/index.html` dans Edge ou Chrome.
-3. Aucun serveur, compte, clé API ou installation de paquet n'est requis. Les dépendances front-end sont incluses sous forme de fichiers texte locaux ; pas d'appel réseau. Les liens vers les sources externes sont facultatifs.
+Extract the entire ZIP to a local folder, then double-click `LAUNCH_WELLSCOPE.cmd` (or open `app/index.html` in Edge or Chrome). The application runs locally without a server or account. No third-party DrillScan binaries are included.
 
-## Parcours de démonstration conseillé (10 minutes)
+## Interactive tour
 
-1. **Vue puits 3D** : faire glisser pour changer l'orientation et utiliser la molette pour zoomer. Le puits principal, l'Offset A, l'Offset B et le sidetrack sont préchargés. Le sidetrack commence à KOP = 2 000 mMD (exercice synthétique).
-2. **Anticollision** : tester les trois jeux de positions « Offset proche », « Offset éloigné », « Offset plus proche ». La vue 3D affiche les traces et les *contours 2σ synthétiques*, qui sont physiquement petits à l'échelle de 3,4 km. Juste en dessous, la **coupe transverse zoomée** rend les ellipses visibles à échelle locale. Choisir Offset A, Offset B ou Sidetrack dans le sélecteur et faire glisser le curseur de profondeur. À partir du KOP, la branche sidetrack et le parent divergent. Avant KOP, il s'agit du même trou : ne pas compter cette partie comme une collision entre puits indépendants.
-3. **Import multi-puits** : importer les CSV `demo_data/*.csv` dans les champs `Reference`, `Offset A`, `Offset B`, `Sidetrack` correspondants. Le format CSV est `md,inc,azi` avec MD en mètres, angles en degrés. Entrer les N/E initiaux correspondants. Pour le sidetrack, fournir les stations du parent jusqu'à **2 000 mMD** puis celles de la nouvelle branche. Le point KOP doit exister dans les deux CSV. Le repère est local, non géodésique.
-4. **Torque & Drag** : sélectionner une section (« Vertical », « KOP », « Build », « Tangent / Hold », « Landing », « Lateral ») ; examiner la vue 3D de charge axiale, les valeurs de pickup, slackoff et static, puis faire varier le coefficient de frottement ou la boue et cliquer sur `Recalculer`.
-5. **BHA Builder** : sélectionner une des 11 familles de pictogrammes (bit PDC/tricone, motor, RSS, stab, MWD, NMDC, HWDP, DP, jar, reamer). L'élément est inséré avant le DP ; vérifier sa position, son nom, ses cotes et ses masses dans le tableau, puis `Appliquer la composition`.
-6. **Rapport & sources** : consulter le résumé, exporter le projet JSON ou imprimer depuis le navigateur. Les trois exercices complets de départ se trouvent sous `demo_data/*.json` : bouton `Import projet`.
+1. **3D Well View:** drag to orbit, scroll to zoom, click a survey station. Reference well, Offset A/B and a synthetic sidetrack are preloaded.
+2. **Trajectories:** paste or import `md,inc,azi` surveys (metres and degrees), then recalculate the minimum-curvature survey. The coordinates use a local North–East–TVD frame.
+3. **Anticollision:** choose among three synthetic offset scenarios; view plan, 3D and zoomed local transverse ellipses. Select Offset A, Offset B or sidetrack, and move the MD slider. Pre-kickoff sidetrack shares the parent borehole; the demonstration kickoff is 2,000 mMD.
+4. **Torque & Drag:** select a well section to see its estimated local pickup axial load. Vary fluid density and friction, then recalculate.
+5. **BHA Builder:** choose a schematic tool pictogram, modify its synthetic dimensions and linear mass, and apply the new string configuration.
+6. **Reports:** export project JSON and calculated stations CSV or use Print / PDF for a preliminary report.
 
-## Moteurs présents et statut exact
+**Detailed tooltips:** hover over or keyboard-focus any blue `i` icon beside an engineering term or input. On touch devices tap the `i` icon; Escape or tapping outside closes the popover. Tooltips explain units, expected inputs, scientific assumptions, the relationship to the result, and model limitations. Graphs and navigation controls also include contextual help.
 
-| Module | Fonction réellement présente | Statut et limites |
-|---|---|---|
-| Surveys et 3D | Minimum Curvature station à station, N/E/TVD/DLS, projection 3D interactive canvas 2D. | Modèle local, stations synthétiques, sans géodésie, validation mathématique élémentaire uniquement. |
-| Anticollision | Projection nominale sur les segments de polyline voisine, distance centre-à-centre échantillonnée, gap **physique nominal** avec rayons saisis, choix des puits A/B et branche sidetrack. | Ni minimum continu garanti, ni covariance instrumentale propagée, ni collision probability, ni facteur de séparation ISCWSA. |
-| Coupe elliptique | Forme géométrique des ellipses 2σ par projection d'une matrice **diagonale supposée** N/E/TVD sur un plan transverse de la référence ; l'angle et les demi-axes résultent de la diagonalisation 2×2. | Les 6 sigmas sont **arbitraires et modifiables**, indépendants de la profondeur, aucune corrélation entre puits ou instrument. 2σ n'est **pas** une garantie de confiance de la position. Aucune distance entre ellipses validée. Ne pas assimiler aux EOU ISCWSA. |
-| Torque & Drag | Poids apparent par longueur, marche arrière bit → surface sur segments de survey, chargement axial / pickup / slackoff / static selon un modèle **soft-string simplifié**, graphes par section. | Ni couple de surface ou moteur, ni stiff-string, joints/contacts effectifs, ni flambage, stress, hookload admissible ou marge de sécurité. Les capacités saisies restent **informatives et non approuvées**. |
-| BHA | Bibliothèque visuelle originale de 11 familles, table géométrie/longueurs/masses, insertion et modifications, masse prise en compte dans le modèle axial. | N'inclut aucun véritable solveur directionnel bit-rock/BHA ni schéma mécanique constructeur ni limite de pièce. |
-| Rapport | Synthèse de cas, exports CSV/JSON, impression via navigateur. | Draft pédagogique ; pas un rapport d'ingénierie approuvé. |
+## Scope and safety
 
-**Ne jamais utiliser cette version pour décider de rapprocher un puits voisin, approuver une trajectoire, définir des paramètres de manœuvre ou accepter une charge réelle.** Seule une revue d'ingénierie avec modèles validés, positionnement et politiques anticollision approuvées et données fabricant du puits concerné peut servir à ces décisions.
+- Surveys: minimum curvature and calculated N/E/TVD/DLS, with basic mathematical tests. No geodetic datum transformations.
+- Anticollision: nominal centreline distances are sampled at reference surveys, projecting onto neighbouring straight-line segments; ellipses are calculated from **assumed**, independent N/E/TVD standard deviations and are visualization aids only. No ISCWSA error model, propagated 3D covariance, correlated well uncertainty, validated separation factor, collision probability or operating clearance. The `2σ` visual contour must not be interpreted as a safety margin or a guaranteed confidence limit.
+- Torque & Drag: simplified, static segmented **axial** soft-string screening based on buoyed weight and assumed friction. It is not a stiff-string solution. No torsional torque, reliable contact force, fatigue, buckling, verified hookload capacity, connection-rating or acceptable load envelope.
+- BHA: eleven schematic tool families and user-editable geometry; no bit–rock, directional response, modal solver or manufacturer-approved component specifications.
 
-## Sources consultées / non intégrées
+**Training / exploratory visualization only. Do not use this alpha to approve a well path, assess actual collision risk, select operational load limits, or set drilling parameters.**
 
-- M16-112, *DrillScan Software Lessons Learnt & Advanced Tutorial*, notamment p. 9–24 : description des BHA, workflow Pre/Post Analysis et limites ; p. 33–34 : périmètre des modules et liste des publications ; annexes : présentation des études de puits.
-- *BIL4-11 DrillScan vs Baker Hughes directional study*, notamment p. 22–25 : divergence des résultats latéraux liée au contact avec la paroi ; p. 27–31 : tension, side force, stress de flexion et vue 3D comparatifs.
-- `DrillScan_Publication_List.pdf` : bibliographie scientifique pour les futures implémentations.
-- Documentation publique ISCWSA Rev5 / définition du modèle d'erreurs et procédures de traitement des sidetracks : https://www.iscwsa.net/error-model-documentation/ . Cette alpha n'implémente **aucune** des formules de ces documents normatifs.
-- Archive WellScan fournie et bibliothèque BPL : aucune dépendance, extraction de code source ni exécution des exécutables propriétaires. Bibliothèques et PDF utilisateur non inclus dans le ZIP.
+See `research/SOURCES_AND_LIMITATIONS.md` for the original technical limitations and source register. Proprietary user-provided documents are deliberately excluded from this distributable package.
 
-Consulter `research/SOURCES_ET_LIMITES_V03.md` pour la traçabilité détaillée.
+## Verification
 
-## Tests
+With optional Node.js, run `node tests/test_engine.js` and `node tests/test_v03.js`. The application itself does not need Node.
 
-Dans le dossier décompressé, avec Node installé de manière facultative : `node tests/test_engine.js` puis `node tests/test_v03.js`. L'application ne nécessite pas Node. Les captures `screenshots/` ont été prises sur l'interface réelle avec un navigateur automatisé, après insertion de ses scripts locaux. Cette vérification ne remplace pas un essai du lanceur Windows sur votre PC ni une validation de calculs par cas industriels certifiés.
+## Update your existing GitHub repository
+
+From the extracted folder, double-click `UPDATE_REPO_EN.cmd`. The script clones `MrGesier/Wellscope---Engineering` into a fresh temporary directory, copies the translated application and guide, creates a normal commit, rebases on the current `main`, and pushes without force. It does not upload any user-supplied engineering PDFs or proprietary DrillScan binaries. You will need Git for Windows and a GitHub account authorized for that repository. The repository is currently public.
+
+Old screenshots, if present in your GitHub repository, may show the previous French UI; they are historical artifacts and have not been regenerated for this change.
