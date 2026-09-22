@@ -1,0 +1,12 @@
+const assert=require('node:assert/strict');const E=require('../app/engine.js');
+function near(a,b,t=1e-6){assert.ok(Math.abs(a-b)<t, `${a} != ${b}`)};
+let v=E.survey([{md:0,inc:0,azi:0},{md:1000,inc:0,azi:0}]);near(v[1].tvd,1000);near(v[1].n,0);near(v[1].e,0);
+let h=E.survey([{md:0,inc:90,azi:0},{md:100,inc:90,azi:0}]);near(h[1].n,100);near(h[1].tvd,0);
+let turn=E.survey([{md:0,inc:0,azi:0},{md:100,inc:90,azi:0}]);near(turn[1].n,200/Math.PI,1e-7);near(turn[1].tvd,200/Math.PI,1e-7);
+assert.throws(()=>E.survey([{md:10,inc:0,azi:0},{md:10,inc:0,azi:0}]),/croissantes/);
+let o=E.survey([{md:0,inc:0,azi:0},{md:1000,inc:0,azi:0}]);let x=o.map(r=>({...r,n:r.n+30}));let ac=E.anticollision(o,x,3,4,0.2,0.2);near(ac[1].center,30);near(ac[1].assumedEnvelopeGap,24.6);
+const bha=[{name:'DP',length:1200,od:0.127,id:0.1,mass:25}];let cfg={mu:.25,mud:1200,steel:7850,bitForce:0};let t=E.td(o,bha,{...cfg,mode:'pooh'});near(t.hookload,25*9.80665*(1-1200/7850)*1000,1e-5);near(t.drag,0);
+let hs=E.survey([{md:0,inc:90,azi:0},{md:1000,inc:90,azi:0}]);let tp=E.td(hs,bha,{...cfg,mode:'pooh'}),tr=E.td(hs,bha,{...cfg,mode:'rih'});assert(tp.hookload>0&&tr.hookload<0);near(tp.hookload,-tr.hookload);
+assert.throws(()=>E.normalizeBha([{name:'bad',length:3,od:.12,id:.13,mass:4}]),/invalide/);
+near(E.parseCSV('md,inc,azi\n0,0,0\n100,90,0')[1].md,100);
+console.log('PASS: 11 vérifications de trajectoire, anticollision géométrique, masse immergée, friction et validation des entrées');

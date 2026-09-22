@@ -1,0 +1,78 @@
+{
+  "refcsv": "md,inc,azi\n0,0,0\n500,0,0\n950,7,30\n1300,23,37\n1650,42,48\n2000,60,58\n2350,76,65\n2700,86,69\n3050,91,70\n3400,90,70",
+  "offcsv": "md,inc,azi\n0,0,0\n500,0,0\n950,6,23\n1300,19,33\n1650,36,46\n2000,55,54\n2350,74,62\n2700,86,66\n3050,90,68\n3400,90,68",
+  "offBcsv": "md,inc,azi\n0,0,0\n500,0,0\n950,6,23\n1300,19,33\n1650,36,46\n2000,55,54\n2350,74,62\n2700,86,66\n3050,90,68\n3400,90,68",
+  "sidecsv": "md,inc,azi\n0,0,0\n500,0,0\n950,7,30\n1300,23,37\n1650,42,48\n2000,60,58\n2350,78,88\n2700,89,103\n3050,90,108\n3400,90,110",
+  "offnorth": 45,
+  "offeast": -20,
+  "offBnorth": -33,
+  "offBeast": 65,
+  "srefE": 14,
+  "soffE": 16,
+  "srefV": 4,
+  "soffV": 5,
+  "caseId": "near",
+  "mu": 0.25,
+  "mud": 1200,
+  "steel": 7850,
+  "bitforce": 0,
+  "hookref": 0,
+  "hookcap": 0,
+  "rref": 0.108,
+  "roff": 0.108,
+  "sref": 8,
+  "soff": 10,
+  "bha": [
+    {
+      "name": "Trépan PDC",
+      "length": 0.45,
+      "od": 0.216,
+      "id": 0.025,
+      "mass": 64
+    },
+    {
+      "name": "PDM 6¾\"",
+      "length": 9.4,
+      "od": 0.172,
+      "id": 0.075,
+      "mass": 122
+    },
+    {
+      "name": "NMDC / MWD",
+      "length": 25,
+      "od": 0.172,
+      "id": 0.07,
+      "mass": 105
+    },
+    {
+      "name": "Stabilizer near-bit",
+      "length": 1.5,
+      "od": 0.208,
+      "id": 0.07,
+      "mass": 132
+    },
+    {
+      "name": "Drill collars",
+      "length": 135,
+      "od": 0.172,
+      "id": 0.075,
+      "mass": 120
+    },
+    {
+      "name": "HWDP",
+      "length": 300,
+      "od": 0.127,
+      "id": 0.075,
+      "mass": 54
+    },
+    {
+      "name": "Drill pipe 5\"",
+      "length": 3200,
+      "od": 0.127,
+      "id": 0.108,
+      "mass": 30
+    }
+  ],
+  "select": 7,
+  "focus": "OFFSET A"
+}

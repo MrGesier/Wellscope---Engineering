@@ -1,0 +1,21 @@
+# Local environment and generated files
+.env
+.env.*
+!.env.example
+node_modules/
+__pycache__/
+*.pyc
+.DS_Store
+Thumbs.db
+*.log
+
+# Do not commit proprietary third-party source materials or executables
+*.bpl
+*.dll
+*.exe
+*.msg
+*.pdf
+*.rar
+*.zip
+*.pem
+*.key
