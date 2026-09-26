@@ -25,8 +25,13 @@
         ? v.toLocaleString("en-US", { maximumFractionDigits: 3 })
         : "—"
       : (v ?? "Not evaluable");
+  let forceUnit = "tf";
+  const unitFor=k=>/_kNm$/.test(k)?["kN.m",forceUnit==="klbf"?"klbf.ft":forceUnit+".m"]:/_kN$/.test(k)?["kN",forceUnit]:null;
+  const displayKey=k=>unitFor(k)?k.replace(/_kNm$|_kN$/,"_"+unitFor(k)[1].replace(".","")):k;
+  const displayValue=(k,v)=>unitFor(k)&&v!==""&&v!=null&&Number.isFinite(Number(v))?C.convert(Number(v),...unitFor(k)):v;
+  const canonicalValue=(k,v)=>unitFor(k)&&v!==""&&v!=null&&Number.isFinite(Number(v))?C.convert(Number(v),unitFor(k)[1],unitFor(k)[0]):v;
   const label = (k) =>
-    k
+    displayKey(k)
       .replaceAll("_", " ")
       .replace(/\bmd\b/g, "MD")
       .replace(/\btvd\b/g, "TVD")
@@ -133,7 +138,7 @@
     directional:
       "Separate observed survey response, external models and geometric checks.",
     dynamics:
-      "Inspect measured spectra; predictive modal analysis remains external.",
+      "Inspect measured spectra; open Operating windows for the separate reduced-order modal and forced-response model.",
     cuttings:
       "Describe source-backed surface samples and their particle-size distributions.",
     dataqc: "Load project data, check its reference frame and record QC.",
@@ -216,7 +221,7 @@
         .slice(0, 200)
         .map(
           (r, i) =>
-            `<tr>${selected.fields.map((k) => `<td><input aria-label="${esc(label(k))} row ${i + 1}" data-row="${i}" data-key="${k}" value="${esc(r[k])}"></td>`).join("")}<td><button data-remove="${i}" aria-label="Remove row ${i + 1}">×</button></td></tr>`,
+            `<tr>${selected.fields.map((k) => `<td><input aria-label="${esc(label(k))} row ${i + 1}" data-row="${i}" data-key="${k}" value="${esc(displayValue(k,r[k]))}"></td>`).join("")}<td><button data-remove="${i}" aria-label="Remove row ${i + 1}">×</button></td></tr>`,
         )
         .join("")}</tbody></table>`;
     $("study-input-note").textContent =
@@ -228,7 +233,7 @@
       .forEach(
         (e) =>
           (e.oninput = () => {
-            rows[Number(e.dataset.row)][e.dataset.key] = e.value;
+            rows[Number(e.dataset.row)][e.dataset.key] = canonicalValue(e.dataset.key,e.value);
             dirty();
           }),
       );
@@ -315,19 +320,22 @@
   }
   const csv = (data, keys) =>
     [
-      keys.join(","),
+      keys.map(displayKey).join(","),
       ...data.map((row) =>
         keys
-          .map((k) => '"' + String(row[k] ?? "").replaceAll('"', '""') + '"')
+          .map((k) => '"' + String(displayValue(k,row[k]) ?? "").replaceAll('"', '""') + '"')
           .join(","),
       ),
     ].join("\r\n");
+  const externalDisplay=data=>data.map(r=>{const from=r.unit,to=['N','kN','tf','lbf','klbf'].includes(from)?forceUnit:['N.m','kN.m','tf.m','lbf.ft','klbf.ft'].includes(from)?(forceUnit==='klbf'?'klbf.ft':forceUnit+'.m'):null;return to&&typeof r.value==='number'?{...r,value:C.convert(r.value,from,to),unit:to}:r;});
   const table = (data) => {
+    data=externalDisplay(data);
     if (!data.length) return "<p>No data.</p>";
     const keys = Object.keys(data[0]);
-    return `<table><thead><tr>${keys.map((k) => `<th>${esc(label(k))}</th>`).join("")}</tr></thead><tbody>${data.map((r) => `<tr>${keys.map((k) => `<td>${esc(fmt(r[k]))}</td>`).join("")}</tr>`).join("")}</tbody></table>`;
+    return `<table><thead><tr>${keys.map((k) => `<th>${esc(label(k))}</th>`).join("")}</tr></thead><tbody>${data.map((r) => `<tr>${keys.map((k) => `<td>${esc(fmt(displayValue(k,r[k])))}</td>`).join("")}</tr>`).join("")}</tbody></table>`;
   };
   function plot(data, key, grouped = false) {
+    data=externalDisplay(data);
     if (
       !grouped &&
       data.some((r) => r.quantity || r.open_hole_friction !== undefined)
@@ -351,7 +359,7 @@
     );
     if (!clean.length) return "<p>No numeric chart available.</p>";
     clean.sort((a, b) => a.md_m - b.md_m);
-    return EngineeringCharts.svg([{name:label(key),points:clean.map(r=>({x:r[key],y:r.md_m}))}],{x:label(key),y:'Measured depth (m) ↓',depth:true});
+    return EngineeringCharts.svg([{name:label(key),points:clean.map(r=>({x:displayValue(key,r[key]),y:r.md_m}))}],{x:label(key),y:'Measured depth (m) ↓',depth:true});
   }
 
   async function calculate() {
@@ -423,7 +431,7 @@
         inputs,
         results: result,
         limitations: selected.limitation,
-        application: "WellScope 0.5",
+        application: "WellScope 0.9",
         calculation_version: "study-engine/1",
         generated_utc: new Date().toISOString(),
         review: "DRAFT",
@@ -557,6 +565,7 @@
     const f = $("study-import").files[0];
     if (!f) return;
     const parsed = C.csv(await f.text());
+    for(const row of parsed)for(const k of selected.fields){if(!unitFor(k))continue;const aliases=['tf','kN','klbf'].map(u=>({key:k.replace(/_kNm$|_kN$/,'_'+u+(/_kNm$/.test(k)?(u==='klbf'?'ft':'m'):'')),unit:u+(/_kNm$/.test(k)?(u==='klbf'?'.ft':'.m'):'')})).filter(a=>a.key in row);if(aliases.length>1)throw Error('Ambiguous duplicate unit columns for '+k);if(aliases.length===1)row[k]=C.convert(row[aliases[0].key],aliases[0].unit,unitFor(k)[0]);}
     if (!parsed.length) throw Error("CSV contains no data rows");
     const missing = selected.fields.filter((k) => !(k in parsed[0]));
     if (missing.length)
@@ -573,7 +582,7 @@
     if (current)
       download(
         selected.id + "-results.csv",
-        csv(current.results, Object.keys(current.results[0])),
+        csv(externalDisplay(current.results), Object.keys(current.results[0])),
         "text/csv",
       );
   };
@@ -633,10 +642,10 @@
             if (typeof y[k] === "number")
               out.push({
                 md_m: x.md_m,
-                quantity: k,
-                version_a: x[k],
-                version_b: y[k],
-                difference_b_minus_a: y[k] - x[k],
+                quantity: displayKey(k),
+                version_a: displayValue(k,x[k]),
+                version_b: displayValue(k,y[k]),
+                difference_b_minus_a: displayValue(k,y[k] - x[k]),
               });
           }
         }
@@ -709,6 +718,8 @@
   theme.rel = "stylesheet";
   theme.href = "studio.css";
   document.head.append(theme);
+  const unitLabel=document.createElement('label');unitLabel.innerHTML='Study force / torque units<select id="study-force-unit"><option>tf</option><option>kN</option><option>klbf</option></select>'; $('study').querySelector('.page-head').append(unitLabel);
+  $('study-force-unit').onchange=e=>{forceUnit=e.target.value;inputTable();if(current){$('study-results').innerHTML=table(current.results.slice(0,200));$('study-chart').innerHTML=plot(current.results,selected.plot);}if(preview)showReport(preview);};
   renderLibrary();
   stats();
   openStudy("mse");

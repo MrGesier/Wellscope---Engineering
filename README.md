@@ -1,4 +1,4 @@
-# WellScope Engineering Studio — 0.8
+# WellScope Engineering Studio — 0.9
 
 An offline workspace organized around engineering questions, source data and reproducible study reports. The default workspace opens a fully populated fictional Torque & Drag case. The study library contains 16 workflows: nine transparent local calculations and seven clearly labelled external-result reviews. Geometry, BHA editing, cuttings, measured dynamics and the evidence/limits workbench remain available.
 
@@ -62,8 +62,12 @@ node scripts/package.cjs <new-staging-directory>
 
 Browser checks use installed Microsoft Edge; set `EDGE_PATH` when it is elsewhere. They run against local file URLs and fail on page errors or external HTTP requests. Node/npm are only development tools, not runtime requirements.
 
-Application version is 0.8.0. Project schema remains 0.4.2 with additive `study_runs`, `engineering_cases` and `directional_sensitivity_runs` collections to preserve prior backup compatibility. Older application versions do not provide the new report interface.
+Application version is 0.9.0. Project schema remains 0.4.2 with additive `study_runs`, `engineering_cases` and `directional_sensitivity_runs` collections to preserve prior backup compatibility. Older application versions do not provide the new report interface.
 
 ## Equipment catalogue
 
-Version 0.8 expands the catalogue to 72 individually illustrated types, source-backed geometry entry, a separate reference register and assembly consistency notes. See [coverage and limitations](docs/EQUIPMENT_CATALOG.md).
+Version 0.9 expands the catalogue to 72 individually illustrated types, source-backed geometry entry, a separate reference register and assembly consistency notes. See [coverage and limitations](docs/EQUIPMENT_CATALOG.md).
+
+## Operating windows (0.9)
+
+Force selectors now cover the older axial analysis, study tables/exports and BHA force/torque properties. A dedicated operating-window study adds entered load limits, selected-section overpull and tension–torque screening, directional scenario intersections and a reduced-order modal/forced-response model. See [equations, coverage and limitations](docs/OPERATING_WINDOWS.md).
