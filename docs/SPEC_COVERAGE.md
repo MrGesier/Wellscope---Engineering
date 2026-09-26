@@ -1,3 +1,7 @@
+# 0.5 workflow reconstruction
+
+The report-driven additions and their explicit calculation boundaries are mapped in [STUDY_GUIDE.md](STUDY_GUIDE.md). This release reorganizes the user workflow and adds reproducible report studies; it does not close the advanced-solver or missing-addendum acceptance gaps listed below.
+
 # Integrated specification coverage — 26 September 2026
 
 This register maps the supplied `02_WELLSCOPE_V04_2_INTEGRATED_SPEC_EN.md` to the shipped alpha. Implemented features are not a claim of operational approval or full acceptance of every requirement. The companion `03_NEW_ENGINEERING_REQUIREMENTS_EN.md` could not be found locally, in the repository, or by exact-title public web search.

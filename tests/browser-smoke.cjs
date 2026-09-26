@@ -32,6 +32,7 @@ const { chromium } = require("playwright-core"),
       await page.locator("#evidence-axes").textContent(),
       /SYNTHETIC/,
     );
+    await nav("overview");
     await click("#fixture-load");
     await nav("limits");
     await click("#demo-limit");

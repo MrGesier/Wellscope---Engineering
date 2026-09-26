@@ -29,6 +29,7 @@ const { chromium } = require("playwright-core"),
             i.naturalWidth === i.naturalHeight,
         ),
     );
+    await nav("overview");
     await click("fixture-load");
     await nav("dataqc");
     await click("canonical-example");

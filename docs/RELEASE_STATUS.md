@@ -1,3 +1,11 @@
+# 0.5 study-workspace release
+
+The home, navigation and report workflow have been rebuilt around 16 study types. Nine provide independent descriptive or preliminary calculations; seven record external solver output without claiming an internal solver. CSV review, source/reference/well/run metadata, result invalidation, immutable report versions, table-input revision, comparisons, standalone HTML and print output are implemented. The warm theme and original logo are included in the desktop package.
+
+See [study guide](STUDY_GUIDE.md) for the complete capability matrix and the practical workflow. Native XLS/XLSX/WITSML and proprietary project formats still require conversion/mapping. Fluid rheology/thermal models, transient hydraulics, cement placement and advanced mechanics are not implemented. Mathematical and browser checks are not field validation.
+
+The following historical 0.4.2 register remains relevant to the underlying analysis tools.
+
 # v0.4.2 implementation status
 
 This is a reviewable, incremental implementation on the existing v0.3 application, preserving the offline `LAUNCH_WELLSCOPE.cmd` path and original tests. It is not an operations-approved calculation system.

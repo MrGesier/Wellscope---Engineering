@@ -35,3 +35,22 @@ Additional source-data processing:
 - Matched PUW/FRW/SOW uses one explicit well, MD, basis and sensor zero; the user sets a maximum time separation. Differences are descriptive, not a diagnosis or friction inversion.
 - Measured spectra use a mean-subtracted Hann window and a one-sided DFT with coherent-gain amplitude normalization. Uniform clock, source, QC and anti-alias metadata are required. At most 2048 samples are accepted; no modal or critical-speed interpretation is performed.
 - Observed BUR/TUR is survey-angle change per 30 mMD, with wrapped azimuth and TUR withheld below 0.1 degrees inclination at either interval endpoint. These observations are never BHA predictions.
+
+
+## 0.5 study calculations
+
+All rows require declared provenance and QC reviewed or synthetic status. UI metadata adds reference and well/run context. These are descriptive calculations, not validated operating envelopes.
+
+| Model | Implemented equation and units | Explicit omissions |
+|---|---|---|
+| Teale MSE | A = pi D²/4; MSE = W/A + 2 pi (RPM/60) T / [A (ROP/3600)]. W in N, T in N.m, D in m, ROP in m/h; output MPa. DOC = ROP/(60 RPM), reported mm/rev; drilling strength = W/[(D/2) DOC], MPa. | No surface-to-bit correction, efficiency factor or dysfunction diagnosis. ROP/RPM must be positive. |
+| Standoff | c = (hole diameter - casing OD)/2; gap = c - eccentricity; standoff = 100 gap/c. All input lengths mm. | Eccentricity is supplied; no deformation/contact/centralizer model. |
+| Measured wall loss | Loss = nominal wall - measured wall; 100 loss/nominal and 100 loss/minimum-original-wall are separate denominators. | No caliper processing, predicted wear groove or pressure rating. |
+| Hydraulic observation | Hydrostatic pressure = rho g TVD; ECD = rho + supplied annular pressure loss/(g TVD); g = 9.80665 m/s², pressures converted bar to Pa. | Uniform density, surface reference; no compressibility, cuttings loading, backpressure or computed losses. |
+| Pressure area | With tension positive, wall axial force = effective axial force + Pi Ai - Po Ao; circular OD/ID areas in m², pressure Pa, reported kN. | Algebraic conversion from supplied profiles only; no jar impact or coupled string model. |
+| Operations | PUW-FRW, FRW-SOW, PUW-SOW; measured minus planned SPP and ECD at explicitly matched input rows. | No time/depth interpolation, rig-block correction or automated friction calibration. |
+| Directional intervals | BUR = delta inclination × 30/delta MD; TUR = shortest wrapped azimuth delta × 30/delta MD, deg/30m. TUR unavailable if either inclination <0.1°. | Observed apparent rates only; no inferred local curvature or formation/bit response. |
+| Coordinate residuals | Actual-plan N/E/TVD at matched MD; horizontal and spatial Euclidean norms. | Requires the same frame; no transform, uncertainty or safety metric. |
+| Friction sensitivity | Existing segmented axial soft-string model, repeated at declared bit depths and open-hole coefficients, with cased friction and shoe held fixed. | No torque, buckling, reliable contact force or rig hookload. Full shared input snapshot retained. |
+
+External study records require a quantity, unit, model name and revision. They are not computed by WellScope. Graphs separate external quantity/unit/model groups and friction coefficients. Report comparison refuses incompatible references, well/run contexts, units, interval endpoints or duplicate MD cases; no interpolation is performed. Input SHA256 identifies inputs, not a reviewer's approval or cryptographic signature.
