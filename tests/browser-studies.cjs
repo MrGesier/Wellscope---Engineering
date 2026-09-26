@@ -23,6 +23,7 @@ const { chromium } = require("playwright-core"),
     await p.goto(
       pathToFileURL(path.resolve(__dirname, "../app/index.html")).href,
     );
+    await nav("studies");
     await p.waitForSelector("#studies.active");
     assert.equal(await p.locator(".study-card").count(), 16);
     fs.mkdirSync(path.resolve(__dirname, "../screenshots/v05"), {

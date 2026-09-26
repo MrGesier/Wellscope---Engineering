@@ -1,0 +1,1232 @@
+{
+  "schema": "wellscope-engineering-case/1",
+  "name": "Northbank N-04 · Run 07",
+  "quality": "SYNTHETIC",
+  "source": "Original fictional training case / 1",
+  "objective": "Compare expected axial loads with a mock connection log while drilling the 8½ in section. Explore friction sensitivity and explain a rising drag trend.",
+  "reference": "Local N/E; MD and TVD from rotary table; no geodetic coordinates",
+  "survey": [
+    {
+      "md": 0,
+      "inc": 0,
+      "azi": 35
+    },
+    {
+      "md": 25,
+      "inc": 0,
+      "azi": 35
+    },
+    {
+      "md": 50,
+      "inc": 0,
+      "azi": 35
+    },
+    {
+      "md": 75,
+      "inc": 0,
+      "azi": 35
+    },
+    {
+      "md": 100,
+      "inc": 0,
+      "azi": 35
+    },
+    {
+      "md": 125,
+      "inc": 0,
+      "azi": 35
+    },
+    {
+      "md": 150,
+      "inc": 0,
+      "azi": 35
+    },
+    {
+      "md": 175,
+      "inc": 0,
+      "azi": 35
+    },
+    {
+      "md": 200,
+      "inc": 0,
+      "azi": 35
+    },
+    {
+      "md": 225,
+      "inc": 0,
+      "azi": 35
+    },
+    {
+      "md": 250,
+      "inc": 0,
+      "azi": 35
+    },
+    {
+      "md": 275,
+      "inc": 0,
+      "azi": 35
+    },
+    {
+      "md": 300,
+      "inc": 0,
+      "azi": 35
+    },
+    {
+      "md": 325,
+      "inc": 0,
+      "azi": 35
+    },
+    {
+      "md": 350,
+      "inc": 0,
+      "azi": 35
+    },
+    {
+      "md": 375,
+      "inc": 0,
+      "azi": 35
+    },
+    {
+      "md": 400,
+      "inc": 0,
+      "azi": 35
+    },
+    {
+      "md": 425,
+      "inc": 0,
+      "azi": 35
+    },
+    {
+      "md": 450,
+      "inc": 0,
+      "azi": 35
+    },
+    {
+      "md": 475,
+      "inc": 0,
+      "azi": 35
+    },
+    {
+      "md": 500,
+      "inc": 0,
+      "azi": 35
+    },
+    {
+      "md": 525,
+      "inc": 0,
+      "azi": 35
+    },
+    {
+      "md": 550,
+      "inc": 0,
+      "azi": 35
+    },
+    {
+      "md": 575,
+      "inc": 0,
+      "azi": 35
+    },
+    {
+      "md": 600,
+      "inc": 0,
+      "azi": 35
+    },
+    {
+      "md": 625,
+      "inc": 0,
+      "azi": 35
+    },
+    {
+      "md": 650,
+      "inc": 0,
+      "azi": 35
+    },
+    {
+      "md": 675,
+      "inc": 0,
+      "azi": 35
+    },
+    {
+      "md": 700,
+      "inc": 0,
+      "azi": 35
+    },
+    {
+      "md": 725,
+      "inc": 0.9,
+      "azi": 35.15
+    },
+    {
+      "md": 750,
+      "inc": 1.8,
+      "azi": 35.3
+    },
+    {
+      "md": 775,
+      "inc": 2.6999999999999997,
+      "azi": 35.45
+    },
+    {
+      "md": 800,
+      "inc": 3.6,
+      "azi": 35.6
+    },
+    {
+      "md": 825,
+      "inc": 4.5,
+      "azi": 35.75
+    },
+    {
+      "md": 850,
+      "inc": 5.3999999999999995,
+      "azi": 35.9
+    },
+    {
+      "md": 875,
+      "inc": 6.3,
+      "azi": 36.05
+    },
+    {
+      "md": 900,
+      "inc": 7.2,
+      "azi": 36.2
+    },
+    {
+      "md": 925,
+      "inc": 8.1,
+      "azi": 36.35
+    },
+    {
+      "md": 950,
+      "inc": 9,
+      "azi": 36.5
+    },
+    {
+      "md": 975,
+      "inc": 9.9,
+      "azi": 36.65
+    },
+    {
+      "md": 1000,
+      "inc": 10.799999999999999,
+      "azi": 36.8
+    },
+    {
+      "md": 1025,
+      "inc": 11.700000000000001,
+      "azi": 36.95
+    },
+    {
+      "md": 1050,
+      "inc": 12.6,
+      "azi": 37.1
+    },
+    {
+      "md": 1075,
+      "inc": 13.5,
+      "azi": 37.25
+    },
+    {
+      "md": 1100,
+      "inc": 14.4,
+      "azi": 37.4
+    },
+    {
+      "md": 1125,
+      "inc": 15.299999999999999,
+      "azi": 37.55
+    },
+    {
+      "md": 1150,
+      "inc": 16.2,
+      "azi": 37.7
+    },
+    {
+      "md": 1175,
+      "inc": 17.099999999999998,
+      "azi": 37.85
+    },
+    {
+      "md": 1200,
+      "inc": 18,
+      "azi": 38
+    },
+    {
+      "md": 1225,
+      "inc": 19,
+      "azi": 38.416666666666664
+    },
+    {
+      "md": 1250,
+      "inc": 20,
+      "azi": 38.833333333333336
+    },
+    {
+      "md": 1275,
+      "inc": 21,
+      "azi": 39.25
+    },
+    {
+      "md": 1300,
+      "inc": 22,
+      "azi": 39.666666666666664
+    },
+    {
+      "md": 1325,
+      "inc": 23,
+      "azi": 40.083333333333336
+    },
+    {
+      "md": 1350,
+      "inc": 24,
+      "azi": 40.5
+    },
+    {
+      "md": 1375,
+      "inc": 25,
+      "azi": 40.916666666666664
+    },
+    {
+      "md": 1400,
+      "inc": 26,
+      "azi": 41.333333333333336
+    },
+    {
+      "md": 1425,
+      "inc": 27,
+      "azi": 41.75
+    },
+    {
+      "md": 1450,
+      "inc": 28,
+      "azi": 42.166666666666664
+    },
+    {
+      "md": 1475,
+      "inc": 29,
+      "azi": 42.583333333333336
+    },
+    {
+      "md": 1500,
+      "inc": 30,
+      "azi": 43
+    },
+    {
+      "md": 1525,
+      "inc": 31,
+      "azi": 43.416666666666664
+    },
+    {
+      "md": 1550,
+      "inc": 32,
+      "azi": 43.833333333333336
+    },
+    {
+      "md": 1575,
+      "inc": 33,
+      "azi": 44.25
+    },
+    {
+      "md": 1600,
+      "inc": 34,
+      "azi": 44.666666666666664
+    },
+    {
+      "md": 1625,
+      "inc": 35,
+      "azi": 45.083333333333336
+    },
+    {
+      "md": 1650,
+      "inc": 36,
+      "azi": 45.5
+    },
+    {
+      "md": 1675,
+      "inc": 37,
+      "azi": 45.916666666666664
+    },
+    {
+      "md": 1700,
+      "inc": 38,
+      "azi": 46.333333333333336
+    },
+    {
+      "md": 1725,
+      "inc": 39,
+      "azi": 46.75
+    },
+    {
+      "md": 1750,
+      "inc": 40,
+      "azi": 47.166666666666664
+    },
+    {
+      "md": 1775,
+      "inc": 41,
+      "azi": 47.583333333333336
+    },
+    {
+      "md": 1800,
+      "inc": 42,
+      "azi": 48
+    },
+    {
+      "md": 1825,
+      "inc": 43.15,
+      "azi": 48.6
+    },
+    {
+      "md": 1850,
+      "inc": 44.3,
+      "azi": 49.2
+    },
+    {
+      "md": 1875,
+      "inc": 45.45,
+      "azi": 49.8
+    },
+    {
+      "md": 1900,
+      "inc": 46.6,
+      "azi": 50.4
+    },
+    {
+      "md": 1925,
+      "inc": 47.75,
+      "azi": 51
+    },
+    {
+      "md": 1950,
+      "inc": 48.9,
+      "azi": 51.6
+    },
+    {
+      "md": 1975,
+      "inc": 50.05,
+      "azi": 52.2
+    },
+    {
+      "md": 2000,
+      "inc": 51.2,
+      "azi": 52.8
+    },
+    {
+      "md": 2025,
+      "inc": 52.35,
+      "azi": 53.4
+    },
+    {
+      "md": 2050,
+      "inc": 53.5,
+      "azi": 54
+    },
+    {
+      "md": 2075,
+      "inc": 54.65,
+      "azi": 54.6
+    },
+    {
+      "md": 2100,
+      "inc": 55.8,
+      "azi": 55.2
+    },
+    {
+      "md": 2125,
+      "inc": 56.95,
+      "azi": 55.8
+    },
+    {
+      "md": 2150,
+      "inc": 58.099999999999994,
+      "azi": 56.4
+    },
+    {
+      "md": 2175,
+      "inc": 59.25,
+      "azi": 57
+    },
+    {
+      "md": 2200,
+      "inc": 60.400000000000006,
+      "azi": 57.6
+    },
+    {
+      "md": 2225,
+      "inc": 61.55,
+      "azi": 58.2
+    },
+    {
+      "md": 2250,
+      "inc": 62.7,
+      "azi": 58.8
+    },
+    {
+      "md": 2275,
+      "inc": 63.849999999999994,
+      "azi": 59.4
+    },
+    {
+      "md": 2300,
+      "inc": 65,
+      "azi": 60
+    },
+    {
+      "md": 2325,
+      "inc": 65.85,
+      "azi": 60.4
+    },
+    {
+      "md": 2350,
+      "inc": 66.7,
+      "azi": 60.8
+    },
+    {
+      "md": 2375,
+      "inc": 67.55,
+      "azi": 61.2
+    },
+    {
+      "md": 2400,
+      "inc": 68.4,
+      "azi": 61.6
+    },
+    {
+      "md": 2425,
+      "inc": 69.25,
+      "azi": 62
+    },
+    {
+      "md": 2450,
+      "inc": 70.1,
+      "azi": 62.4
+    },
+    {
+      "md": 2475,
+      "inc": 70.95,
+      "azi": 62.8
+    },
+    {
+      "md": 2500,
+      "inc": 71.8,
+      "azi": 63.2
+    },
+    {
+      "md": 2525,
+      "inc": 72.65,
+      "azi": 63.6
+    },
+    {
+      "md": 2550,
+      "inc": 73.5,
+      "azi": 64
+    },
+    {
+      "md": 2575,
+      "inc": 74.35,
+      "azi": 64.4
+    },
+    {
+      "md": 2600,
+      "inc": 75.2,
+      "azi": 64.8
+    },
+    {
+      "md": 2625,
+      "inc": 76.05,
+      "azi": 65.2
+    },
+    {
+      "md": 2650,
+      "inc": 76.9,
+      "azi": 65.6
+    },
+    {
+      "md": 2675,
+      "inc": 77.75,
+      "azi": 66
+    },
+    {
+      "md": 2700,
+      "inc": 78.6,
+      "azi": 66.4
+    },
+    {
+      "md": 2725,
+      "inc": 79.45,
+      "azi": 66.8
+    },
+    {
+      "md": 2750,
+      "inc": 80.3,
+      "azi": 67.2
+    },
+    {
+      "md": 2775,
+      "inc": 81.15,
+      "azi": 67.6
+    },
+    {
+      "md": 2800,
+      "inc": 82,
+      "azi": 68
+    },
+    {
+      "md": 2825,
+      "inc": 82,
+      "azi": 68
+    },
+    {
+      "md": 2850,
+      "inc": 82,
+      "azi": 68
+    },
+    {
+      "md": 2875,
+      "inc": 82,
+      "azi": 68
+    },
+    {
+      "md": 2900,
+      "inc": 82,
+      "azi": 68
+    },
+    {
+      "md": 2925,
+      "inc": 82,
+      "azi": 68
+    },
+    {
+      "md": 2950,
+      "inc": 82,
+      "azi": 68
+    },
+    {
+      "md": 2975,
+      "inc": 82,
+      "azi": 68
+    },
+    {
+      "md": 3000,
+      "inc": 82,
+      "azi": 68
+    },
+    {
+      "md": 3025,
+      "inc": 82,
+      "azi": 68
+    },
+    {
+      "md": 3050,
+      "inc": 82,
+      "azi": 68
+    },
+    {
+      "md": 3075,
+      "inc": 82,
+      "azi": 68
+    },
+    {
+      "md": 3100,
+      "inc": 82,
+      "azi": 68
+    },
+    {
+      "md": 3125,
+      "inc": 82,
+      "azi": 68
+    },
+    {
+      "md": 3150,
+      "inc": 82,
+      "azi": 68
+    },
+    {
+      "md": 3175,
+      "inc": 82,
+      "azi": 68
+    },
+    {
+      "md": 3200,
+      "inc": 82,
+      "azi": 68
+    },
+    {
+      "md": 3225,
+      "inc": 82,
+      "azi": 68
+    },
+    {
+      "md": 3250,
+      "inc": 82,
+      "azi": 68
+    },
+    {
+      "md": 3275,
+      "inc": 82,
+      "azi": 68
+    },
+    {
+      "md": 3300,
+      "inc": 82,
+      "azi": 68
+    },
+    {
+      "md": 3325,
+      "inc": 82,
+      "azi": 68
+    },
+    {
+      "md": 3350,
+      "inc": 82,
+      "azi": 68
+    },
+    {
+      "md": 3375,
+      "inc": 82,
+      "azi": 68
+    },
+    {
+      "md": 3400,
+      "inc": 82,
+      "azi": 68
+    },
+    {
+      "md": 3425,
+      "inc": 82,
+      "azi": 68
+    },
+    {
+      "md": 3450,
+      "inc": 82,
+      "azi": 68
+    },
+    {
+      "md": 3475,
+      "inc": 82,
+      "azi": 68
+    },
+    {
+      "md": 3500,
+      "inc": 82,
+      "azi": 68
+    },
+    {
+      "md": 3525,
+      "inc": 82,
+      "azi": 68
+    },
+    {
+      "md": 3550,
+      "inc": 82,
+      "azi": 68
+    },
+    {
+      "md": 3575,
+      "inc": 82,
+      "azi": 68
+    },
+    {
+      "md": 3600,
+      "inc": 82,
+      "azi": 68
+    },
+    {
+      "md": 3625,
+      "inc": 82,
+      "azi": 68
+    },
+    {
+      "md": 3650,
+      "inc": 82,
+      "azi": 68
+    },
+    {
+      "md": 3675,
+      "inc": 82,
+      "azi": 68
+    },
+    {
+      "md": 3700,
+      "inc": 82,
+      "azi": 68
+    },
+    {
+      "md": 3725,
+      "inc": 82,
+      "azi": 68
+    },
+    {
+      "md": 3750,
+      "inc": 82,
+      "azi": 68
+    },
+    {
+      "md": 3775,
+      "inc": 82,
+      "azi": 68
+    },
+    {
+      "md": 3800,
+      "inc": 82,
+      "azi": 68
+    }
+  ],
+  "bha": [
+    {
+      "name": "PDC bit · 6 blades",
+      "type": "pdc-bit",
+      "length": 0.32,
+      "od": 0.2159,
+      "id": 0.045,
+      "mass": 175,
+      "connection": "4½ REG",
+      "serial": "DEMO-001",
+      "source": "Original synthetic tally / 1"
+    },
+    {
+      "name": "Push-the-bit RSS",
+      "type": "push-the-bit-rss",
+      "length": 4.1,
+      "od": 0.17145,
+      "id": 0.057,
+      "mass": 132,
+      "connection": "4½ IF",
+      "serial": "DEMO-002",
+      "source": "Original synthetic tally / 1"
+    },
+    {
+      "name": "Near-bit stabilizer",
+      "type": "stabilizer",
+      "length": 1.6,
+      "od": 0.2127,
+      "id": 0.071,
+      "mass": 108,
+      "connection": "4½ IF",
+      "serial": "DEMO-003",
+      "source": "Original synthetic tally / 1"
+    },
+    {
+      "name": "LWD resistivity tool",
+      "type": "lwd",
+      "length": 6.8,
+      "od": 0.17145,
+      "id": 0.057,
+      "mass": 123,
+      "connection": "4½ IF",
+      "serial": "DEMO-004",
+      "source": "Original synthetic tally / 1"
+    },
+    {
+      "name": "MWD telemetry & surveys",
+      "type": "mwd",
+      "length": 8.7,
+      "od": 0.17145,
+      "id": 0.057,
+      "mass": 120,
+      "connection": "4½ IF",
+      "serial": "DEMO-005",
+      "source": "Original synthetic tally / 1"
+    },
+    {
+      "name": "Non-magnetic collar",
+      "type": "nonmag",
+      "length": 9.2,
+      "od": 0.17145,
+      "id": 0.0714,
+      "mass": 145,
+      "connection": "4½ IF",
+      "serial": "DEMO-006",
+      "source": "Original synthetic tally / 1"
+    },
+    {
+      "name": "String stabilizer",
+      "type": "stabilizer",
+      "length": 1.55,
+      "od": 0.2127,
+      "id": 0.0714,
+      "mass": 105,
+      "connection": "4½ IF",
+      "serial": "DEMO-007",
+      "source": "Original synthetic tally / 1"
+    },
+    {
+      "name": "Drill collars · 6 joints",
+      "type": "drill-collar",
+      "length": 55.8,
+      "od": 0.17145,
+      "id": 0.0714,
+      "mass": 146,
+      "connection": "4½ IF",
+      "serial": "DEMO-008",
+      "source": "Original synthetic tally / 1"
+    },
+    {
+      "name": "Hydraulic drilling jar",
+      "type": "jar",
+      "length": 9.4,
+      "od": 0.1651,
+      "id": 0.0714,
+      "mass": 118,
+      "connection": "4½ IF",
+      "serial": "DEMO-009",
+      "source": "Original synthetic tally / 1"
+    },
+    {
+      "name": "Jar accelerator",
+      "type": "accelerator",
+      "length": 4.2,
+      "od": 0.1651,
+      "id": 0.0714,
+      "mass": 110,
+      "connection": "4½ IF",
+      "serial": "DEMO-010",
+      "source": "Original synthetic tally / 1"
+    },
+    {
+      "name": "Heavyweight pipe · 18 joints",
+      "type": "hwdp",
+      "length": 167.4,
+      "od": 0.127,
+      "id": 0.0762,
+      "mass": 74,
+      "connection": "NC50",
+      "serial": "DEMO-011",
+      "source": "Original synthetic tally / 1"
+    },
+    {
+      "name": "Drill pipe · 5 in, S-135 (illustrative)",
+      "type": "drill-pipe",
+      "length": 3530.93,
+      "od": 0.127,
+      "id": 0.1086,
+      "mass": 29.1,
+      "connection": "NC50",
+      "serial": "DEMO-DP",
+      "source": "Original synthetic tally / 1"
+    }
+  ],
+  "sections": [
+    {
+      "name": "Surface casing",
+      "from": 0,
+      "to": 450,
+      "od": 0.508,
+      "id": 0.476
+    },
+    {
+      "name": "Intermediate casing",
+      "from": 450,
+      "to": 1800,
+      "od": 0.339725,
+      "id": 0.3153
+    },
+    {
+      "name": "Production casing",
+      "from": 1800,
+      "to": 2600,
+      "od": 0.244475,
+      "id": 0.2168
+    },
+    {
+      "name": "Open hole",
+      "from": 2600,
+      "to": 3800,
+      "od": 0.2159,
+      "id": 0.2159
+    }
+  ],
+  "settings": {
+    "mud": 1260,
+    "steel": 7850,
+    "muCased": 0.18,
+    "muOpen": 0.25,
+    "casingShoe": 2600,
+    "blockForce": 313812.8,
+    "bitMD": 3800,
+    "flow": 0.032,
+    "rpm": 120,
+    "wob": 90000,
+    "pressure": 21500000
+  },
+  "units": {
+    "length": "m",
+    "diameter": "mm",
+    "force": "tf",
+    "torque": "tf.m",
+    "pressure": "bar",
+    "density": "sg",
+    "flow": "L/min",
+    "mass": "t",
+    "linear": "kg/m"
+  },
+  "observations": [
+    {
+      "md": 2000,
+      "pu": 944746.3622664697,
+      "so": 795833.9486826374,
+      "fr": 860267.1480287008,
+      "torque": 6000,
+      "flow": 0.032,
+      "rpm": 30,
+      "pressure": 18000000,
+      "ecd": 1275,
+      "record": "MOCK-001",
+      "operation": "Off-bottom connection check",
+      "quality": "SYNTHETIC"
+    },
+    {
+      "md": 2100,
+      "pu": 964852.6104869617,
+      "so": 792371.1771056855,
+      "fr": 867708.8149235253,
+      "torque": 6590.367746201974,
+      "flow": 0.032,
+      "rpm": 30,
+      "pressure": 18230000,
+      "ecd": 1275,
+      "record": "MOCK-002",
+      "operation": "Off-bottom connection check",
+      "quality": "SYNTHETIC"
+    },
+    {
+      "md": 2200,
+      "pu": 978011.67574891,
+      "so": 784360.5776794312,
+      "fr": 871825.9898571895,
+      "torque": 6987.32435670642,
+      "flow": 0.032,
+      "rpm": 30,
+      "pressure": 18460000,
+      "ecd": 1275,
+      "record": "MOCK-003",
+      "operation": "Off-bottom connection check",
+      "quality": "SYNTHETIC"
+    },
+    {
+      "md": 2300,
+      "pu": 983008.6770606271,
+      "so": 776792.5809109845,
+      "fr": 872097.5708226032,
+      "torque": 7175.280002014967,
+      "flow": 0.032,
+      "rpm": 30,
+      "pressure": 18690000,
+      "ecd": 1275,
+      "record": "MOCK-004",
+      "operation": "Off-bottom connection check",
+      "quality": "SYNTHETIC"
+    },
+    {
+      "md": 2400,
+      "pu": 983902.312530197,
+      "so": 773622.8608565949,
+      "fr": 869803.4883656004,
+      "torque": 7330.799376173018,
+      "flow": 0.032,
+      "rpm": 30,
+      "pressure": 18920000,
+      "ecd": 1275,
+      "record": "MOCK-005",
+      "operation": "Off-bottom connection check",
+      "quality": "SYNTHETIC"
+    },
+    {
+      "md": 2500,
+      "pu": 986311.2726485418,
+      "so": 773765.0737700224,
+      "fr": 866514.3700951261,
+      "torque": 7660.268931334215,
+      "flow": 0.032,
+      "rpm": 30,
+      "pressure": 19150000,
+      "ecd": 1275,
+      "record": "MOCK-006",
+      "operation": "Off-bottom connection check",
+      "quality": "SYNTHETIC"
+    },
+    {
+      "md": 2600,
+      "pu": 992824.616755735,
+      "so": 772019.3020267077,
+      "fr": 862887.6744945783,
+      "torque": 8210.146125450268,
+      "flow": 0.032,
+      "rpm": 30,
+      "pressure": 19380000,
+      "ecd": 1275,
+      "record": "MOCK-007",
+      "operation": "Off-bottom connection check",
+      "quality": "SYNTHETIC"
+    },
+    {
+      "md": 2700,
+      "pu": 1011808.0947477921,
+      "so": 758535.6083186184,
+      "fr": 859318.0919266307,
+      "torque": 8824.246649679697,
+      "flow": 0.032,
+      "rpm": 30,
+      "pressure": 19610000,
+      "ecd": 1275,
+      "record": "MOCK-008",
+      "operation": "Off-bottom connection check",
+      "quality": "SYNTHETIC"
+    },
+    {
+      "md": 2800,
+      "pu": 1024511.5865895301,
+      "so": 742528.2082544947,
+      "fr": 855834.5122193384,
+      "torque": 9287.339561655845,
+      "flow": 0.032,
+      "rpm": 30,
+      "pressure": 19840000,
+      "ecd": 1275,
+      "record": "MOCK-009",
+      "operation": "Off-bottom connection check",
+      "quality": "SYNTHETIC"
+    },
+    {
+      "md": 2900,
+      "pu": 1033526.186883103,
+      "so": 728868.5174910587,
+      "fr": 855171.2001367008,
+      "torque": 9523.02962131044,
+      "flow": 0.032,
+      "rpm": 30,
+      "pressure": 20070000,
+      "ecd": 1275,
+      "record": "MOCK-010",
+      "operation": "Off-bottom connection check",
+      "quality": "SYNTHETIC"
+    },
+    {
+      "md": 3000,
+      "pu": 1038816.1338373432,
+      "so": 724456.5419171861,
+      "fr": 858175.37392366,
+      "torque": 9663.994722277657,
+      "flow": 0.032,
+      "rpm": 30,
+      "pressure": 20300000,
+      "ecd": 1275,
+      "record": "MOCK-011",
+      "operation": "Off-bottom connection check",
+      "quality": "SYNTHETIC"
+    },
+    {
+      "md": 3100,
+      "pu": 1043986.5595751315,
+      "so": 726198.6598415637,
+      "fr": 862151.5640931135,
+      "torque": 9930.002448362324,
+      "flow": 0.032,
+      "rpm": 30,
+      "pressure": 20530000,
+      "ecd": 1275,
+      "record": "MOCK-012",
+      "operation": "Off-bottom connection check",
+      "quality": "SYNTHETIC"
+    },
+    {
+      "md": 3200,
+      "pu": 1057309.886647033,
+      "so": 725323.0207040795,
+      "fr": 865018.2183206879,
+      "torque": 10602.779847422968,
+      "flow": 0.032,
+      "rpm": 30,
+      "pressure": 20760000,
+      "ecd": 1276.8461538461538,
+      "record": "MOCK-013",
+      "operation": "Off-bottom connection check",
+      "quality": "SYNTHETIC"
+    },
+    {
+      "md": 3300,
+      "pu": 1081200.8610872244,
+      "so": 717082.6986211694,
+      "fr": 866478.1132784368,
+      "torque": 11575.810989975891,
+      "flow": 0.032,
+      "rpm": 30,
+      "pressure": 20990000,
+      "ecd": 1280.5384615384614,
+      "record": "MOCK-014",
+      "operation": "Off-bottom connection check",
+      "quality": "SYNTHETIC"
+    },
+    {
+      "md": 3400,
+      "pu": 1109416.7404148611,
+      "so": 704233.5798847806,
+      "fr": 867412.7389256676,
+      "torque": 12452.267223539102,
+      "flow": 0.032,
+      "rpm": 30,
+      "pressure": 21220000,
+      "ecd": 1284.2307692307693,
+      "record": "MOCK-015",
+      "operation": "Off-bottom connection check",
+      "quality": "SYNTHETIC"
+    },
+    {
+      "md": 3500,
+      "pu": 1137441.780353925,
+      "so": 690673.4222190343,
+      "fr": 868950.6275859835,
+      "torque": 13101.033498500818,
+      "flow": 0.032,
+      "rpm": 30,
+      "pressure": 21450000,
+      "ecd": 1287.923076923077,
+      "record": "MOCK-016",
+      "operation": "Off-bottom connection check",
+      "quality": "SYNTHETIC"
+    },
+    {
+      "md": 3600,
+      "pu": 1160904.6600729926,
+      "so": 680935.6843103325,
+      "fr": 871936.5875616899,
+      "torque": 13600.331863141426,
+      "flow": 0.032,
+      "rpm": 30,
+      "pressure": 21680000,
+      "ecd": 1291.6153846153845,
+      "record": "MOCK-017",
+      "operation": "Off-bottom connection check",
+      "quality": "SYNTHETIC"
+    },
+    {
+      "md": 3700,
+      "pu": 1178886.6106414373,
+      "so": 676021.9701247878,
+      "fr": 876534.3765887248,
+      "torque": 14165.804473183956,
+      "flow": 0.032,
+      "rpm": 30,
+      "pressure": 21910000,
+      "ecd": 1295.3076923076924,
+      "record": "MOCK-018",
+      "operation": "Off-bottom connection check",
+      "quality": "SYNTHETIC"
+    },
+    {
+      "md": 3800,
+      "pu": 1194616.7210390547,
+      "so": 672481.642069252,
+      "fr": 882149.6840146634,
+      "torque": 14952.25318830708,
+      "flow": 0.032,
+      "rpm": 30,
+      "pressure": 22140000,
+      "ecd": 1299,
+      "record": "MOCK-019",
+      "operation": "Off-bottom connection check",
+      "quality": "SYNTHETIC"
+    }
+  ],
+  "notes": "Training interpretation: investigate the rising pickup/slackoff spread below 3,200 m. These observations are intentionally fictitious; no cleaning instruction or operating limit is inferred."
+}

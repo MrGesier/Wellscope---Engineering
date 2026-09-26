@@ -25,6 +25,7 @@ const { chromium } = require("playwright-core"),
     await page.goto(
       pathToFileURL(path.resolve(__dirname, "../app/index.html")).href,
     );
+    await page.locator('[data-page="overview"]').click();
     await page.waitForSelector("#evidence-axes");
     const click = (sel) => page.locator(sel).click();
     const nav = (id) => click('[data-page="' + id + '"]');

@@ -585,7 +585,7 @@
       'legacy', 'reference', 'wells', 'bha', 'measurements', 'limits',
       'directional_response_cases', 'cuttings_samples', 'completion_intervals',
       'external_motor_curves', 'matched_weight_comparisons', 'measured_spectrum',
-      'observed_directional_intervals', 'study_runs'
+      'observed_directional_intervals', 'study_runs', 'engineering_cases'
     ].map(key => [key, p[key] ?? null]));
   }
   async function exportProject() {
@@ -725,6 +725,7 @@ window.dispatchEvent(new CustomEvent("wellscope:project-loaded"));
       measured_spectrum: p.measured_spectrum || null,
       observed_directional_intervals: p.observed_directional_intervals || [],
       studies: p.study_runs || [],
+      engineering_cases: p.engineering_cases || [],
       missing: [
         "ISCWSA covariance / named-rule scan",
         "stiff-string, torque, stress, dynamics",
