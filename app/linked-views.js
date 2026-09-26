@@ -116,9 +116,9 @@
     const az = (C.number($("section-azimuth").value) * Math.PI) / 180,
       kind = $("linked-view").value,
       paths = [
-        ["REFERENCE", d.ref, "#48d7c1"],
-        ["OFFSET A", d.off, "#f7a957"],
-        ["OFFSET B", d.offB, "#6aa8f8"],
+        ["REFERENCE", d.ref, "#31566e"],
+        ["OFFSET A", d.off, "#b77842"],
+        ["OFFSET B", d.offB, "#688299"],
         ["SIDETRACK", d.side, "#c6a8ff"],
       ],
       center = WellEngine.interp(d.ref, loc.md);
@@ -129,7 +129,7 @@
         if (kind === "Spider") xy = [p.e, p.n];
         else if (kind === "Ladder") {
           const q = WellEngine.closestOnPolyline(p, d.ref);
-          xy = [p.md, q.distance];
+          xy = [q.distance, p.md];
         } else if (kind === "Traveling Cylinder") {
           const t = WellPlus.transverseOffset(center, p);
           xy = [t.x, t.y];
@@ -145,10 +145,10 @@
       ymin = Math.min(...points.map((p) => p.y)),
       ymax = Math.max(...points.map((p) => p.y)),
       X = (x) => 70 + ((x - xmin) / (xmax - xmin || 1)) * 850,
-      Y = (y) => 35 + ((y - ymin) / (ymax - ymin || 1)) * 270;
+      Y = (y) => 35 + ((kind === "Spider" || kind === "Traveling Cylinder") ? 1-(y-ymin)/(ymax-ymin||1) : (y-ymin)/(ymax-ymin||1)) * 270;
     g.font = "14px Segoe UI";
-    g.fillStyle = "#a9c5d3";
-    g.fillText(kind + " · independent axes; dimensions in metres", 20, 20);
+    g.fillStyle = "#526e80";
+    g.fillText(kind + ((kind === "Spider") ? " · East → / North ↑ (m)" : kind === "Traveling Cylinder" ? " · Right → / Highside ↑ (m)" : kind === "Ladder" ? " · Separation → (m) / MD ↓ (m)" : " · Section → (m) / Depth ↓ (m)"), 20, 20);
     if (kind === "Depth Schematic") {
       g.strokeStyle = "#52738a";
       g.beginPath();
@@ -159,9 +159,9 @@
         const y = Y(section.from),
           height = Y(section.to) - y,
           w = section.od_m * 150;
-        g.strokeStyle = "#6aa8f8";
+        g.strokeStyle = "#688299";
         g.strokeRect(500 - w / 2, y, w, height);
-        g.fillStyle = "#c9dce5";
+        g.fillStyle = "#526e80";
         g.fillText(
           (section.label || "Casing") +
             " " +

@@ -1,0 +1,151 @@
+{
+  "schema": "wellscope-directional-surface/1",
+  "quality": "SYNTHETIC",
+  "source": "Original illustrative response coefficients; not fitted to field data",
+  "revision": "1",
+  "bha": "Fictional directional response families; independent of the project BHA",
+  "conditions": "Fixed hypothetical formation, inclination and gauge. Coefficients are not manufacturer ratings.",
+  "curves": [
+    {
+      "mode": "rotating",
+      "rows": [
+        {
+          "wobN": 40000,
+          "passiveBuild": -0.7,
+          "passiveRight": 0.12,
+          "activeHigh": 0,
+          "activeRight": 0
+        },
+        {
+          "wobN": 70000,
+          "passiveBuild": -0.55,
+          "passiveRight": 0.12,
+          "activeHigh": 0,
+          "activeRight": 0
+        },
+        {
+          "wobN": 100000,
+          "passiveBuild": -0.35,
+          "passiveRight": 0.12,
+          "activeHigh": 0,
+          "activeRight": 0
+        },
+        {
+          "wobN": 130000,
+          "passiveBuild": -0.05,
+          "passiveRight": 0.12,
+          "activeHigh": 0,
+          "activeRight": 0
+        },
+        {
+          "wobN": 160000,
+          "passiveBuild": 0.3,
+          "passiveRight": 0.12,
+          "activeHigh": 0,
+          "activeRight": 0
+        },
+        {
+          "wobN": 190000,
+          "passiveBuild": 0.7,
+          "passiveRight": 0.12,
+          "activeHigh": 0,
+          "activeRight": 0
+        }
+      ]
+    },
+    {
+      "mode": "sliding",
+      "rows": [
+        {
+          "wobN": 40000,
+          "passiveBuild": -0.7,
+          "passiveRight": 0.12,
+          "activeHigh": 3.9,
+          "activeRight": 0.32
+        },
+        {
+          "wobN": 70000,
+          "passiveBuild": -0.55,
+          "passiveRight": 0.12,
+          "activeHigh": 4.15,
+          "activeRight": 0.32
+        },
+        {
+          "wobN": 100000,
+          "passiveBuild": -0.35,
+          "passiveRight": 0.12,
+          "activeHigh": 4.35,
+          "activeRight": 0.32
+        },
+        {
+          "wobN": 130000,
+          "passiveBuild": -0.05,
+          "passiveRight": 0.12,
+          "activeHigh": 4.5,
+          "activeRight": 0.32
+        },
+        {
+          "wobN": 160000,
+          "passiveBuild": 0.3,
+          "passiveRight": 0.12,
+          "activeHigh": 4.6,
+          "activeRight": 0.32
+        },
+        {
+          "wobN": 190000,
+          "passiveBuild": 0.7,
+          "passiveRight": 0.12,
+          "activeHigh": 4.65,
+          "activeRight": 0.32
+        }
+      ]
+    },
+    {
+      "mode": "rss",
+      "rows": [
+        {
+          "wobN": 40000,
+          "passiveBuild": -0.7,
+          "passiveRight": 0.12,
+          "activeHigh": 5.1,
+          "activeRight": 0.32
+        },
+        {
+          "wobN": 70000,
+          "passiveBuild": -0.55,
+          "passiveRight": 0.12,
+          "activeHigh": 4.9,
+          "activeRight": 0.32
+        },
+        {
+          "wobN": 100000,
+          "passiveBuild": -0.35,
+          "passiveRight": 0.12,
+          "activeHigh": 4.6,
+          "activeRight": 0.32
+        },
+        {
+          "wobN": 130000,
+          "passiveBuild": -0.05,
+          "passiveRight": 0.12,
+          "activeHigh": 4.2,
+          "activeRight": 0.32
+        },
+        {
+          "wobN": 160000,
+          "passiveBuild": 0.3,
+          "passiveRight": 0.12,
+          "activeHigh": 3.7,
+          "activeRight": 0.32
+        },
+        {
+          "wobN": 190000,
+          "passiveBuild": 0.7,
+          "passiveRight": 0.12,
+          "activeHigh": 3.1,
+          "activeRight": 0.32
+        }
+      ]
+    }
+  ]
+}

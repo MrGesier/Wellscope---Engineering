@@ -351,20 +351,9 @@
     );
     if (!clean.length) return "<p>No numeric chart available.</p>";
     clean.sort((a, b) => a.md_m - b.md_m);
-    const xs = clean.map((r) => r.md_m),
-      ys = clean.map((r) => r[key]),
-      minX = Math.min(...xs),
-      maxX = Math.max(...xs),
-      minY = Math.min(0, ...ys),
-      maxY = Math.max(...ys),
-      w = 800,
-      h = 260;
-    const points = clean.map(
-      (r) =>
-        `${70 + ((r.md_m - minX) / (maxX - minX || 1)) * 680},${210 - ((r[key] - minY) / (maxY - minY || 1)) * 165}`,
-    );
-    return `<svg class="study-plot" viewBox="0 0 ${w} ${h}" role="img" aria-label="${esc(label(key))} by measured depth"><path d="M70 40V210H750" fill="none" stroke="#bdad9c"/><path d="M70 125H750M70 40H750" stroke="#e8ded1"/><polyline points="${points.join(" ")}" fill="none" stroke="#a6502d" stroke-width="2.5"/>${points.map((p, i) => `<circle cx="${p.split(",")[0]}" cy="${p.split(",")[1]}" r="3" fill="#a6502d"><title>${esc(fmt(clean[i].md_m) + " mMD: " + fmt(clean[i][key]))}</title></circle>`).join("")}<g fill="#665446" font-family="Segoe UI, sans-serif" font-size="12"><text x="70" y="25">${esc(label(key))}</text><text x="12" y="44">${esc(fmt(maxY))}</text><text x="12" y="214">${esc(fmt(minY))}</text><text x="70" y="234">${esc(fmt(minX))}</text><text x="700" y="234">${esc(fmt(maxX))}</text><text x="350" y="253">Measured depth (m)</text></g></svg>`;
+    return EngineeringCharts.svg([{name:label(key),points:clean.map(r=>({x:r[key],y:r.md_m}))}],{x:label(key),y:'Measured depth (m) ↓',depth:true});
   }
+
   async function calculate() {
     if (busy) return;
     busy = true;

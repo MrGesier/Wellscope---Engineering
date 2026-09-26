@@ -16,20 +16,25 @@
       `<rect x="${60 - w / 2}" y="${y}" width="${w}" height="${h}" rx="3" fill="${steel}" stroke="#59636a"/><path d="M${62 - w / 2} ${y + 4}h${w - 4}" stroke="#dce0e1"/>`;
     if (/^(pdc-bit|tricone)$/.test(type)) {
       body = `<path d="M44 25h32v72l22 22v77q-4 35-38 36-34-1-38-36v-33l22-22z" fill="${steel}" stroke="#50585c"/><path d="M26 174q19-8 20 53M47 155q20 11 19 77M70 154q23 14 21 57" fill="none" stroke="${gold}" stroke-width="11"/>`;
-      if (/tricone/.test(type))
-        body += `<path d="M24 175l35 52 4-58zM68 165l-6 63 34-39z" fill="#a1a9aa" stroke="#404c51"/>`;
       for (let i = 0; i < 13; i++) {
         const x = 31 + (i % 3) * 25,
           y = 166 + Math.floor(i / 3) * 13;
         body += `<ellipse cx="${x}" cy="${y}" rx="5.5" ry="4.5" fill="#414c55" stroke="#d8d2b4" stroke-width="1.5"/>`;
       }
       body += `<circle cx="51" cy="190" r="4" fill="#16242a"/><circle cx="77" cy="215" r="4" fill="#16242a"/>`;
+      if(type==='tricone'){
+        body=`<path d="M43 26h34v65l17 33v62H26v-62l17-33z" fill="${steel}" stroke="${dark}"/><path d="M27 164l30 18-9 46-27-19zM91 163l-29 20 12 47 27-23zM58 183l-14 47h35z" fill="#a9b1b4" stroke="#4b575d"/>`;
+        for(const [x,y] of [[30,179],[36,192],[42,205],[85,179],[80,194],[77,207],[59,207],[56,220],[68,221]])body+=`<path d="M${x-4} ${y+3}l4-9 5 9z" fill="${gold}" stroke="#5a6060"/>`;
+      }
+    } else if (type==='underreamer') {
+      body+=`<path d="M42 91L21 126v33l22-13M78 91l21 35v33l-22-13" fill="${steel}" stroke="${dark}"/><path d="M22 129v25M98 129v25" stroke="${gold}" stroke-width="7"/>`;
     } else if (/stabilizer|reamer/.test(type)) {
       body += `<path d="M41 60q23-15 8 118l-18 9q20-92 10-127M67 51q22 29 11 132l11-8q13-93-7-118" fill="${steel}" stroke="#515d65"/>`;
       for (let i = 0; i < 9; i++)
         body += `<path d="M37 ${72 + i * 12}l17-4M78 ${67 + i * 12}l11 3" stroke="${gold}" stroke-width="5"/>`;
     } else if (/rss/.test(type)) {
       body += joint(46) + joint(184);
+      if(type==='rss-point')body+=`<path d="M55 82l11 0-8 100-11 0z" fill="#546774"/><path d="M60 88l-7 88" stroke="${gold}" stroke-width="3"/>`;
       for (const x of [35, 54, 75])
         body += `<rect x="${x}" y="105" width="10" height="48" rx="3" fill="#717b7f" stroke="#323c42"/><circle cx="${x + 5}" cy="111" r="2" fill="#c4c9c7"/><circle cx="${x + 5}" cy="147" r="2" fill="#c4c9c7"/>`;
       body += `<path d="M43 74h34M43 164h34" stroke="${gold}" stroke-width="7"/>`;
@@ -44,6 +49,7 @@
       body += joint(103, 48, 10) + joint(174, 48, 10);
     } else if (/pdm|motor/.test(type)) {
       body += joint(40) + joint(184);
+      if(type==='bent-pdm')body+=`<path d="M42 177l36-4 8 34-36 5z" fill="${steel}" stroke="${dark}"/><path d="M45 181l34-4" stroke="${gold}" stroke-width="4"/>`;
       for (let i = 0; i < 6; i++)
         body += `<path d="M44 ${65 + i * 17}l32 -9" stroke="#6e777c" stroke-width="2"/>`;
     } else if (/hwdp|heavy/.test(type)) {

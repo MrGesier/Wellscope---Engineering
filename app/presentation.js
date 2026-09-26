@@ -19,7 +19,7 @@
     }
   }
   function disclose(id, label, summaryFn) {
-    const node = $(id);
+    const node = $(id+"-engineering")?.querySelector("svg") || $(id);
     if (!node) return;
     const details = document.createElement("details"),
       title = document.createElement("summary");
@@ -132,7 +132,7 @@
       caption.textContent = label + " — preliminary / source-labelled data";
       const image = document.createElement("img");
       image.alt = label;
-      const node = $(id);
+      const node = $(id+"-engineering")?.querySelector("svg") || $(id);
       image.src =
         node.tagName.toLowerCase() === "canvas"
           ? node.toDataURL("image/png")

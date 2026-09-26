@@ -7,10 +7,12 @@
   let selected = 0,
     dragged = null;
   const host = document.createElement("article");
-  host.className = "panel";
+  host.className = "panel bha-design-studio";
   host.innerHTML =
-    '<h2>Component inspector & original SVG catalog</h2><p class="work-note">23 original silhouettes, not to scale. Select a component to edit source-backed properties. Empty fields stay unknown. Reorder bit-to-surface using arrow buttons or drag rows.</p><div class="work-assets" id="asset-catalog"></div><div id="component-order"></div><div class="workform" id="component-fields"></div><div class="work-toolbar"><button id="save-component" class="primary">Apply component properties</button><button id="export-bha" class="smallbutton">Export BHA JSON</button><label class="filebtn">Import BHA JSON<input type="file" id="import-bha" accept=".json" hidden></label></div><div class="work-error" id="component-error" role="alert"></div>';
-  $("bha").append(host);
+    '<h2>BHA design · equipment families</h2><p class="work-note">23 equipment families with original technical illustrations. Select a tool to insert it, then replace the illustrative dimensions. Assemble from bit to surface; select a row to inspect or edit.</p><div class="work-toolbar"><label>Find equipment<input id="bha-family-search" placeholder="Motor, RSS, stabilizer, jar…"></label><span id="bha-family-count">23 families</span></div><div class="work-assets" id="asset-catalog"></div><div class="bha-design-columns"><div><h3>Assembly · bit → surface</h3><div id="component-order"></div></div><div><div id="component-illustration"></div><h3>Component properties</h3><div class="workform" id="component-fields"></div></div></div><div class="work-toolbar"><button id="save-component" class="primary">Apply component properties</button><button id="export-bha" class="smallbutton">Export BHA JSON</button><label class="filebtn">Import BHA JSON<input type="file" id="import-bha" accept=".json" hidden></label></div><div class="work-error" id="component-error" role="alert"></div>';
+  $("bha").querySelector(".page-head").after(host);
+  const oldLibrary = $("toolgallery").closest(".tool-panel");
+  oldLibrary.hidden = true;
   const numeric = [
     "length",
     "od",
@@ -39,7 +41,13 @@
     "max_extended_od_m",
     "pad_force_n",
   ];
-  for(const item of WellBhaRegistry)for(const field of item.fields)if(/(_m|_m2|_m3_s|_pa|_n|_nm|_nm_rad|_count|_measured)$/.test(field)&&!numeric.includes(field))numeric.push(field);
+  for (const item of WellBhaRegistry)
+    for (const field of item.fields)
+      if (
+        /(_m|_m2|_m3_s|_pa|_n|_nm|_nm_rad|_count|_measured)$/.test(field) &&
+        !numeric.includes(field)
+      )
+        numeric.push(field);
   function guard(fn) {
     try {
       $("component-error").textContent = "";
@@ -56,6 +64,8 @@
     img.alt = item.label + " schematic";
     label.textContent = item.label;
     b.append(img, label);
+    b.dataset.family = item.id;
+    b.title = "Insert " + item.label;
     b.onclick = () =>
       guard(() => {
         const bha = A.snapshot().state.bha;
@@ -91,7 +101,8 @@
     $("component-order").replaceChildren();
     derived.bha.elements.forEach((b, i) => {
       const row = document.createElement("div");
-      row.className = "work-toolbar";
+      row.className =
+        "work-toolbar assembly-row" + (i === selected ? " selected" : "");
       row.draggable = true;
       row.ondragstart = () => {
         dragged = i;
@@ -117,7 +128,23 @@
             component: b.stable_id || b.name,
           });
       };
-      row.append(choose);
+      const icon = document.createElement("img");
+      const family =
+        b.family ||
+        {
+          pdc: "pdc-bit",
+          motor: "bent-pdm",
+          rss: "rss-push",
+          stab: "string-stabilizer",
+          dp: "drillpipe",
+        }[BhaIcons.typeOf(b.name)] ||
+        BhaIcons.typeOf(b.name);
+      icon.src = (
+        WellBhaRegistry.find((x) => x.id === family) ||
+        WellBhaRegistry.find((x) => x.id === "drillpipe")
+      ).asset;
+      icon.alt = family + " technical illustration";
+      row.append(icon, choose);
       for (const [text, delta] of [
         ["↑", -1],
         ["↓", 1],
@@ -139,7 +166,24 @@
       schema =
         WellBhaRegistry.find((x) => x.id === b.family) ||
         WellBhaRegistry.find((x) => x.id === "drillpipe");
+    $("component-illustration").innerHTML = EquipmentDrawing.svg(
+      b.family ||
+        {
+          pdc: "pdc-bit",
+          motor: "bent-pdm",
+          rss: "rss-push",
+          stab: "string-stabilizer",
+          dp: "drillpipe",
+        }[BhaIcons.typeOf(b.name)] ||
+        BhaIcons.typeOf(b.name),
+    );
     $("component-fields").replaceChildren();
+    const advanced = document.createElement("details"),
+      summary = document.createElement("summary"),
+      advancedFields = document.createElement("div");
+    summary.textContent = "Source, ratings & family-specific properties";
+    advancedFields.className = "workform";
+    advanced.append(summary, advancedFields);
     for (const key of [
       "name",
       "family",
@@ -153,7 +197,13 @@
     ]) {
       const label = document.createElement("label"),
         input = document.createElement("input");
-      label.textContent = key.replaceAll("_", " ");
+      label.textContent =
+        {
+          length: "Length (m)",
+          od: "Body OD (m)",
+          id: "Bore ID (m)",
+          mass: "Linear mass (kg/m)",
+        }[key] || key.replaceAll("_", " ");
       input.dataset.property = key;
       input.type = numeric.includes(key) ? "number" : "text";
       input.step = "any";
@@ -162,8 +212,13 @@
         ? "Unknown"
         : "Source-backed value";
       label.append(input);
-      $("component-fields").append(label);
+      if (
+        ["name", "family", "length", "od", "id", "mass", "source"].includes(key)
+      )
+        $("component-fields").append(label);
+      else advancedFields.append(label);
     }
+    $("component-fields").append(advanced);
   }
   $("save-component").onclick = () =>
     guard(() => {
@@ -190,8 +245,21 @@
         component.temperature_min_c > component.temperature_max_c
       )
         throw Error("Temperature range reversed");
-      if(component.family&&!WellBhaRegistry.some(r=>r.id===component.family))throw Error("Choose a known family ID from the catalog");
-      if(["body_rating_n","connection_rating_n","bearing_rating_n","drive_shaft_rating_nm"].some(k=>component[k]!=null)&&!component.rating_source)throw Error("Ratings require an explicit source");
+      if (
+        component.family &&
+        !WellBhaRegistry.some((r) => r.id === component.family)
+      )
+        throw Error("Choose a known family ID from the catalog");
+      if (
+        [
+          "body_rating_n",
+          "connection_rating_n",
+          "bearing_rating_n",
+          "drive_shaft_rating_nm",
+        ].some((k) => component[k] != null) &&
+        !component.rating_source
+      )
+        throw Error("Ratings require an explicit source");
       component.stable_id = component.stable_id || crypto.randomUUID();
       component.quality = "USER_ENTERED";
       bha[selected] = component;
@@ -227,5 +295,20 @@
     }
     e.target.value = "";
   };
+  $("bha-family-search").oninput = (e) => {
+    let count = 0;
+    for (const button of $("asset-catalog").children) {
+      const visible =
+        button.textContent
+          .toLowerCase()
+          .includes(e.target.value.toLowerCase()) ||
+        button.dataset.family.includes(e.target.value.toLowerCase());
+      button.hidden = !visible;
+      if (visible) count++;
+    }
+    $("bha-family-count").textContent = count + " families";
+  };
+  window.addEventListener("wellscope:project-loaded", render);
+  document.querySelector('[data-page="bha"]').addEventListener("click", render);
   render();
 })();

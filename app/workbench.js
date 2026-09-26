@@ -30,7 +30,7 @@
     ["science", "Help & Science"],
   ];
   const style = document.createElement("style");
-  style.textContent = `.workform{display:grid;grid-template-columns:repeat(auto-fit,minmax(175px,1fr));gap:14px}.workform label{display:grid;gap:6px;color:#b4c9d5}.workform input,.workform select,.workform textarea{width:100%;box-sizing:border-box}.work-json{width:100%;min-height:220px;font:13px Consolas,monospace;padding:14px;background:#0d1e2e;color:#d3e9ee;border:1px solid #355269;border-radius:8px;box-sizing:border-box}.workresult{white-space:pre-wrap;overflow-wrap:anywhere;color:#c5dbe5;max-height:500px;overflow:auto}.axisbar{display:flex;flex-wrap:wrap;gap:12px;margin:12px 0;padding:12px;background:#102a38;border:1px solid #315266;border-radius:8px}.eventbutton{display:block;text-align:left;width:100%;margin:8px 0;padding:14px;background:#1a2b39;color:#e0e9ef;border:1px solid #6a5843;border-radius:7px;cursor:pointer}.eventbutton:focus{outline:3px solid #48d7c1}.work-note{color:#a6c0cf;font-size:13px;line-height:1.6}.work-toolbar{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0}.work-error{color:#ffb5a8;min-height:22px}.work-svg{width:100%;height:230px;background:#0b1b2a}.work-assets{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}.work-assets button{background:#112635;color:#c7dae4;border:1px solid #355166;border-radius:6px}.work-assets img{width:100%;height:48px}.workform button{align-self:end} @media print{.sidebar,.top,.work-toolbar{display:none!important}.page{display:none!important}#report{display:block!important}.workresult{max-height:none}.workspace{margin:0!important}.panel{break-inside:avoid}.axisbar{color:black}}`;
+  style.textContent = `.workform{display:grid;grid-template-columns:repeat(auto-fit,minmax(175px,1fr));gap:14px}.workform label{display:grid;gap:6px;color:#b4c9d5}.workform input,.workform select,.workform textarea{width:100%;box-sizing:border-box}.work-json{width:100%;min-height:220px;font:13px Consolas,monospace;padding:14px;background:#0d1e2e;color:#d3e9ee;border:1px solid #355269;border-radius:8px;box-sizing:border-box}.workresult{white-space:pre-wrap;overflow-wrap:anywhere;color:#c5dbe5;max-height:500px;overflow:auto}.axisbar{display:flex;flex-wrap:wrap;gap:12px;margin:12px 0;padding:12px;background:#102a38;border:1px solid #315266;border-radius:8px}.eventbutton{display:block;text-align:left;width:100%;margin:8px 0;padding:14px;background:#1a2b39;color:#e0e9ef;border:1px solid #6a5843;border-radius:7px;cursor:pointer}.eventbutton:focus{outline:3px solid #31566e}.work-note{color:#a6c0cf;font-size:13px;line-height:1.6}.work-toolbar{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0}.work-error{color:#ffb5a8;min-height:22px}.work-svg{width:100%;height:230px;background:#0b1b2a}.work-assets{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}.work-assets button{background:#112635;color:#c7dae4;border:1px solid #355166;border-radius:6px}.work-assets img{width:100%;height:48px}.workform button{align-self:end} @media print{.sidebar,.top,.work-toolbar{display:none!important}.page{display:none!important}#report{display:block!important}.workresult{max-height:none}.workspace{margin:0!important}.panel{break-inside:avoid}.axisbar{color:black}}`;
   document.head.append(style);
   const box = (title, content) =>
     `<article class="panel"><div class="panel-title"><h2>${title}</h2></div>${content}</article>`;
@@ -479,7 +479,7 @@
           )
           .join(" ");
       $("psd-chart").innerHTML =
-        `<path d="M50 20V190H660" stroke="#809ba9" fill="none"/><polyline points="${pts}" stroke="#48d7c1" fill="none" stroke-width="3"/><text x="60" y="25" fill="#bdd3de">Cumulative passing (%) · dry mass</text><text x="430" y="218" fill="#bdd3de">Particle size (mm), linear axis</text><text x="10" y="35" fill="#bdd3de">100</text><text x="30" y="193" fill="#bdd3de">0</text><text x="640" y="205" fill="#bdd3de">${max}</text>`;
+        `<path d="M50 20V190H660" stroke="#809ba9" fill="none"/><polyline points="${pts}" stroke="#31566e" fill="none" stroke-width="3"/><text x="60" y="25" fill="#526e80">Cumulative passing (%) · dry mass</text><text x="430" y="218" fill="#526e80">Particle size (mm), linear axis</text><text x="10" y="35" fill="#526e80">100</text><text x="30" y="193" fill="#526e80">0</text><text x="640" y="205" fill="#526e80">${max}</text>`;
       if (r.interval)
         A.selectLocation({
           wellbore: s.wellbore || "REFERENCE",
@@ -585,7 +585,7 @@
       'legacy', 'reference', 'wells', 'bha', 'measurements', 'limits',
       'directional_response_cases', 'cuttings_samples', 'completion_intervals',
       'external_motor_curves', 'matched_weight_comparisons', 'measured_spectrum',
-      'observed_directional_intervals', 'study_runs', 'engineering_cases'
+      'observed_directional_intervals', 'study_runs', 'engineering_cases', 'directional_sensitivity_runs'
     ].map(key => [key, p[key] ?? null]));
   }
   async function exportProject() {
@@ -726,6 +726,7 @@ window.dispatchEvent(new CustomEvent("wellscope:project-loaded"));
       observed_directional_intervals: p.observed_directional_intervals || [],
       studies: p.study_runs || [],
       engineering_cases: p.engineering_cases || [],
+      directional_sensitivity_runs: p.directional_sensitivity_runs || [],
       missing: [
         "ISCWSA covariance / named-rule scan",
         "stiff-string, torque, stress, dynamics",

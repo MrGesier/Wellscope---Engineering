@@ -79,7 +79,7 @@
     $("crumb").textContent = "TORQUE & DRAG / TRAINING CASE";
   };
   $("navigation").prepend(nav);
-  document.querySelector(".brand small").textContent = "ENGINEERING / 0.6";
+  document.querySelector(".brand small").textContent = "ENGINEERING / 0.7";
   const theme = document.createElement("link");
   theme.rel = "stylesheet";
   theme.href = "engineering.css";
