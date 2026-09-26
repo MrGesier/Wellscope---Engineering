@@ -3,6 +3,8 @@
 .env.*
 !.env.example
 node_modules/
+dist/
+screenshots/v042/
 __pycache__/
 *.pyc
 .DS_Store

@@ -16,3 +16,7 @@ canvas[data-help]:focus-visible{outline:2px solid #6fe4ce;outline-offset:3px}
 
 .formgrid label{display:block}.formgrid label>input{display:block;margin-top:7px}.formgrid label>.help-trigger{vertical-align:baseline}
 .depthinput>.help-trigger{vertical-align:middle}
+
+/* Keep all twelve modules reachable at laptop and touch widths. */
+.sidebar{overflow-y:auto}.sidebar-footer{margin-top:20px}#navigation{flex-shrink:0}.nav{padding-top:11px;padding-bottom:11px}@media(max-width:700px){.nav{font-size:12px;width:auto;flex:0 0 auto;max-width:190px}.workform{grid-template-columns:1fr!important}.top{flex-wrap:wrap;gap:12px}.workresult{font-size:11px}.axisbar{font-size:11px}}
+.brandmark{background:none;width:44px;height:44px;flex-shrink:0}.brandmark img{display:block;width:44px;height:44px}

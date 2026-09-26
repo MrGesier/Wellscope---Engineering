@@ -1,4 +1,26 @@
-# WellScope Engineering — Alpha 0.3 (English interface + contextual help)
+# WellScope Engineering — Alpha 0.4.2
+
+## Integrated evidence workbench
+
+The existing offline application now includes versioned limits and event replay; exact segment-pair geometry; shared well/MD/component selection; 23 original SVG tools and schema-driven properties; selected-bit-depth axial screening; directional case geometry; cuttings sieve analysis; calibration/source checks; and reproducible JSON/CSV/print reports.
+
+To exercise the new workflow:
+
+1. In **3D Well View**, scroll to **Synthetic acceptance scenarios** and load **CASE_F** for the 4200 m training well and 2200 m sidetrack tie-in.
+2. In **Limits & Alert Register**, load the explicitly synthetic LIM-01 example. Click its 145 kN / 140 kN warning to select exactly 3450 mMD in the scene, inspector and plot.
+3. In **Drillstring & BHA**, use the new component inspector and 23-tool catalog. Unknown properties remain unknown. Vendor RPM interpolation requires source/revision, QC, matching conditions and an in-domain query.
+4. In **Directional Response Lab** and **Cuttings & Particle Size**, use the labelled synthetic examples or enter source-backed fields. Hole overgauge and particle-size distributions remain separate; no predictive BUR/TUR is generated.
+5. In **Reports & Sources**, build the reproducibility appendix before exporting or printing. SHA256 fingerprints, rule revisions, provenance and model limitations are retained.
+
+**USER_DATA projects start without demo thresholds or measurements.** The initial trajectory remains a synthetic example until replaced; creating an evidence project does not validate field data.
+
+See [model ledger](docs/MODEL_LEDGER.md), [validation record](docs/SCIENCE_VALIDATION.md), and [release status and remaining acceptance work](docs/RELEASE_STATUS.md). This is an incremental alpha implementation, not a claim of complete P0 acceptance or operational approval. The controlling S11/S12 companion addendum was unavailable, so conformance to its undisclosed tests is not claimed.
+
+`npm test` runs all original tests plus the new acceptance groups. `npm install` then `npm run test:browser` runs real file-origin Edge checks and captures screenshots. Set `EDGE_PATH` when Edge is installed elsewhere. Runtime launch itself needs neither Node nor npm.
+
+`node scripts/package.cjs <new-staging-directory>` stages a clean offline runtime for ZIP distribution. The historical Alpha 02 tree is preserved in Git but excluded from this package.
+
+## Original v0.3 guide (preserved for baseline context)
 
 ## Getting started on Windows
 
@@ -35,3 +57,9 @@ With optional Node.js, run `node tests/test_engine.js` and `node tests/test_v03.
 From the extracted folder, double-click `UPDATE_REPO_EN.cmd`. The script clones `MrGesier/Wellscope---Engineering` into a fresh temporary directory, copies the translated application and guide, creates a normal commit, rebases on the current `main`, and pushes without force. It does not upload any user-supplied engineering PDFs or proprietary DrillScan binaries. You will need Git for Windows and a GitHub account authorized for that repository. The repository is currently public.
 
 Old screenshots, if present in your GitHub repository, may show the previous French UI; they are historical artifacts and have not been regenerated for this change.
+
+## Expanded v0.4.2 data tools and desktop installation
+
+Data & QC now provides canonical JSON import with an explicit four-wellbore role map. The overview has a source-backed completion editor; BHA supports source vendor RPM/torque tables; Torque & Drag has separate open/cased friction and matched field observations; Dynamics has measured amplitude spectra; Directional Response has observed interval BUR/TUR. See [full coverage register](docs/SPEC_COVERAGE.md) for supported inputs and remaining gates.
+
+On Windows, run `powershell -ExecutionPolicy Bypass -File scripts/install-desktop.ps1` from the extracted package. It installs the offline app under `%LOCALAPPDATA%\Programs\WellScope` and creates **WellScope Engineering** on the actual Windows desktop, with the original WellScope icon. Re-run it from a newer package to update an existing recognized installation.
