@@ -86,7 +86,7 @@
   const explanation = document.createElement("p");
   explanation.className = "work-note";
   explanation.textContent =
-    "Dashed observations in kN; only SYNTHETIC or MEASURED_QC_PASS channels. These are not calculated string-top axial forces. No rig-tare transform is applied.";
+    "Dashed observations in the T&D selected force unit; only SYNTHETIC or MEASURED_QC_PASS channels. These are not calculated string-top axial forces. No rig-tare transform is applied.";
   mp.append(explanation);
   const mc = document.createElement("canvas");
   mc.width = 1000;
@@ -94,6 +94,7 @@
   mc.setAttribute("aria-label", "Measured hookload versus MD");
   mp.append(mc);
   function drawMeasurements() {
+    const forceUnit=WellApp.snapshot().state.forceUnit||"tf";
     const g = mc.getContext("2d");
     g.clearRect(0, 0, 1000, 250);
     const rows = api
@@ -103,12 +104,12 @@
           r.metric === "hookload_measured" &&
           ["SYNTHETIC", "MEASURED_QC_PASS"].includes(r.data),
       )
-      .map((r) => ({ ...r, value: C.convert(r.value, r.unit, "kN") }))
+      .map((r) => ({ ...r, value: C.convert(r.value, r.unit, forceUnit) }))
       .sort((a, b) => a.md - b.md);
     g.fillStyle = "#a9c7d4";
     g.font = "14px Segoe UI";
     g.fillText(
-      "Measured hookload (kN) / MD (m) — source-labelled observations",
+      "Measured hookload ("+forceUnit+") / MD (m) — source-labelled observations",
       20,
       22,
     );
@@ -140,7 +141,7 @@
       g.fillStyle = r.data === "SYNTHETIC" ? "#c6a8ff" : "#f7a957";
       g.fill();
       g.fillText(
-        `${r.value.toFixed(1)} kN · ${r.md} m · ${r.data}`,
+        `${r.value.toFixed(1)} ${forceUnit} · ${r.md} m · ${r.data}`,
         Math.min(x + 7, 720),
         y - 8,
       );
@@ -148,6 +149,7 @@
   }
   button(mp, "Refresh measured observations", drawMeasurements);
   drawMeasurements();
+  window.addEventListener("wellscope:change",drawMeasurements);
   const events = panel("limits", "History, acknowledgement and replay");
   const history = result(events);
   button(events, "Show historical evaluations", () => {

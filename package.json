@@ -1,11 +1,11 @@
 {
   "name": "wellscope-engineering",
-  "version": "0.8.0",
+  "version": "0.9.0",
   "private": true,
   "description": "Offline-first independent well geometry and evidence-screening workbench",
   "scripts": {
-    "test": "node tests/test_engine.js && node tests/test_v03.js && node tests/test_english_help.js && node tests/test_v042.js && node tests/test_data.js && node tests/test_studies.js && node tests/test_case.js && node tests/test_directional.js && node tests/test_tools.js",
-    "test:browser": "node tests/browser-smoke.cjs && node tests/browser-data.cjs && node tests/browser-studies.cjs && node tests/browser-case.cjs && node tests/browser-directional.cjs && node tests/browser-tools.cjs",
+    "test": "node tests/test_engine.js && node tests/test_v03.js && node tests/test_english_help.js && node tests/test_v042.js && node tests/test_data.js && node tests/test_studies.js && node tests/test_case.js && node tests/test_directional.js && node tests/test_tools.js && node tests/test_windows.js",
+    "test:browser": "node tests/browser-smoke.cjs && node tests/browser-data.cjs && node tests/browser-studies.cjs && node tests/browser-case.cjs && node tests/browser-directional.cjs && node tests/browser-tools.cjs && node tests/browser-windows.cjs",
     "package": "node scripts/package.cjs"
   },
   "devDependencies": {

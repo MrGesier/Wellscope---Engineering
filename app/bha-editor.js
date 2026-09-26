@@ -4,12 +4,14 @@
   const C = WellCore,
     A = WellApp,
     $ = (id) => document.getElementById(id);
+  let ratingUnit = "tf";
+  const ratingUnits=k=>/_nm$/.test(k)?["N.m",ratingUnit==="klbf"?"klbf.ft":ratingUnit+".m"]:/_n$/.test(k)?["N",ratingUnit]:null;
   let selected = 0,
     dragged = null;
   const host = document.createElement("article");
   host.className = "panel bha-design-studio";
   host.innerHTML =
-    '<h2>BHA design · equipment catalog</h2><p class="work-note">Distinct tool types with original identification drawings. Inspect function and model support before adding source-backed geometry to the string.</p><div class="work-toolbar"><label>Find equipment<input id="bha-family-search" placeholder="Motor, RSS, stabilizer, jar…"></label><label>Equipment group<select id="bha-group"><option value="">All groups</option></select></label><label>Use in WellScope<select id="bha-scope"><option value="">All uses</option><option value="STRING_GEOMETRY">Inline string geometry</option><option value="REFERENCE_ONLY">Reference register</option></select></label><span id="bha-family-count"></span></div><div class="work-assets" id="asset-catalog"></div><article id="catalog-inspector" class="catalog-inspector" hidden></article><details><summary>Reference equipment register <span id="equipment-register-count"></span></summary><div id="equipment-register"></div><button id="export-equipment-register" class="smallbutton">Export equipment register</button></details><details id="tool-integrity"><summary>Assembly consistency review <span id="tool-integrity-count"></span></summary><p class="work-note">Source and geometry checks only. No rating, hydraulic, fishing, or mechanical design approval.</p><ul id="tool-integrity-list"></ul></details><div class="bha-design-columns"><div><h3>Assembly · bit → surface</h3><div id="component-order"></div></div><div><div id="component-illustration"></div><h3>Component properties</h3><div class="workform" id="component-fields"></div></div></div><div class="work-toolbar"><button id="save-component" class="primary">Apply component properties</button><button id="export-bha" class="smallbutton">Export BHA JSON</button><label class="filebtn">Import BHA JSON<input type="file" id="import-bha" accept=".json" hidden></label></div><div class="work-error" id="component-error" role="alert"></div>';
+    '<h2>BHA design · equipment catalog</h2><p class="work-note">Distinct tool types with original identification drawings. Inspect function and model support before adding source-backed geometry to the string.</p><div class="work-toolbar"><label>Find equipment<input id="bha-family-search" placeholder="Motor, RSS, stabilizer, jar…"></label><label>Equipment group<select id="bha-group"><option value="">All groups</option></select></label><label>Use in WellScope<select id="bha-scope"><option value="">All uses</option><option value="STRING_GEOMETRY">Inline string geometry</option><option value="REFERENCE_ONLY">Reference register</option></select></label><span id="bha-family-count"></span><label>Force / torque properties<select id="bha-rating-unit"><option>tf</option><option>kN</option><option>klbf</option></select></label></div><div class="work-assets" id="asset-catalog"></div><article id="catalog-inspector" class="catalog-inspector" hidden></article><details><summary>Reference equipment register <span id="equipment-register-count"></span></summary><div id="equipment-register"></div><button id="export-equipment-register" class="smallbutton">Export equipment register</button></details><details id="tool-integrity"><summary>Assembly consistency review <span id="tool-integrity-count"></span></summary><p class="work-note">Source and geometry checks only. No rating, hydraulic, fishing, or mechanical design approval.</p><ul id="tool-integrity-list"></ul></details><div class="bha-design-columns"><div><h3>Assembly · bit → surface</h3><div id="component-order"></div></div><div><div id="component-illustration"></div><h3>Component properties</h3><div class="workform" id="component-fields"></div></div></div><div class="work-toolbar"><button id="save-component" class="primary">Apply component properties</button><button id="export-bha" class="smallbutton">Export BHA JSON</button><label class="filebtn">Import BHA JSON<input type="file" id="import-bha" accept=".json" hidden></label></div><div class="work-error" id="component-error" role="alert"></div>';
   $("bha").querySelector(".page-head").after(host);
   const oldLibrary = $("toolgallery").closest(".tool-panel");
   oldLibrary.hidden = true;
@@ -192,7 +194,9 @@
       input.dataset.property = key;
       input.type = numeric.includes(key) ? "number" : "text";
       input.step = "any";
-      input.value = b[key] ?? "";
+      const units=ratingUnits(key);
+      if(units)label.textContent=key.replace(/_nm$|_n$/, "").replaceAll("_"," ")+" ("+units[1]+")";
+      input.value = b[key]==null?"":units?C.convert(b[key],units[0],units[1]):b[key];
       input.placeholder = numeric.includes(key)
         ? "Unknown"
         : "Source-backed value";
@@ -205,6 +209,7 @@
     }
     $("component-fields").append(advanced);
   }
+  $('bha-rating-unit').onchange=()=>{const next=$('bha-rating-unit').value;for(const input of $('component-fields').querySelectorAll('input')){const key=input.dataset.property,old=ratingUnits(key);if(!old)continue;const target=old[0]==='N'?next:next==='klbf'?'klbf.ft':next+'.m';if(input.value!=='')input.value=C.convert(input.value,old[1],target);input.parentElement.firstChild.textContent=key.replace(/_nm$|_n$/,'').replaceAll('_',' ')+' ('+target+')';}ratingUnit=next;};
   $("save-component").onclick = () =>
     guard(() => {
       const bha = A.snapshot().state.bha,
@@ -215,7 +220,7 @@
         )
           ? input.value === ""
             ? null
-            : C.number(input.value)
+            : ratingUnits(input.dataset.property)?C.convert(C.number(input.value),ratingUnits(input.dataset.property)[1],ratingUnits(input.dataset.property)[0]):C.number(input.value)
           : input.value;
       for (const k of ["length", "od", "id", "mass"]) C.number(component[k], k);
       if (

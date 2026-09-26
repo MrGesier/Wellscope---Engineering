@@ -79,7 +79,7 @@
     $("crumb").textContent = "TORQUE & DRAG / TRAINING CASE";
   };
   $("navigation").prepend(nav);
-  document.querySelector(".brand small").textContent = "ENGINEERING / 0.8";
+  document.querySelector(".brand small").textContent = "ENGINEERING / 0.9";
   const theme = document.createElement("link");
   theme.rel = "stylesheet";
   theme.href = "engineering.css";
@@ -140,7 +140,7 @@
       )
       .join(
         "",
-      )}</div><p>1 tf = 9.80665 kN. 1 t is a mass of 1,000 kg. Values are stored in SI; display and exports follow the selected units. Other legacy analysis pages retain their explicitly labelled input units.</p>`;
+      )}</div><p>1 tf = 9.80665 kN. 1 t is a mass of 1,000 kg. Values are stored in SI; display and exports follow the selected units. The axial analysis, study tables and operating-window pages also provide force unit selectors.</p>`;
     $("case-units")
       .querySelectorAll("[data-unit-kind]")
       .forEach(
