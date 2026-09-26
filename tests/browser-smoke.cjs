@@ -106,6 +106,7 @@ const { chromium } = require("playwright-core"),
     );
     await nav("report");
     await click("#build-report-v4");
+    await page.waitForFunction(() => document.getElementById('report-v4').textContent.includes('input_sha256'));
     assert.match(
       await page.locator("#report-v4").textContent(),
       /input_sha256/,
@@ -120,6 +121,7 @@ const { chromium } = require("playwright-core"),
     assert.equal(project.input_hash.length, 64);
     await nav("dataqc");
     await page.locator("#load-project-v4").setInputFiles(filepath);
+    await page.waitForFunction(() => document.getElementById('data-result').textContent.includes('Imported'));
     assert.match(await page.locator("#data-result").textContent(), /Imported/);
     const refs = JSON.parse(await page.locator("#reference-json").inputValue());
     refs["OFFSET A"].vertical_reference = "MSL";
