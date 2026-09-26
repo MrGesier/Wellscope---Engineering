@@ -5,6 +5,7 @@
 node_modules/
 dist/
 screenshots/v042/
+screenshots/v05/
 __pycache__/
 *.pyc
 .DS_Store

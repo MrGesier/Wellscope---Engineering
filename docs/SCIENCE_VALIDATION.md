@@ -1,3 +1,11 @@
+# 0.5 verification additions
+
+`npm test` now includes independent analytic vectors for MSE unit conversions, DOC, standoff limiting geometry, nominal/minimum-wall denominators, ECD, pressure-area signs, matched operations residuals, azimuth wrap, coordinate distance and vertical axial friction matrices. Source/QC, missing-value, invalid-geometry and case-count refusal checks are included.
+
+`npm run test:browser` includes real Edge file-origin tests of the 16-card library, all calculation processors, external records, stale-result refusal, report versions and revisions, quantity-aware comparisons, self-contained HTML, SHA256 changes, complete project round-trip, CSV QC refusal and mobile layout. HTTP requests and page errors are asserted absent. Existing geometry/data browser suites also pass locally.
+
+These checks verify implementation behavior and simple analytic cases. They do not validate operational engineering models, calibrate source observations, establish commercial-software equivalence or approve field use.
+
 # Validation record
 
 Environment: Node.js 26.9.0; installed Microsoft Edge, headless Chromium through Playwright; Windows; file-origin launch. The runtime application has no npm/CDN dependency.
