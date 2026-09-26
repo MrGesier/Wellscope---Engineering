@@ -39,6 +39,7 @@
     "max_extended_od_m",
     "pad_force_n",
   ];
+  for(const item of WellBhaRegistry)for(const field of item.fields)if(/(_m|_m2|_m3_s|_pa|_n|_nm|_nm_rad|_count|_measured)$/.test(field)&&!numeric.includes(field))numeric.push(field);
   function guard(fn) {
     try {
       $("component-error").textContent = "";
@@ -141,6 +142,7 @@
     $("component-fields").replaceChildren();
     for (const key of [
       "name",
+      "family",
       "stable_id",
       "source",
       "length",
@@ -188,6 +190,8 @@
         component.temperature_min_c > component.temperature_max_c
       )
         throw Error("Temperature range reversed");
+      if(component.family&&!WellBhaRegistry.some(r=>r.id===component.family))throw Error("Choose a known family ID from the catalog");
+      if(["body_rating_n","connection_rating_n","bearing_rating_n","drive_shaft_rating_nm"].some(k=>component[k]!=null)&&!component.rating_source)throw Error("Ratings require an explicit source");
       component.stable_id = component.stable_id || crypto.randomUUID();
       component.quality = "USER_ENTERED";
       bha[selected] = component;

@@ -4,8 +4,8 @@
   "private": true,
   "description": "Offline-first independent well geometry and evidence-screening workbench",
   "scripts": {
-    "test": "node tests/test_engine.js && node tests/test_v03.js && node tests/test_english_help.js && node tests/test_v042.js",
-    "test:browser": "node tests/browser-smoke.cjs",
+    "test": "node tests/test_engine.js && node tests/test_v03.js && node tests/test_english_help.js && node tests/test_v042.js && node tests/test_data.js",
+    "test:browser": "node tests/browser-smoke.cjs && node tests/browser-data.cjs",
     "package": "node scripts/package.cjs"
   },
   "devDependencies": {

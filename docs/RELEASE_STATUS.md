@@ -18,11 +18,13 @@ This is a reviewable, incremental implementation on the existing v0.3 applicatio
 ## Release limitations / remaining acceptance work
 
 - The controlling companion file `03_NEW_ENGINEERING_REQUIREMENTS_EN.md` was not present locally or in the repository; exact-title public web searches returned no results. S11/S12 use the requirements available in the supplied integrated specification. Their complete DIR/PSD acceptance register cannot be certified without that addendum.
-- This is an alpha implementation, not a declaration that every P0 UX and scaling criterion has passed. Large-project performance benchmarking, full canonical-schema migration beyond this backup format, detailed completion editing, and exhaustive per-variable status coverage still need acceptance work. Bounding-volume spatial pruning and observed-duration alert grouping are implemented and tested.
+- This is an alpha implementation, not a declaration that every P0 UX and scaling criterion has passed. Full-project performance benchmarking and exhaustive per-variable status coverage still need acceptance work. Canonical role mapping and source-backed completion editing are now implemented. Bounding-volume spatial pruning and observed-duration alert grouping are implemented and tested.
 - Legacy demo section labels and some legacy help retain the original training layout. The CASE_F fixture supplies its own source-labelled section intervals. Survey QC does not establish field survey-tool accuracy.
-- The local standalone backup format preserves the legacy trajectory editor state alongside the canonical evidence collections. It does not accept arbitrary external canonical project schemas without mapping.
+- The local standalone backup format preserves the legacy trajectory editor state alongside the canonical evidence collections. The canonical importer maps four explicit wellbore roles, preserves original IDs and refuses unsupported references or different wellhead elevations. Arbitrary external schemas still require mapping.
 - Matching declared projected coordinates is supported; geodetic/datum transformations, latitude/longitude and ISCWSA covariance are not. No named-rule anticollision value is enabled.
-- P1 field-friction fitting, high-rate dynamics analysis and complete vendor performance surfaces are not enabled. P2/P3 mechanics, predictive directional response, dynamics, fatigue and field validation require independent equations, reference vectors and review.
+- Separate open/cased friction, matched PUW/FRW/SOW comparisons, measured amplitude spectra and source-backed one-dimensional vendor tables are enabled. Field-friction fitting, predictive dynamics and complete vendor performance surfaces are not enabled. P2/P3 mechanics, predictive directional response, dynamics, fatigue and field validation require independent equations, reference vectors and review.
 - Field calibration and sample metadata are user-supplied evidence. Their presence does not establish independent scientific validation or human approval.
 
 No deployment, main-branch merge or operational approval is part of this release.
+
+See SPEC_COVERAGE.md for section-by-section coverage, including canonical mapping, completion editing, observed BUR/TUR and desktop packaging.

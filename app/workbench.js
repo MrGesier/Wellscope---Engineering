@@ -110,12 +110,17 @@
       ["OFFSET B", derived.offB],
       ["SIDETRACK", derived.side],
     ].map(([id, stations]) => ({
+      ...project.wells.find(w=>w.id===id),
       id,
       reference: project.reference,
       wellbores: [
         {
+          ...project.wells.find(w=>w.id===id)?.wellbores?.[0],
           id,
-          planned_actual: "PLAN",
+          sections:id==="REFERENCE"?state.sections||[]:project.wells.find(w=>w.id===id)?.wellbores?.[0]?.sections||[],
+          hole_sections:id==="REFERENCE"?state.hole_sections||[]:[],
+          bit_depth_m:id==="REFERENCE"?(state.bitMD??stations.at(-1).md):stations.at(-1).md,
+          planned_actual: project.wells.find(w=>w.id===id)?.wellbores?.[0]?.planned_actual||"PLAN",
           parent_wellbore_id: id === "SIDETRACK" ? "REFERENCE" : null,
           tie_in_parent_md: id === "SIDETRACK" ? state.tieInMD || 2000 : null,
           surveys: stations,
@@ -525,7 +530,9 @@
   });
   action("new-project", () => {
     invalidReason = "";
+    const priorReference = project.reference;
     project = C.createProject($("project-mode").value);
+    project.reference = priorReference;
     project.id = $("project-name").value.trim() || "local-project";
     dirty = false;
     $("event-register").replaceChildren();
@@ -535,6 +542,8 @@
       "New evidence project. Replace synthetic trajectory inputs before interpreting user data.",
     );
     refresh();
+    A.setEvidence([]);
+    window.dispatchEvent(new CustomEvent("wellscope:project-loaded"));
   });
   action("import-measurements", () => {
     const rows = C.csv($("measurements-csv").value),
@@ -571,19 +580,19 @@
     touch();
     output("data-result", normalized);
   });
+  function fingerprintInputs(p) {
+    return Object.fromEntries([
+      'legacy', 'reference', 'wells', 'bha', 'measurements', 'limits',
+      'directional_response_cases', 'cuttings_samples', 'completion_intervals',
+      'external_motor_curves', 'matched_weight_comparisons', 'measured_spectrum',
+      'observed_directional_intervals'
+    ].map(key => [key, p[key] ?? null]));
+  }
   async function exportProject() {
     if (invalidReason)
       throw Error("Cannot export current calculations: " + invalidReason);
     const p = snapshot();
-    p.input_hash = await C.fingerprint({
-      legacy: p.legacy,
-      reference: p.reference,
-      bha: p.bha,
-      measurements: p.measurements,
-      limits: p.limits,
-      directional_response_cases: p.directional_response_cases,
-      cuttings_samples: p.cuttings_samples,
-    });
+    p.input_hash = await C.fingerprint(fingerprintInputs(p));
     download("WellScope-v042-project.json", p);
   }
   action("save-project-v4", exportProject);
@@ -592,9 +601,7 @@
       $("work-error").textContent = e.message;
     });
   $("btnload").onclick = () => $("load-project-v4").click();
-  $("load-project-v4").onchange = async (e) => {
-    try {
-      const p = JSON.parse(await e.target.files[0].text());
+  function loadProject(p) {
       if (
         p.schema_version !== C.version ||
         !p.legacy ||
@@ -631,6 +638,7 @@
       project = p;
       invalidReason = "";
       dirty = true;
+      A.setEvidence([]);
       output("limit-catalog", project.limits);
       $("event-register").replaceChildren();
       refresh();
@@ -638,11 +646,10 @@
         "data-result",
         "Imported; stored results are historical. Re-evaluate current inputs.",
       );
-    } catch (err) {
-      $("work-error").textContent = err.message;
-    }
-    e.target.value = "";
-  };
+
+window.dispatchEvent(new CustomEvent("wellscope:project-loaded"));
+}
+  $("load-project-v4").onchange = async (e) => {try {loadProject(JSON.parse(await e.target.files[0].text()));}catch(err){$("work-error").textContent=err.message;}e.target.value="";};
   $("td").insertAdjacentHTML(
     "afterbegin",
     box(
@@ -675,7 +682,7 @@
     "beforeend",
     box(
       "Scientific release gates",
-      `<p>NOT COMPUTED: natural frequencies, critical speeds, stick-slip predictions, bending, buckling and fatigue.</p><p class="work-note">No independently benchmarked dynamics solver or quality-checked high-rate sensor channels are loaded. Surface RPM does not establish downhole shaft RPM. No safe RPM recommendation is generated.</p>`,
+      `<p>NOT COMPUTED: natural frequencies, critical speeds, stick-slip predictions, bending, buckling and fatigue.</p><p class="work-note">Measured frequency analysis is available below for source-labelled, quality-checked uniform channels. No independently benchmarked dynamics solver is enabled. Surface RPM does not establish downhole shaft RPM. No safe RPM recommendation is generated.</p>`,
     ),
   );
   $("science").insertAdjacentHTML(
@@ -693,15 +700,7 @@
   async function report() {
     if (invalidReason) throw Error("Report blocked: " + invalidReason);
     const p = snapshot(),
-      hash = await C.fingerprint({
-        legacy: p.legacy,
-        reference: p.reference,
-        bha: p.bha,
-        limits: p.limits,
-        measurements: p.measurements,
-        directional_response_cases: p.directional_response_cases,
-        cuttings_samples: p.cuttings_samples,
-      });
+      hash = await C.fingerprint(fingerprintInputs(p));
     const result = {
       application: "WellScope " + C.version,
       project: p.id,
@@ -720,6 +719,11 @@
       models: p.model_runs,
       cuttings: p.cuttings_samples,
       directional: p.directional_response_cases,
+      completion_intervals: p.completion_intervals || [],
+      vendor_tables: p.external_motor_curves || [],
+      matched_weights: p.matched_weight_comparisons || null,
+      measured_spectrum: p.measured_spectrum || null,
+      observed_directional_intervals: p.observed_directional_intervals || [],
       missing: [
         "ISCWSA covariance / named-rule scan",
         "stiff-string, torque, stress, dynamics",
@@ -732,6 +736,10 @@
           [
             ...p.limits.map((x) => x.source),
             ...p.measurements.map((x) => x.source),
+            ...p.directional_response_cases.map((x) => x.source),
+            ...p.cuttings_samples.map((x) => x.provenance),
+            ...(p.completion_intervals || []).map((x) => x.source),
+            ...(p.external_motor_curves || []).map((x) => x.curve.source),
           ].filter(Boolean),
         ),
       ],
@@ -777,6 +785,6 @@
       "text/csv",
     );
   });
-  window.WellEvidence = { project: () => project, changed: touch, snapshot };
+  window.WellEvidence = { project: () => project, changed: touch, snapshot, loadProject, status:()=>({dirty,invalidReason}) };
   refresh();
 })();

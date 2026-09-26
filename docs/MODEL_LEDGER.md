@@ -26,3 +26,12 @@ Public reference pointers for future independent validation:
 - Energistics WITSML: https://energistics.org/witsml-developers-users
 
 These are pointers, not a claim that the corresponding models or standards have been implemented or independently validated.
+
+Additional source-data processing:
+
+- Canonical import maps explicit wellbore IDs to the four display roles, converts declared MD units and preserves source records. Different reference frames or wellhead elevations are refused rather than transformed implicitly.
+- Axial screening partitions at casing shoe and applies separately declared cased/open coefficients. Curvature is the angle between interval tangent directions. It remains a preliminary axial approximation.
+- Vendor FLOW_RPM and DP_TORQUE tables require source/revision, QC, exact mud/temperature/density conditions and an in-domain query. Pressure-to-torque interpolation is external table processing, not a drillstring torque model.
+- Matched PUW/FRW/SOW uses one explicit well, MD, basis and sensor zero; the user sets a maximum time separation. Differences are descriptive, not a diagnosis or friction inversion.
+- Measured spectra use a mean-subtracted Hann window and a one-sided DFT with coherent-gain amplitude normalization. Uniform clock, source, QC and anti-alias metadata are required. At most 2048 samples are accepted; no modal or critical-speed interpretation is performed.
+- Observed BUR/TUR is survey-angle change per 30 mMD, with wrapped azimuth and TUR withheld below 0.1 degrees inclination at either interval endpoint. These observations are never BHA predictions.

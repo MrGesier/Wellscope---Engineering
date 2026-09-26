@@ -26,3 +26,11 @@ Real captured UI images are under `screenshots/v042/`. Browser screenshots are e
 ## Scientific limits of these tests
 
 Analytic mathematical cases establish those specific calculations within the stated tolerances. They do not promote the model to BENCHMARKED or FIELD_VALIDATED. ISCWSA Rev5, validated directional response, stiff-string mechanics, dynamics, equipment ratings and operational acceptance remain separately gated. No proprietary study vectors were used.
+
+## Expanded source-data acceptance
+
+`tests/test_data.js` adds 12 groups: canonical role/unit/source mapping, reference/elevation refusal, completion validation, vendor units/conditions/domain, separate pressure–torque tables, matched PUW/FRW/SOW and time bounds, known 2 Hz amplitude spectrum, clock/QC refusal, observed BUR/TUR, spatial pruning on 1000 segments, and analytic horizontal loads with separate open/cased friction.
+
+`tests/browser-data.cjs` verifies canonical import and tie-in preservation, completion editing, vendor pressure–torque interpolation, friction geometry invariance, matched observations, measured frequency response, observed directional intervals, invalid-reference rollback and logo loading in actual Edge.
+
+The Windows CI workflow runs both numerical and browser suites. A synthetic scaling test measures precise segment-check reduction; it is not a wall-clock benchmark of an entire large field project.

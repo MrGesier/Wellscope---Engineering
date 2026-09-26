@@ -114,9 +114,105 @@
           "display:block;white-space:normal;line-height:1.7;font-size:9px;margin-top:9px";
         article.append(footer);
       }
-      footer.textContent = `${api.project().mode === "SYNTHETIC" ? "SYNTHETIC" : "IMPORTED_UNCHECKED"} · PRELIMINARY_UNVERIFIED · ${api.project().limits.length ? "see scoped limit evaluation" : "NOT_CONFIGURED"} · DRAFT`;
+      const { state, derived } = WellApp.snapshot(),
+        id = article.querySelector("strong")?.id,
+        depth = derived.td.pooh.rows.at(-1).md;
+      const mappings = {
+        "k-md": ["md", derived.ref.at(-1).md, "m"],
+        "k-tvd": ["tvd", derived.ref.at(-1).tvd, "m"],
+        "k-dls": ["dls", Math.max(...derived.ref.map((p) => p.dls)), "deg/30m"],
+        "td-pu": [
+          "axial_string_top_est",
+          derived.td.pooh.stringTopAxialForce,
+          "N",
+          "PUW",
+        ],
+        "td-so": [
+          "axial_string_top_est",
+          derived.td.rih.stringTopAxialForce,
+          "N",
+          "SOW",
+        ],
+        "td-st": [
+          "axial_string_top_est",
+          derived.td.static.stringTopAxialForce,
+          "N",
+          "STATIC",
+        ],
+      };
+      const datum =
+          api.project().mode === "SYNTHETIC"
+            ? "SYNTHETIC"
+            : "IMPORTED_UNCHECKED",
+        unavailable =
+          !!api.status().invalidReason ||
+          (id?.startsWith("td-") &&
+            state.location?.wellbore &&
+            state.location.wellbore !== "REFERENCE");
+      let limit = "NOT_CONFIGURED";
+      const def = mappings[id];
+      if (def) {
+        const rules = api
+          .project()
+          .limits.filter((r) => r.active && r.metric === def[0]);
+        if (rules.length) {
+          const statuses = rules.map(
+            (r) =>
+              WellCore.evaluate(r, {
+                metric: def[0],
+                value: def[1],
+                unit: def[2],
+                operation: def[3],
+                md:
+                  id === "k-dls"
+                    ? derived.ref.reduce((a, b) => (b.dls > a.dls ? b : a)).md
+                    : id?.startsWith("k-")
+                      ? derived.ref.at(-1).md
+                      : depth,
+                wellbore: "REFERENCE",
+                data: datum,
+                model: unavailable ? "NOT_COMPUTED" : "PRELIMINARY_UNVERIFIED",
+                dirty: api.status().dirty,
+              }).status,
+          );
+          limit =
+            ["NOT_EVALUABLE", "EXCEEDED", "WARNING", "WITHIN_USER_LIMIT"].find(
+              (s) => statuses.includes(s),
+            ) || "NOT_EVALUABLE";
+        }
+      }
+      footer.textContent =
+        datum +
+        " · " +
+        (unavailable ? "NOT_COMPUTED" : "PRELIMINARY_UNVERIFIED") +
+        " · " +
+        limit +
+        " · DRAFT";
     }
   }
+  const helpButton = document.createElement("button");
+  helpButton.className = "smallbutton";
+  helpButton.textContent = "Toggle persistent field help";
+  helpButton.onclick = () => {
+    const visible = document.body.classList.toggle("persistent-field-help");
+    for (const label of document.querySelectorAll(".workform label")) {
+      let note = label.querySelector(".field-help-text");
+      if (!note) {
+        note = document.createElement("small");
+        note.className = "field-help-text work-note";
+        note.textContent =
+          label.querySelector("[data-help]")?.dataset.help ||
+          "Source-backed project input; use the declared units and reference. No engineering approval is implied.";
+        label.append(note);
+      }
+      note.hidden = !visible;
+    }
+  };
+  document.getElementById("science").append(helpButton);
+  window.addEventListener("wellscope:project-loaded", () => {
+    annotate();
+    status();
+  });
   annotate();
   status();
   window.addEventListener("wellscope:change", () => {

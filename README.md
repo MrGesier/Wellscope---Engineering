@@ -57,3 +57,9 @@ With optional Node.js, run `node tests/test_engine.js` and `node tests/test_v03.
 From the extracted folder, double-click `UPDATE_REPO_EN.cmd`. The script clones `MrGesier/Wellscope---Engineering` into a fresh temporary directory, copies the translated application and guide, creates a normal commit, rebases on the current `main`, and pushes without force. It does not upload any user-supplied engineering PDFs or proprietary DrillScan binaries. You will need Git for Windows and a GitHub account authorized for that repository. The repository is currently public.
 
 Old screenshots, if present in your GitHub repository, may show the previous French UI; they are historical artifacts and have not been regenerated for this change.
+
+## Expanded v0.4.2 data tools and desktop installation
+
+Data & QC now provides canonical JSON import with an explicit four-wellbore role map. The overview has a source-backed completion editor; BHA supports source vendor RPM/torque tables; Torque & Drag has separate open/cased friction and matched field observations; Dynamics has measured amplitude spectra; Directional Response has observed interval BUR/TUR. See [full coverage register](docs/SPEC_COVERAGE.md) for supported inputs and remaining gates.
+
+On Windows, run `powershell -ExecutionPolicy Bypass -File scripts/install-desktop.ps1` from the extracted package. It installs the offline app under `%LOCALAPPDATA%\Programs\WellScope` and creates **WellScope Engineering** on the actual Windows desktop, with the original WellScope icon. Re-run it from a newer package to update an existing recognized installation.

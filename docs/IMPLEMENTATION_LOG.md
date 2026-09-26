@@ -27,3 +27,7 @@ PASS: no whitespace errors
 The browser harness exercised the actual file-origin app at 1280×720 and 390×844 and generated six real screenshots. These are generated evidence artifacts, excluded from Git and included in the delivered distribution's verification folder. An initial agent-browser connection failed; the final browser verification used Playwright with installed Edge. Test-discovered syntax/layout/invalidation issues were corrected before the passing run above.
 
 The release remains an alpha. See RELEASE_STATUS.md for remaining acceptance work and separately gated P1/P2/P3 scientific capabilities. Passing these tests is not an engineering approval or a claim of complete specification compliance.
+
+## Expanded implementation — 26 September 2026
+
+Added explicit canonical-role mapping, source-backed completion and section editing, BHA source/property expansion, separate cased/open friction, exact-basis field-weight comparisons, sourced vendor RPM/torque tables, observed survey BUR/TUR, measured Hann-window spectra, full evidence fingerprints, an original vector logo and Windows desktop installer. Added numerical and actual-browser acceptance coverage plus pinned Windows CI. See SPEC_COVERAGE.md for the final supported scope and remaining scientific gates.
