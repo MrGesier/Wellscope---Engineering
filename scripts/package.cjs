@@ -1,7 +1,7 @@
 /* Create a clean runtime staging directory; archive with the OS ZIP tool. */
 const fs = require("node:fs"),
   path = require("node:path");
-const dest = path.resolve(process.argv[2] || "dist/WellScope-v0.5");
+const dest = path.resolve(process.argv[2] || "dist/WellScope-v0.6");
 if (fs.existsSync(dest))
   throw Error(
     "Choose a new staging directory; existing output is never overwritten",
