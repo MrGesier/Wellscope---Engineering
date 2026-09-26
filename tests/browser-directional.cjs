@@ -29,7 +29,7 @@ const { chromium } = require("playwright-core"),
       });
     };
     await nav("bha");
-    assert.equal(await p.locator("#asset-catalog button").count(), 23);
+    assert.equal(await p.locator("#asset-catalog button").count(), 72);
     assert.ok(await p.locator("#component-illustration svg").count());
     await p.locator("#bha-family-search").fill("rss");
     assert.equal(await p.locator("#asset-catalog button:visible").count(), 2);
@@ -109,7 +109,7 @@ const { chromium } = require("playwright-core"),
     await shot("mobile");
     assert.deepEqual(errors, []);
     console.log(
-      "PASS: 23 technical families, searchable BHA design, response units and invariance, toolface, domain rejection, import, depth-down legacy tracks and mobile layouts",
+      "PASS: 72 technical tool types, searchable BHA design, response units and invariance, toolface, domain rejection, import, depth-down legacy tracks and mobile layouts",
     );
   } finally {
     await b.close();

@@ -2,6 +2,8 @@
 (function (root) {
   let serial = 0;
   function svg(type, uid) {
+    const specific = root.ToolIllustrations?.svg(type,uid);
+    if(specific)return specific;
     const id = uid || "eq" + ++serial;
     const steel = `url(#${id}-steel)`,
       dark = "#535b5f",
