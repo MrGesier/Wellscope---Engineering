@@ -1,4 +1,4 @@
-# WellScope Engineering Studio — 0.6
+# WellScope Engineering Studio — 0.8
 
 An offline workspace organized around engineering questions, source data and reproducible study reports. The default workspace opens a fully populated fictional Torque & Drag case. The study library contains 16 workflows: nine transparent local calculations and seven clearly labelled external-result reviews. Geometry, BHA editing, cuttings, measured dynamics and the evidence/limits workbench remain available.
 
@@ -37,6 +37,14 @@ For real observations, create a USER_DATA project in **Data & QC**, then use a s
 
 See [study guide](docs/STUDY_GUIDE.md), [model ledger](docs/MODEL_LEDGER.md), [validation record](docs/SCIENCE_VALIDATION.md), [specification coverage](docs/SPEC_COVERAGE.md) and [release limitations](docs/RELEASE_STATUS.md).
 
+## BHA design and directional sensitivity
+
+All 23 equipment families use the same original technical illustration system in the searchable catalog, inspector and assembled string. Source-backed dimensions remain editable; expanded properties stay available in a disclosure. The global slate/white engineering theme also covers legacy workspaces and charts.
+
+In **Directional Response Lab**, inspect DLS versus WOB, a build/right-curvature steering envelope, and signed build/azimuth-turn curves. Choose rotating, motor sliding blend or RSS, toolface and activation. The initial surface is explicitly fictional. Import a source-labelled external response surface to review an independently calculated BHA. No response is inferred from editing the component geometry. Export a standalone HTML report or CSV and save the complete case in project backups.
+
+See [directional model, chart conventions and sources](docs/DIRECTIONAL_SENSITIVITY.md). Depth tracks increase downward; WOB sensitivities retain WOB on the horizontal axis. Plan views use North upward, and transverse views use highside upward.
+
 ## Honest model scope
 
 This is an independent exploratory implementation. It does not reproduce proprietary commercial solvers or establish operational approval. Local models are preliminary. External results remain attributed to their source model. No stiff-string contact/buckling solver, predictive bit-rock/RSS model, modal/fatigue engine, calibrated casing rating, cement displacement or geodetic/ISCWSA model is supplied. The original unavailable directional/cuttings addendum remains an acceptance gap.
@@ -54,4 +62,8 @@ node scripts/package.cjs <new-staging-directory>
 
 Browser checks use installed Microsoft Edge; set `EDGE_PATH` when it is elsewhere. They run against local file URLs and fail on page errors or external HTTP requests. Node/npm are only development tools, not runtime requirements.
 
-Application version is 0.6.0. Project schema remains 0.4.2 with additive `study_runs` and `engineering_cases` collections to preserve prior backup compatibility. Older application versions do not provide the new report interface.
+Application version is 0.8.0. Project schema remains 0.4.2 with additive `study_runs`, `engineering_cases` and `directional_sensitivity_runs` collections to preserve prior backup compatibility. Older application versions do not provide the new report interface.
+
+## Equipment catalogue
+
+Version 0.8 expands the catalogue to 72 individually illustrated types, source-backed geometry entry, a separate reference register and assembly consistency notes. See [coverage and limitations](docs/EQUIPMENT_CATALOG.md).

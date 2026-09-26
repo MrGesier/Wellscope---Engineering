@@ -287,7 +287,7 @@
       const g = canvas.getContext("2d");
       g.clearRect(0, 0, 1000, 300);
       const max = Math.max(...r.bins.map((b) => b.amplitude), 1e-12);
-      g.strokeStyle = "#48d7c1";
+      g.strokeStyle = "#31566e";
       g.beginPath();
       r.bins.forEach((b, i) => {
         const x = 65 + (b.frequency_hz / r.nyquist_hz) * 850,
@@ -295,7 +295,7 @@
         i ? g.lineTo(x, y) : g.moveTo(x, y);
       });
       g.stroke();
-      g.fillStyle = "#b8d5df";
+      g.fillStyle = "#526e80";
       g.font = "14px Segoe UI";
       g.fillText(
         "Amplitude (" + r.unit + ") · Hann window · measured response",

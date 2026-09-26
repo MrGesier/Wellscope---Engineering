@@ -74,14 +74,14 @@ const { chromium } = require("playwright-core"),
       /NOT_COMPUTED/,
     );
     await nav("bha");
-    assert.equal(await page.locator("#asset-catalog img").count(), 23);
+    assert.equal(await page.locator("#asset-catalog img").count(), 72);
     assert.equal(
       await page
         .locator("#asset-catalog img")
         .evaluateAll(
           (images) => images.filter((x) => x.naturalWidth > 0).length,
         ),
-      23,
+      72,
     );
     const before = await page.evaluate(() =>
       WellApp.snapshot().state.bha.map((x) => x.name),
@@ -176,7 +176,7 @@ const { chromium } = require("playwright-core"),
       "Offline launch must not request network resources",
     );
     console.log(
-      "PASS: offline Edge launch; limits and exact linked MD; PSD and directional gates; 23 local SVGs; BHA reorder; bit depth; SHA256 report; backup round-trip; incompatible reference block/recovery; mobile layout; no page errors or external requests",
+      "PASS: offline Edge launch; limits and exact linked MD; PSD and directional gates; 72 local SVGs; BHA reorder; bit depth; SHA256 report; backup round-trip; incompatible reference block/recovery; mobile layout; no page errors or external requests",
     );
   } finally {
     await browser.close();
