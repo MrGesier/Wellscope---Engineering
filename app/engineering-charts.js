@@ -65,8 +65,11 @@
         oy +
         (opt.depth ? (y - y0) / (y1 - y0) : 1 - (y - y0) / (y1 - y0)) *
           (side || ph);
-    const f = (v) => Number(v.toPrecision(4)).toLocaleString("en-US");
-    let out = `<svg xmlns="http://www.w3.org/2000/svg" class="engineering-chart study-plot" viewBox="0 0 ${w} ${h}" role="img" aria-label="${esc(opt.x)} versus ${esc(opt.y)}" data-depth-down="${!!opt.depth}"><rect width="760" height="${h}" fill="white"/><g font-family="Segoe UI,Arial,sans-serif" font-size="12" fill="#607789">`;
+    const f = (v) =>
+      Number(v.toPrecision(7)).toLocaleString("en-US", {
+        maximumSignificantDigits: 7,
+      });
+    let out = `<svg xmlns="http://www.w3.org/2000/svg" class="engineering-chart study-plot" viewBox="0 0 ${w} ${h}" role="img" aria-label="${esc(opt.x)} versus ${esc(opt.y)}" data-depth-down="${!!opt.depth}" data-points-only="${!!opt.pointsOnly}"><rect width="760" height="${h}" fill="white"/><g font-family="Segoe UI,Arial,sans-serif" font-size="12" fill="#607789">`;
     for (let j = 0; j <= 5; j++) {
       const x = x0 + ((x1 - x0) * j) / 5,
         y = y0 + ((y1 - y0) * j) / 5;
@@ -81,7 +84,26 @@
           (p) => Number.isFinite(p.x) && Number.isFinite(p.y),
         );
       out +=
-        `<path d="M${24 + i * 185} 22h17" stroke="${color}" stroke-width="2"/><text x="${46 + i * 185}" y="26">${esc(s.name)}</text><polyline points="${points.map((p) => X(p.x) + "," + Y(p.y)).join(" ")}" fill="none" stroke="${color}" stroke-width="2"/>` +
+        `<path d="M${24 + i * 185} 22h17" stroke="${color}" stroke-width="2"/><text x="${46 + i * 185}" y="26">${esc(s.name)}</text>${
+          opt.pointsOnly
+            ? ""
+            : s.points
+                .reduce(
+                  (segments, p) => {
+                    if (!Number.isFinite(p.x) || !Number.isFinite(p.y))
+                      segments.push([]);
+                    else segments.at(-1).push(p);
+                    return segments;
+                  },
+                  [[]],
+                )
+                .filter((segment) => segment.length > 1)
+                .map(
+                  (segment) =>
+                    `<polyline points="${segment.map((p) => X(p.x) + "," + Y(p.y)).join(" ")}" fill="none" stroke="${color}" stroke-width="2"/>`,
+                )
+                .join("")
+        }` +
         points
           .map(
             (p) =>

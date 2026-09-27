@@ -164,3 +164,59 @@ close(
   10000 + (30 * 9.80665 * 100 * Math.sin(Math.PI / 3)) / (Math.PI / 3),
   1e-6,
 );
+
+// Independently known solutions: straight vertical can be linear; a build cannot.
+const curved = fixture();
+curved.survey = [
+  { md: 0, inc: 0, azi: 0 },
+  { md: 100, inc: 60, azi: 0 },
+];
+Object.assign(curved.settings, {
+  muOpen: 0,
+  muCased: 0,
+  bottomForceN: 0,
+  blockN: 0,
+  stepM: 0.25,
+});
+const hooks = [25, 50, 100].map((md) => {
+  curved.settings.bitMD = md;
+  return M.solve(curved).hookN;
+});
+const curvature = Math.PI / 3 / 100,
+  weight = 30 * 9.80665;
+[25, 50, 100].forEach((md, i) =>
+  close(hooks[i], (weight * Math.sin(curvature * md)) / curvature, 4e-7),
+);
+assert.ok(
+  Math.abs(hooks[2] - 2 * hooks[1]) > 1000,
+  "Build-section hookload is not linear with MD",
+);
+// Weightless horizontal turn: capstan amplification T_top=T_bottom exp(mu*deltaAzimuth).
+const capstan = fixture(90);
+capstan.bha[0].mass = 5;
+capstan.settings.rhoInside = capstan.settings.rhoOutside =
+  5 / M.section(capstan.bha[0]).A;
+capstan.survey = [
+  { md: 0, inc: 90, azi: 0 },
+  { md: 100, inc: 90, azi: 90 },
+];
+Object.assign(capstan.settings, {
+  blockN: 0,
+  bottomForceN: 10000,
+  muOpen: 0.2,
+  stepM: 5,
+});
+close(
+  M.solve(capstan).topEffectiveN,
+  10000 * Math.exp((0.2 * Math.PI) / 2),
+  1e-8,
+);
+capstan.settings.axialSpeedMps = -0.2;
+close(
+  M.solve(capstan).topEffectiveN,
+  10000 * Math.exp((-0.2 * Math.PI) / 2),
+  1e-8,
+);
+console.log(
+  "PASS: nonlinear curved-depth and capstan pickup/slackoff analytic benchmarks",
+);

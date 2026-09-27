@@ -16,6 +16,7 @@ const { chromium } = require("playwright-core"),
     await p.goto(
       pathToFileURL(path.resolve(__dirname, "../app/index.html")).href,
     );
+    await p.locator("#advanced-navigation > summary").click();
     const nav = (id) => p.locator(`[data-page="${id}"]`).click();
     const fill = (id, value) => p.locator("#" + id).fill(String(value));
     const click = (id) => p.locator("#" + id).click();
