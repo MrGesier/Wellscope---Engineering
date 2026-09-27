@@ -79,7 +79,7 @@
           settings.mode === "rotating"
             ? "Passive"
             : `${activation * 100}% steering`,
-        points: curve.rows.map((r) => ({
+        points: DirectionalPlanning.sample(surface, { ...settings, activation }).map((r) => ({
           x: force(r.wobN),
           y: rate(
             D.response(surface, { ...settings, wobN: r.wobN, activation }).dls,
@@ -115,6 +115,7 @@
     $("response-table").innerHTML =
       `<table><thead><tr><th>WOB (${units.force})</th><th>Build (${ru})</th><th>Turn (${ru})</th><th>DLS (${ru})</th></tr></thead><tbody>${rows.map((r) => `<tr><td>${f(force(r.wobN))}</td><td>${f(rate(r.build))}</td><td>${f(rate(r.turn))}</td><td>${f(rate(r.dls))}</td></tr>`).join("")}</tbody></table>`;
     sync();
+    window.dispatchEvent(new Event("directional-response-updated"));
   }
   $("response-form").oninput = () => {
     $("response-export").disabled = true;
