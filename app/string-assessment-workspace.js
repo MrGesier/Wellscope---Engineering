@@ -43,8 +43,8 @@
   function render(state) {
     current = state;
     $("sa-demo-material").disabled = state.input.quality !== "SYNTHETIC";
-    $("sa-material-note").textContent = state.input.components.some(
-      (b) => b.materialSource,
+    $("sa-material-note").textContent = state.input.components.some((b) =>
+      b.materialSource?.startsWith("SYNTHETIC"),
     )
       ? "Synthetic material assumptions are recorded in the exported inputs. Existing supplied properties are preserved. No manufacturer ratings are invented."
       : "For the synthetic example only: fill missing elastic properties and enable a labelled load case. Real studies require supplied material data.";

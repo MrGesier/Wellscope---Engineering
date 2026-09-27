@@ -62,6 +62,19 @@ const { chromium } = require("playwright-core"),
     assert.ok(!(await p.locator("#sa-export").isEnabled()));
     await p.locator("#si-calc").click();
     assert.equal(await p.locator("#sa-graph svg").count(), 1);
+    await p.evaluate(() => {
+      const data = StringInHole.snapshot().input;
+      data.quality = "USER_ENTERED";
+      for (const b of data.components)
+        b.materialSource = "User supplied material sheet";
+      StringInHole.applyStudy(data);
+    });
+    assert.ok(!(await p.locator("#sa-demo-material").isEnabled()));
+    assert.ok(
+      !(await p.locator("#sa-material-note").innerText()).includes(
+        "Synthetic material assumptions are recorded",
+      ),
+    );
     await p.setViewportSize({ width: 420, height: 900 });
     assert.ok(
       await p.evaluate(
