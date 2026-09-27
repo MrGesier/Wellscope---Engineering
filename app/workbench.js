@@ -585,7 +585,7 @@
       'legacy', 'reference', 'wells', 'bha', 'measurements', 'limits',
       'directional_response_cases', 'cuttings_samples', 'completion_intervals',
       'external_motor_curves', 'matched_weight_comparisons', 'measured_spectrum',
-      'observed_directional_intervals', 'study_runs', 'engineering_cases', 'directional_sensitivity_runs', 'equipment_register', 'operating_window_studies'
+      'observed_directional_intervals', 'study_runs', 'engineering_cases', 'directional_sensitivity_runs', 'equipment_register', 'operating_window_studies', 'active_run', 'run_studies'
     ].map(key => [key, p[key] ?? null]));
   }
   async function exportProject() {
@@ -729,9 +729,11 @@ window.dispatchEvent(new CustomEvent("wellscope:project-loaded"));
       directional_sensitivity_runs: p.directional_sensitivity_runs || [],
       equipment_register: p.equipment_register || [],
       operating_window_studies: p.operating_window_studies || [],
+      active_run: p.active_run || null,
+      run_studies: p.run_studies || [],
       missing: [
         "ISCWSA covariance / named-rule scan",
-        "stiff-string, torque, stress, dynamics",
+        "validated stiff-string mechanics, combined connection limits and whole-BHA dynamics",
         "predictive BUR/TUR",
         "human approval",
       ],
