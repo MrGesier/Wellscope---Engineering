@@ -24,7 +24,7 @@ if (Test-Path -LiteralPath $edge) {
 }
 $shortcut.WorkingDirectory = $target
 $shortcut.Description = 'WellScope Engineering — offline evidence and geometry workbench'
-$shortcut.IconLocation = (Join-Path $target 'app\assets\wellscope.ico') + ',0'
+$shortcut.IconLocation = (Join-Path $target 'app\assets\wellscope-scope-v2.ico') + ',0'
 $shortcut.Save()
 Write-Output "Installed: $target"
 Write-Output "Desktop shortcut: $shortcutPath"
