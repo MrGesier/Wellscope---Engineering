@@ -38,6 +38,51 @@ const { chromium } = require("playwright-core"),
     await nav("directional");
     await p.waitForSelector("#response-wob-chart svg");
     await shot("directional");
+    await p.locator("#planning-hold").click();
+    await p.locator('#planning-form button[type="submit"]').click();
+    assert.match(
+      await p.locator("#planning-result").textContent(),
+      /SYNTHETIC.*tf/,
+    );
+    assert.equal(await p.locator("#planning-export").isDisabled(), false);
+    const planDownload = p.waitForEvent("download");
+    await p.locator("#planning-export").click();
+    const plan = JSON.parse(
+      fs.readFileSync(await (await planDownload).path(), "utf8"),
+    );
+    assert.equal(plan.surface.quality, "SYNTHETIC");
+    assert.equal(plan.ranges.length, 1);
+    assert.equal(plan.canonicalUnits, "N, deg/30 m");
+    const oldMin = Number(await p.locator("#planning-min").inputValue());
+    await p.selectOption("#response-interval", "30.48");
+    assert.ok(
+      Math.abs(
+        Number(await p.locator("#planning-min").inputValue()) - oldMin * 1.016,
+      ) < 1e-8,
+    );
+    assert.equal(await p.locator("#planning-export").isDisabled(), true);
+    await p.selectOption("#response-interval", "30");
+    await p.locator("#planning-min").fill("5");
+    await p.locator('#planning-form button[type="submit"]').click();
+    assert.match(await p.locator("#planning-result").textContent(), /ordered/);
+    await p.locator("#planning-min").fill("-0.2");
+    await p
+      .locator("#survey-rate-form")
+      .evaluate((el) => (el.closest("details").open = true));
+    await p.locator("#survey-rate-form button").click();
+    assert.match(
+      await p.locator("#survey-rate-result").textContent(),
+      /build: 2/,
+    );
+    await p.locator("#survey-rate-1-0").fill("2999");
+    await p.locator("#survey-rate-form button").click();
+    assert.match(
+      await p.locator("#survey-rate-result").textContent(),
+      /exceed/,
+    );
+    await p.locator("#survey-rate-1-0").fill("3030");
+    await p.locator("#response-reset").click();
+    await p.locator("#directional-planning").screenshot({path:path.resolve(__dirname,"../screenshots/v07/build-drop-planning.png")});
     const original = await p.evaluate(() => DirectionalWorkspace.snapshot());
     await p.selectOption("#response-force", "klbf");
     assert.ok(

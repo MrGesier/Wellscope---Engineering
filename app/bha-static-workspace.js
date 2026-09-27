@@ -97,6 +97,15 @@
   sampleLink.textContent = "Download mock import JSON";
   $("bs-demo").after(sampleLink);
   document.querySelector('[data-page="bha"]').after(nav);
+  const directionalLink = document.createElement("button");
+  directionalLink.id = "bs-directional-planning";
+  directionalLink.className = "smallbutton";
+  directionalLink.textContent = "Build / drop and DLS vs WOB →";
+  directionalLink.onclick = () => {
+    document.querySelector('[data-page="directional"]').click();
+    document.getElementById("directional-planning").scrollIntoView();
+  };
+  page.querySelector(".page-head").after(directionalLink);
   const field = (id, label, v, type = "number") =>
     `<label>${label}<input id="${id}" type="${type}" ${type === "number" ? 'step="any"' : ""} value="${esc(v)}"></label>`;
   function table(target, rows, cols) {
