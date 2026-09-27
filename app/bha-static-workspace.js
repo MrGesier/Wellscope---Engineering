@@ -65,9 +65,13 @@
   <article class="panel"><h2>1 · Well architecture</h2><p>Contiguous MD intervals from surface. Enter casing/liner internal diameter, or open-hole nominal/caliper diameter. This study has its own explicit architecture snapshot.</p><div id="bs-identity" class="workform"></div><div id="bs-architecture" class="tablebox"></div><button id="bs-section">Add section</button></article>
   <article class="panel"><h2>2 · BHA and loading</h2><p>Bit to top; equivalent uniform tube properties must be supplied for each tool. End positions are pinned to the well centre; end rotations are free. The model excludes the remainder of the drillstring.</p><div id="bs-controls" class="workform"></div><div id="bs-components" class="tablebox"></div><button id="bs-add">Add component</button><p>Constant effective compression = entered WOB. Axial weight transfer, friction, internal tool flexibility, coupled torque/buckling and dynamics are excluded. Torque affects elastic twist only; it does not change the lateral shape.</p></article>
   <div class="work-toolbar"><button id="bs-calc" class="primary">Calculate deformation</button><button id="bs-baseline" disabled>Keep as design A</button><button id="bs-clear">Clear comparison</button></div><p id="bs-state" role="status"></p><div id="bs-error" role="alert" class="error"></div>
-  <article class="panel"><div class="panel-title"><h2>3 · Local 3D view</h2><label>Transverse magnification<select id="bs-scale"><option value="1">1× — true scale</option><option value="10">10×</option><option value="25" selected>25× — inspect contacts</option></select></label></div><p>Drag to orbit. Both hole and tool cross-sections use the displayed transverse magnification. Blue: current BHA · copper: wall contact · dashed: design A. End pins are imposed supports, not predicted contacts.</p><canvas id="bs-canvas" width="1100" height="430" style="width:100%;background:#f5f7f8;touch-action:none" aria-label="Orbitable three-dimensional BHA deformation inside bore"></canvas><div id="bs-summary"></div><label>Inspect station <input id="bs-station" type="range" min="0" max="40" value="20"></label><div id="bs-inspect"></div><div id="bs-profile"></div></article>
+  <article class="panel"><div class="panel-title"><h2>3 · Local 3D view</h2><label>Transverse magnification<select id="bs-scale"><option value="1">1× — true scale</option><option value="10">10×</option><option value="25" selected>25× — inspect contacts</option></select></label></div><p>Drag to orbit. Both hole and tool cross-sections use the displayed transverse magnification. Heat colours: calculated magnitude · copper dots: wall contact · dashed: design A. End pins are imposed supports, not predicted contacts.</p><canvas id="bs-canvas" width="1100" height="430" style="width:100%;background:#f5f7f8;touch-action:none" aria-label="Orbitable three-dimensional BHA deformation inside bore"></canvas><div id="bs-summary"></div><label>Inspect station <input id="bs-station" type="range" min="0" max="40" value="20"></label><div id="bs-inspect"></div><div id="bs-profile"></div></article>
   <article class="panel"><h2>Interpretation and qualification</h2><p>This is a local, two-plane Euler–Bernoulli beam calculation with circular, frictionless contact constraints and a constant prescribed compressive force. It is not a whole-string stiff-string solver. Buckling regimes are rejected when the unconstrained tangent stiffness loses positive definiteness; post-buckling is not solved. No approved operating window is inferred.</p><p>The top and bit are ideal centred pins. Changing the modeled length changes those boundary conditions. Stabilizer contact uses an axisymmetric envelope; complex tools use your entered equivalent stiffness. Check mesh sensitivity before comparing contact forces. Survey interpolation cannot resolve unmeasured micro-tortuosity.</p><p>Rotational vibration, whirl, stick-slip, fatigue, rock/bit steering and DLS prediction require separate models. Geometry and boundary assumptions must be checked against an independent reference before field use.</p></article>`;
   document.querySelector(".content").append(page);
+  const viewControls = document.createElement("div");
+  viewControls.className = "work-toolbar";
+  viewControls.innerHTML = `<label>Colour field<select id="bs-field"><option value="bendingPa">Bending stress magnitude (MPa)</option><option value="momentNm">Bending moment magnitude</option><option value="offset">Eccentricity (mm)</option></select></label><label><input id="bs-mesh" type="checkbox" checked> Beam mesh</label><label><input id="bs-arrows" type="checkbox" checked> Contact reactions</label><div id="bs-legend" role="status"></div><p>Colours show calculated magnitudes, not allowable utilization. Beam elements carry mean endpoint values, not a solid stress distribution. Circles: nodes · squares: element midpoints. Click a marker to inspect it. Design A uses the same colour scale and dashed lines. Arrows show wall reaction direction with lengths proportional to force; they are not displacements.</p>`;
+  $("bs-canvas").before(viewControls);
   const nav = document.createElement("button");
   nav.className = "nav";
   nav.dataset.page = page.id;
@@ -183,7 +187,12 @@
     draw();
   }
   page.addEventListener("input", (e) => {
-    if (!["bs-scale", "bs-station"].includes(e.target.id)) invalidate();
+    if (
+      !["bs-scale", "bs-station", "bs-field", "bs-mesh", "bs-arrows"].includes(
+        e.target.id,
+      )
+    )
+      invalidate();
   });
   function prepare() {
     if (!input.name.trim() || !input.source.trim())
@@ -236,7 +245,7 @@
       $("bs-error").textContent = e.message;
     }
   }
-  const forceScale = () => forceUnit === "tf" ? 9806.65 : 1000;
+  const forceScale = () => (forceUnit === "tf" ? 9806.65 : 1000);
   function metrics(r) {
     return `<td>${(r.maxOffset * 1000).toFixed(2)}</td><td>${(r.maxBendingPa / 1e6).toFixed(2)}</td><td>${((r.twistRad * 180) / Math.PI).toFixed(2)}</td><td>${r.contacts}</td>`;
   }
@@ -269,8 +278,44 @@
         )}"/><text x="70" y="242">0 → ${max.toFixed(1)} MPa</text><text x="5" y="20">${(input.bitMD - input.length).toFixed(1)} m</text><text x="5" y="215">${input.bitMD.toFixed(1)} m</text></svg>`;
     inspect();
   }
+  let picked = null,
+    hitTargets = [];
+  const colourField = () => {
+    const k = $("bs-field").value;
+    return {
+      key: k,
+      unit:
+        k === "bendingPa" ? "MPa" : k === "offset" ? "mm" : forceUnit + "·m",
+      factor: k === "bendingPa" ? 1e6 : k === "offset" ? 0.001 : forceScale(),
+    };
+  };
+  const heatColour = (t) => {
+    t = Math.max(0, Math.min(1, t));
+    const stops = [
+        [49, 86, 110],
+        [222, 184, 115],
+        [165, 66, 38],
+      ],
+      j = t < 0.5 ? 0 : 1,
+      f = t < 0.5 ? t * 2 : (t - 0.5) * 2;
+    return `rgb(${stops[j].map((v, i) => Math.round(v + (stops[j + 1][i] - v) * f)).join(",")})`;
+  };
   function inspect() {
     if (!result) return;
+    if (picked) {
+      const rows = picked.design === "A" ? baseline?.result.rows : result.rows;
+      if (rows && rows[picked.i]) {
+        const a = rows[picked.i],
+          b = picked.kind === "element" ? rows[picked.i + 1] : a,
+          f = colourField();
+        if (b) {
+          $("bs-inspect").textContent =
+            `${picked.design} · ${picked.kind} ${picked.i} · MD ${a.md.toFixed(2)}${b !== a ? " → " + b.md.toFixed(2) : ""} m · ${a.name}${b.name !== a.name ? " / " + b.name : ""} · ${f.key}: ${((a[f.key] + b[f.key]) / 2 / f.factor).toFixed(3)} ${f.unit}${b !== a ? " (mean of endpoints)" : ""} · endpoint reaction ${(a.reactionN / forceScale()).toFixed(3)} ${forceUnit}${b !== a ? " / " + (b.reactionN / forceScale()).toFixed(3) + " " + forceUnit : ""} · ${a.x === 0 || picked.i === rows.length - 1 ? "Imposed pin" : a.contact ? "Wall contact" : "No wall contact"}`;
+          return;
+        }
+      }
+      picked = null;
+    }
     const r = result.rows[Math.min(input.n, +$("bs-station").value)];
     $("bs-inspect").textContent =
       `MD ${r.md.toFixed(2)} m · ${r.name} · eccentricity ${(r.offset * 1000).toFixed(2)} mm · bending ${(r.bendingPa / 1e6).toFixed(2)} MPa · ${r.x === 0 || r.x === input.length ? "Imposed end support" : r.contact ? "Wall contact" : "No wall contact"} · reaction ${(r.reactionN / forceScale()).toFixed(3)} ${forceUnit}`;
@@ -283,6 +328,9 @@
     g.font = "15px Segoe UI";
     g.fillStyle = "#536979";
     if (!result) {
+      hitTargets = [];
+      picked = null;
+      $("bs-legend").textContent = "No current calculated field";
       g.fillText("Calculate a valid study to view the deformation.", 35, 50);
       return;
     }
@@ -304,6 +352,23 @@
       g.stroke();
       g.setLineDash([]);
     };
+    const field = colourField(),
+      comparison = baseline && input.overlayCompatible;
+    const allRows = [
+      ...result.rows,
+      ...(comparison ? baseline.result.rows : []),
+    ];
+    const fieldMax = Math.max(
+      0,
+      ...allRows.map((r) => r[field.key] / field.factor),
+    );
+    const maxReaction = Math.max(
+      0,
+      ...allRows.filter((r) => r.contact).map((r) => r.reactionN),
+    );
+    $("bs-legend").innerHTML =
+      `<div style="width:250px;height:12px;background:linear-gradient(90deg,${heatColour(0)},${heatColour(0.5)},${heatColour(1)})"></div><span>0 — ${(fieldMax / 2).toFixed(3)} — ${fieldMax.toFixed(3)} ${field.unit} · ${comparison ? "shared current / A" : "current design"}${fieldMax === 0 ? " · zero field" : ""}</span><br><small>${result.rows.length} nodes / ${result.rows.length - 1} beam elements${comparison ? " · A: " + baseline.result.rows.length + " nodes" : ""}. Arrow maximum: ${(maxReaction / forceScale()).toFixed(3)} ${forceUnit} = 60 px (screen schematic).</small>`;
+    hitTargets = [];
     for (let side = 0; side < 4; side++) {
       const a = (side * Math.PI) / 2;
       line(
@@ -324,38 +389,118 @@
         ]),
         "#d4dde3",
       );
-    if (baseline && input.overlayCompatible)
-      line(
-        baseline.result.rows.map((r) => [r.x, ...r.u]),
-        "#927052",
-        2,
-        [6, 4],
-      );
-    const outline = [
-      ...result.rows.map((r) => [r.x, r.u[0], r.u[1] - r.od / 2]),
-      ...result.rows
-        .slice()
-        .reverse()
-        .map((r) => [r.x, r.u[0], r.u[1] + r.od / 2]),
-    ];
-    g.beginPath();
-    outline.forEach((p, i) =>
-      i ? g.lineTo(...project(...p)) : g.moveTo(...project(...p)),
-    );
-    g.closePath();
-    g.fillStyle = "#31566e35";
-    g.fill();
+    function renderDesign(rows, design) {
+      rows.slice(0, -1).forEach((a, i) => {
+        const b = rows[i + 1],
+          value = (a[field.key] + b[field.key]) / 2 / field.factor,
+          col = heatColour(fieldMax ? value / fieldMax : 0);
+        if (design === "Current") {
+          const quad = [
+            [a.x, a.u[0], a.u[1] - a.od / 2],
+            [b.x, b.u[0], b.u[1] - b.od / 2],
+            [b.x, b.u[0], b.u[1] + b.od / 2],
+            [a.x, a.u[0], a.u[1] + a.od / 2],
+          ];
+          g.beginPath();
+          quad.forEach((p, j) =>
+            j ? g.lineTo(...project(...p)) : g.moveTo(...project(...p)),
+          );
+          g.closePath();
+          g.globalAlpha = 0.65;
+          g.fillStyle = col;
+          g.fill();
+          g.globalAlpha = 1;
+        }
+        line(
+          [
+            [a.x, ...a.u],
+            [b.x, ...b.u],
+          ],
+          col,
+          design === "A" ? 5 : 3,
+          design === "A" ? [4, 4] : [],
+        );
+        if ($("bs-mesh").checked) {
+          const q = project(
+            (a.x + b.x) / 2,
+            (a.u[0] + b.u[0]) / 2,
+            (a.u[1] + b.u[1]) / 2,
+          );
+          g.fillStyle = col;
+          g.fillRect(q[0] - 3, q[1] - 3, 6, 6);
+          g.strokeStyle = "#233e50";
+          g.strokeRect(q[0] - 3, q[1] - 3, 6, 6);
+          hitTargets.push({ q, design, kind: "element", i });
+        }
+      });
+      rows.forEach((r, i) => {
+        const q = project(r.x, ...r.u);
+        if ($("bs-mesh").checked) {
+          g.beginPath();
+          g.arc(...q, 3.5, 0, 2 * Math.PI);
+          g.fillStyle = design === "A" ? "#fff5e8" : "#fff";
+          g.fill();
+          g.strokeStyle = "#233e50";
+          g.stroke();
+          hitTargets.push({ q, design, kind: "node", i });
+          if (i % 5 === 0 || i === rows.length - 1) {
+            g.font = "11px Segoe UI";
+            g.fillStyle = "#233e50";
+            g.fillText(
+              (design === "A" ? "A" : "N") + i,
+              q[0] - 5,
+              q[1] + (design === "A" ? -12 : 18),
+            );
+          }
+        }
+        if ($("bs-arrows").checked && r.contact && r.reactionN > 0) {
+          const v = r.reactionVectorN,
+            tip = project(
+              r.x,
+              r.u[0] + v[0] / r.reactionN,
+              r.u[1] + v[1] / r.reactionN,
+            ),
+            dx = tip[0] - q[0],
+            dy = tip[1] - q[1],
+            norm = Math.hypot(dx, dy);
+          if (norm > 1e-7) {
+            const length = (60 * r.reactionN) / (maxReaction || 1),
+              x = q[0] + (dx / norm) * length,
+              y = q[1] + (dy / norm) * length,
+              theta = Math.atan2(dy, dx);
+            g.strokeStyle = "#8c3e2d";
+            g.lineWidth = 2;
+            g.setLineDash(design === "A" ? [3, 3] : []);
+            g.beginPath();
+            g.moveTo(...q);
+            g.lineTo(x, y);
+            g.stroke();
+            g.setLineDash([]);
+            g.beginPath();
+            g.moveTo(x, y);
+            g.lineTo(
+              x - 6 * Math.cos(theta - 0.45),
+              y - 6 * Math.sin(theta - 0.45),
+            );
+            g.lineTo(
+              x - 6 * Math.cos(theta + 0.45),
+              y - 6 * Math.sin(theta + 0.45),
+            );
+            g.closePath();
+            g.fillStyle = "#8c3e2d";
+            g.fill();
+          }
+        }
+      });
+    }
+    renderDesign(result.rows, "Current");
+    if (comparison) renderDesign(baseline.result.rows, "A");
     for (let s of [-1, 1])
       line(
         result.rows.map((r) => [r.x, r.u[0], r.u[1] + (s * r.od) / 2]),
         "#31566e",
         2,
       );
-    line(
-      result.rows.map((r) => [r.x, ...r.u]),
-      "#31566e",
-      3,
-    );
     for (const r of result.rows) {
       if (r.contactOD > r.od + 0.001)
         line(
@@ -376,6 +521,27 @@
       }
     }
     g.fillStyle = "#233e50";
+    g.font = "15px Segoe UI";
+    if (picked && $("bs-mesh").checked) {
+      const rows =
+        picked.design === "A" && comparison
+          ? baseline.result.rows
+          : result.rows;
+      const a = rows[picked.i],
+        b = picked.kind === "element" ? rows[picked.i + 1] : a;
+      if (a && b) {
+        const q = project(
+          (a.x + b.x) / 2,
+          (a.u[0] + b.u[0]) / 2,
+          (a.u[1] + b.u[1]) / 2,
+        );
+        g.beginPath();
+        g.arc(...q, 8, 0, Math.PI * 2);
+        g.strokeStyle = "#101f29";
+        g.lineWidth = 2;
+        g.stroke();
+      }
+    }
     g.fillText("BIT · pinned", 65, 400);
     g.fillText("TOP · pinned", 870, 400);
     g.fillText(
@@ -527,21 +693,57 @@
     e.target.value = "";
   };
   $("bs-scale").onchange = draw;
-  $("bs-station").oninput = inspect;
+  for (const id of ["bs-field", "bs-mesh", "bs-arrows"]) $(id).onchange = draw;
+  $("bs-station").oninput = () => {
+    picked = null;
+    inspect();
+  };
   let drag = null;
+  let pointerStart = null,
+    moved = false;
   $("bs-canvas").onpointerdown = (e) => {
     drag = e.clientX;
+    pointerStart = [e.clientX, e.clientY];
+    moved = false;
     e.target.setPointerCapture(e.pointerId);
   };
   $("bs-canvas").onpointermove = (e) => {
     if (drag !== null) {
+      if (
+        Math.hypot(e.clientX - pointerStart[0], e.clientY - pointerStart[1]) > 4
+      )
+        moved = true;
       angle += (e.clientX - drag) * 0.01;
       drag = e.clientX;
       draw();
     }
   };
-  $("bs-canvas").onpointerup = $("bs-canvas").onpointercancel = () =>
-    (drag = null);
+  $("bs-canvas").onpointerup = (e) => {
+    if (!moved && result && $("bs-mesh").checked) {
+      const rect = e.target.getBoundingClientRect(),
+        x = ((e.clientX - rect.left) * e.target.width) / rect.width,
+        y = ((e.clientY - rect.top) * e.target.height) / rect.height;
+      let best = null,
+        distance = 12;
+      for (const t of hitTargets) {
+        const d = Math.hypot(t.q[0] - x, t.q[1] - y);
+        if (d < distance) {
+          best = t;
+          distance = d;
+        }
+      }
+      if (best) {
+        picked = best;
+        draw();
+      }
+    }
+    drag = null;
+    pointerStart = null;
+  };
+  $("bs-canvas").onpointercancel = () => {
+    drag = null;
+    pointerStart = null;
+  };
   window.BhaStaticWorkspace = {
     snapshot: () => clone({ input, result, baseline }),
     demo,

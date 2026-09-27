@@ -41,6 +41,63 @@ const { chromium } = require("playwright-core"),
     assert.ok(
       await page.evaluate(() => BhaStaticWorkspace.snapshot().baseline),
     );
+    const beforeView = await page.evaluate(
+      () => BhaStaticWorkspace.snapshot().result,
+    );
+    assert.match(
+      await page.locator("#bs-legend").textContent(),
+      /shared current \/ A/,
+    );
+    const commonMax = await page.evaluate(() => {
+      const s = BhaStaticWorkspace.snapshot();
+      return Math.max(
+        ...s.result.rows.map((r) => r.bendingPa / 1e6),
+        ...s.baseline.result.rows.map((r) => r.bendingPa / 1e6),
+      ).toFixed(3);
+    });
+    assert.ok(
+      (await page.locator("#bs-legend").textContent()).includes(commonMax),
+    );
+    await page.selectOption("#bs-field", "momentNm");
+    assert.match(await page.locator("#bs-legend").textContent(), /tf·m/);
+    await page.locator("#bs-mesh").uncheck();
+    await page.locator("#bs-arrows").uncheck();
+    assert.deepEqual(
+      await page.evaluate(() => BhaStaticWorkspace.snapshot().result),
+      beforeView,
+    );
+    await page.locator("#bs-mesh").check();
+    await page.locator("#bs-arrows").check();
+    await page.locator("#bs-clear").click();
+    await page.selectOption("#bs-field", "bendingPa");
+    const point = await page.evaluate(() => {
+      const s = BhaStaticWorkspace.snapshot(),
+        a = s.result.rows[8],
+        b = s.result.rows[9],
+        x = (a.x + b.x) / 2,
+        y = (a.u[0] + b.u[0]) / 2,
+        z = (a.u[1] + b.u[1]) / 2,
+        scale = 800 / s.input.length,
+        mag = 25;
+      return [
+        120 + x * scale + Math.sin(0.45) * y * scale * mag * 0.45,
+        215 + (Math.cos(0.45) * y + Math.sin(0.45) * z) * scale * mag,
+      ];
+    });
+    await page.locator("#bs-canvas").scrollIntoViewIfNeeded();
+    const box = await page.locator("#bs-canvas").boundingBox();
+    await page
+      .locator("#bs-canvas")
+      .click({
+        position: {
+          x: (point[0] * box.width) / 1100,
+          y: (point[1] * box.height) / 430,
+        },
+      });
+    assert.match(
+      await page.locator("#bs-inspect").textContent(),
+      /Current · element 8/,
+    );
     await page.locator("#bs-save").click();
     await page.locator("#bs-load").click();
     assert.equal(await page.locator("#bs-error").textContent(), "");

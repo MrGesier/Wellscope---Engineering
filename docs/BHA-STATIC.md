@@ -25,3 +25,13 @@ Bending moment is EI times discrete curvature, bending stress is E times curvatu
 `tests/browser-bha-static.cjs`: worked example, baseline preservation, dirty-result invalidation, local save/load, unstable-case removal, browser errors and screenshot. These are analytical/software checks, not field validation or a matched DrillScan benchmark.
 
 Industry scope reference: [H&P DrillScan engineering overview](https://www.helmerichpayne.com/media/product-literature/Drilling-Engineering.pdf). Its whole-string stiff-string, modal and bit/BHA capabilities exceed this local prototype. Do not equate the two.
+
+## Beam heat map and mesh inspection
+
+The local view colours each beam interval using the arithmetic mean of its two endpoint values: bending-stress magnitude (MPa), bending-moment magnitude (selected force unit × m), or eccentricity (mm). This is a beam-result display, not a through-wall or circumferential solid stress field. No yield utilization or safe/unsafe colours are inferred.
+
+The legend spans zero to the maximum nodal value across the current design and the compatible design A. Changing the field or view controls does not recalculate or invalidate mechanics. Incompatible geometry disables A's overlay and excludes it from the colour scale. Current and A may use different mesh densities. Switching force units updates moment and reaction units without changing SI inputs.
+
+Enable Beam mesh to show circles at nodes, square element-midpoint targets and node labels. Click a target for the design identity, node/element index, MD, selected scalar and endpoint reactions. Dragging orbits without selecting. The depth slider returns inspection to the current design's nodes. Contact arrows use the computed two-plane reaction vector projected into the view, and lengths proportional to force on a shared 60-pixel maximum; they are schematic force glyphs, not displacement vectors. End-pin reactions remain available in inspection but are not drawn as wall contacts. Reactions aligned with the viewing direction may project to zero.
+
+Browser regression checks cover common A/B colour range, units, view-control invariance and clicking an element in the projected canvas.
