@@ -136,7 +136,7 @@
     if (invalidReason) {
       document
         .querySelectorAll("canvas")
-        .forEach((c) => c.getContext("2d").clearRect(0, 0, c.width, c.height));
+        .forEach((c) => c.getContext("2d")?.clearRect(0, 0, c.width, c.height));
       for (const id of [
         "k-md",
         "k-tvd",
@@ -171,7 +171,7 @@
     $("work-error").textContent = "NOT EVALUABLE: " + e.detail;
     document
       .querySelectorAll("canvas")
-      .forEach((c) => c.getContext("2d").clearRect(0, 0, c.width, c.height));
+      .forEach((c) => c.getContext("2d")?.clearRect(0, 0, c.width, c.height));
   });
   $("limits").insertAdjacentHTML(
     "beforeend",

@@ -4,11 +4,14 @@
   "private": true,
   "description": "Offline-first independent well geometry and evidence-screening workbench",
   "scripts": {
-    "test": "node tests/test_engine.js && node tests/test_v03.js && node tests/test_english_help.js && node tests/test_v042.js && node tests/test_data.js && node tests/test_studies.js && node tests/test_case.js && node tests/test_directional.js && node tests/test_directional_planning.js && node tests/test_tools.js && node tests/test_windows.js && node tests/test_run.js && node tests/test_bha_static.js && node tests/test_bha_solid.js && node tests/test_string_contact.js",
-    "test:browser": "node tests/browser-smoke.cjs && node tests/browser-data.cjs && node tests/browser-studies.cjs && node tests/browser-case.cjs && node tests/browser-directional.cjs && node tests/browser-tools.cjs && node tests/browser-windows.cjs && node tests/browser-run.cjs && node tests/browser-bha-static.cjs && node tests/browser-bha-solid.cjs && node tests/browser-string-in-hole.cjs",
-    "package": "node scripts/package.cjs"
+    "test": "node tests/test_engine.js && node tests/test_v03.js && node tests/test_english_help.js && node tests/test_v042.js && node tests/test_data.js && node tests/test_studies.js && node tests/test_case.js && node tests/test_directional.js && node tests/test_directional_planning.js && node tests/test_tools.js && node tests/test_windows.js && node tests/test_run.js && node tests/test_bha_static.js && node tests/test_bha_solid.js && node tests/test_string_contact.js && node tests/test_string_design.js",
+    "test:browser": "node tests/browser-smoke.cjs && node tests/browser-data.cjs && node tests/browser-studies.cjs && node tests/browser-case.cjs && node tests/browser-directional.cjs && node tests/browser-tools.cjs && node tests/browser-windows.cjs && node tests/browser-run.cjs && node tests/browser-bha-static.cjs && node tests/browser-bha-solid.cjs && node tests/browser-string-in-hole.cjs && node tests/browser-string-design.cjs",
+    "package": "node scripts/package.cjs",
+    "build:3d": "node scripts/build-string-3d.cjs"
   },
   "devDependencies": {
-    "playwright-core": "1.63.0"
+    "esbuild": "0.28.2",
+    "playwright-core": "1.63.0",
+    "three": "0.186.1"
   }
 }

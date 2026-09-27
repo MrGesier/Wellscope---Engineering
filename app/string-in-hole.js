@@ -26,12 +26,20 @@
     "#677f8d",
     "#8f7770",
   ];
+  function meshSelect(value) {
+    const el = $("si-step");
+    if (![...el.options].some((o) => o.value === String(value)))
+      el.add(new Option(String(value), String(value)));
+    el.value = value;
+  }
   function demo() {
     const c = EngineeringCase.demo();
     input = {
       source:
         "Original synthetic Northbank N-04 / assumed elastic properties and joints",
       quality: "SYNTHETIC",
+      adaptive: true,
+      fineStepM: 1,
       survey: c.survey,
       components: c.bha.map((b) => ({
         ...b,
@@ -87,11 +95,15 @@
   }
   function sample(md) {
     const a = result.rows;
-    const i = Math.min(
-        a.length - 2,
-        Math.max(0, Math.floor(md / result.stepM)),
-      ),
-      r = a[i],
+    let i = 0,
+      hi = a.length - 1;
+    while (hi - i > 1) {
+      const m = (hi + i) >> 1;
+      if (a[m].md <= md) i = m;
+      else hi = m;
+    }
+    i = Math.min(i, a.length - 2);
+    const r = a[i],
       s = a[i + 1],
       t = Math.max(0, Math.min(1, (md - r.md) / (s.md - r.md)));
     return {
@@ -151,6 +163,17 @@
     g = canvas.getContext("2d");
   function draw() {
     g.clearRect(0, 0, 1200, 650);
+    window.dispatchEvent(
+      new CustomEvent("string-shape-update", {
+        detail: {
+          input,
+          result,
+          selected,
+          inspectMD: +$("si-inspect").value,
+          span: +$("si-span").value,
+        },
+      }),
+    );
     if (!result) return;
     const span = +$("si-span").value,
       mid = Math.max(0, Math.min(input.bitMD, +$("si-inspect").value)),
@@ -161,7 +184,7 @@
     g.fillStyle = "#304856";
     g.fillText("Whole well · occupied string + contacts", 20, 28);
     g.fillText(
-      `Inspection ${lo.toFixed(1)}–${hi.toFixed(1)} m MD · transverse ${((hi-lo)*900/520).toFixed(0)}×`,
+      `Inspection ${lo.toFixed(1)}–${hi.toFixed(1)} m MD · transverse ${(((hi - lo) * 900) / 520).toFixed(0)}×`,
       390,
       28,
     );
@@ -249,7 +272,7 @@
         const type = b.type || b.family || "";
         if (/stabilizer|rss/.test(type))
           rad *= 0.82 + 0.18 * Math.max(0, Math.cos(3 * t + x * 2));
-        if (/bit/.test(type))
+        if (/^(pdc-bit|tricone|bit)$/.test(type))
           rad *= 0.6 + 0.4 * Math.sin(Math.PI * Math.min(1, Math.max(0, f)));
         if (/jar|accelerator|mwd|lwd/.test(type) && f % 0.2 < 0.04) rad *= 0.9;
         return rad;
@@ -387,7 +410,7 @@
       StringContact.solve(p);
       input = p;
       $("si-depth").value = p.bitMD;
-      $("si-step").value = p.stepM;
+      meshSelect(p.stepM);
       $("si-tension").value = p.tensionN / 9806.65;
       calculate();
     } catch (e) {
@@ -420,10 +443,35 @@
     true,
   );
   window.StringInHole = {
+    applyStudy: (p) => {
+      stop();
+      input = structuredClone(p);
+      $("si-depth").value = p.bitMD;
+      meshSelect(p.stepM);
+      $("si-tension").value = p.tensionN / 9806.65;
+      selected = Math.min(selected, input.components.length - 1);
+      calculate();
+    },
+    select: (index, md) => {
+      selected = index;
+      $("si-follow").checked = false;
+      const b = result?.parts[index];
+      if (b)
+        $("si-inspect").value =
+          md ??
+          Math.max(
+            0,
+            input.bitMD - (b.start + Math.min(b.end, input.bitMD)) / 2,
+          );
+      draw();
+    },
     snapshot: () => ({
       input: structuredClone(input),
       result: structuredClone(result),
       playing: timer !== null,
+      selected,
+      inspectMD: +$("si-inspect").value,
+      span: +$("si-span").value,
     }),
   };
   demo();

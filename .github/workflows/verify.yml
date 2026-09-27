@@ -13,5 +13,7 @@ jobs:
           node-version: "22"
           cache: npm
       - run: npm ci
+      - run: npm run build:3d
+      - run: git diff --exit-code -- app/string-view3d.bundle.js
       - run: npm test
       - run: npm run test:browser
