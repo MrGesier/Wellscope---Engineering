@@ -82,3 +82,14 @@ Blank ratings or missing sources remain unevaluable. Existing study pages retain
 models; this is not a universal synchronization of every legacy calculator.
 
 See [model, assumptions and validation status](docs/DISTRIBUTED_RUN.md).
+
+## Railway deployment
+
+The Docker image serves only `app/` through Nginx on port 8080. Configure the Railway
+public domain target port to 8080. No backend, account database or uploaded project storage
+is provisioned. Documents imported in the browser remain client-side; export backups to
+retain work. Local Drive report extracts and the contents of `outputs/` are not deployed.
+
+Railway detects the root Dockerfile. Build context is allowlisted by `.dockerignore`.
+The online service can run the reviewed feature branch until that PR is merged; switch
+the Railway source branch to main after merging to follow subsequent releases.
