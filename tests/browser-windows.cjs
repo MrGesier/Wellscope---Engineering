@@ -17,6 +17,7 @@ const { chromium } = require("playwright-core"),
     await p.goto(
       pathToFileURL(path.resolve(__dirname, "../app/index.html")).href,
     );
+    await p.locator("#advanced-navigation > summary").click();
     await p.locator('[data-page="operating-windows"]').click();
     await p.selectOption("#window-unit", "kN");
     assert.equal(await p.locator("#window-error").textContent(), "");

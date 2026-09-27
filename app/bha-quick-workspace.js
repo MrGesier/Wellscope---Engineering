@@ -6,7 +6,7 @@
   const box = document.createElement("article");
   box.id = "bha-quick";
   box.className = "panel";
-  box.innerHTML = `<div class="eng-kicker">PRE-DESIGN / QUICK SIMULATION</div><h2>BHA candidate shortlist</h2><p>Start from the whole-string study, including its imported trajectory, architecture, tally and loads. Generate placement alternatives using your existing components, then compare sampled contact and bending. This does not invent a trajectory or manufacturer tools.</p><div class="work-toolbar"><button id="bq-capture" class="primary">Use current whole-string study</button><button id="bq-loads">Edit loads / import study</button><label class="filebtn">Import candidate response surfaces<input id="bq-response" type="file" accept=".json" hidden></label></div><p id="bq-source"></p><div class="formgrid"><label>Phase start MD (m)<input id="bq-from" type="number"></label><label>Phase end MD (m)<input id="bq-to" type="number"></label><label>Depth stations<input id="bq-count" type="number" value="3" min="2" max="21"></label><label>Max build (°/30 m)<input id="bq-build" type="number" value="3" min="0" step="any"></label><label>Max drop (°/30 m)<input id="bq-drop" type="number" value="3" min="0" step="any"></label><label>Max DLS (°/30 m)<input id="bq-dls" type="number" value="4" min="0" step="any"></label><label>Target northing (m)<input id="bq-n" type="number" step="any"></label><label>Target easting (m)<input id="bq-e" type="number" step="any"></label><label>Target TVD (m)<input id="bq-tvd" type="number" step="any"></label><label>Target tolerance (m)<input id="bq-tolerance" type="number" value="10" min="0"></label></div><p>Target uses the survey local origin and checks the full planned trajectory endpoint. Initial target equals the current endpoint. Directional limits are editable design objectives, not tool ratings.</p><fieldset><legend>Required capabilities</legend>${[
+  box.innerHTML = `<div class="eng-kicker">PRE-DESIGN / QUICK SIMULATION</div><h2>BHA candidate shortlist</h2><p>Start from the whole-string study, including its imported trajectory, architecture, tally and loads. Generate placement alternatives using your existing components, then compare sampled contact and bending. This does not invent a trajectory or manufacturer tools.</p><div class="work-toolbar"><button id="bq-capture" class="primary">Use current whole-string study</button><button id="bq-loads">Edit loads / import study</button><label class="filebtn">Import candidate response surfaces<input id="bq-response" type="file" accept=".json" hidden></label></div><p id="bq-source"></p><div class="formgrid"><label>Phase start MD (m)<input id="bq-from" type="number"></label><label>Phase end MD (m)<input id="bq-to" type="number"></label><label>Depth stations<input id="bq-count" type="number" value="11" min="2" max="21"></label><label>Max build (°/30 m)<input id="bq-build" type="number" value="3" min="0" step="any"></label><label>Max drop (°/30 m)<input id="bq-drop" type="number" value="3" min="0" step="any"></label><label>Max DLS (°/30 m)<input id="bq-dls" type="number" value="4" min="0" step="any"></label><label>Target northing (m)<input id="bq-n" type="number" step="any"></label><label>Target easting (m)<input id="bq-e" type="number" step="any"></label><label>Target TVD (m)<input id="bq-tvd" type="number" step="any"></label><label>Target tolerance (m)<input id="bq-tolerance" type="number" value="10" min="0"></label></div><p>Target uses the survey local origin and checks the full planned trajectory endpoint. Initial target equals the current endpoint. Directional limits are editable design objectives, not tool ratings.</p><fieldset><legend>Required capabilities</legend>${[
     ["gamma", "Gamma ray"],
     ["mwd", "MWD / surveys"],
     ["lwd", "LWD"],
@@ -18,11 +18,11 @@
     )
     .join(
       "",
-    )}</fieldset><p>Unknown capabilities stay missing; gamma ray is not inferred from MWD/LWD. Declare supported capabilities in imported component data. Required tools are retained; this first search changes placement only.</p><div class="work-toolbar"><button id="bq-run" class="primary">Generate and compare BHA candidates</button><button id="bq-cancel" disabled>Cancel</button><button id="bq-export" disabled>Export pre-design report</button></div><p id="bq-status" role="status"></p><div id="bq-results"></div><div id="bq-detail"></div><details><summary>Model scope and response import format</summary><p>The shortlist is Pareto-based on peak sampled contact reaction and bending stress: a candidate is retained when no other assessed candidate improves one without worsening the other. Unknown mechanical ratings and directional response remain unresolved. No globally optimal or operationally approved BHA is claimed.</p><p>Jar packages remain contiguous, but connection compatibility, neutral-zone placement, latch settings, hammer mass, magnetic spacing, tool directional ratings and formation response require review. Sparse survey/depth samples can miss local doglegs and contact peaks. Refine before interpreting.</p><p>Directional import: JSON schema <code>wellscope-candidate-responses/1</code>, with <code>entries</code> containing an exact <code>study</code> from the exported candidate, a <code>wellscope-directional-surface/1</code> surface and settings (mode, wobN, activation, toolface, inclination). Changes to study inputs invalidate association. Build/drop/DLS versus WOB are available only for an associated response; changing stabilizer positions does not generate a bit/rock response law.</p></details>`;
+    )}</fieldset><p>Unknown capabilities stay missing; gamma ray is not inferred from MWD/LWD. Declare supported capabilities in imported component data. Required tools are retained; this first search changes placement only.</p><div class="work-toolbar"><button id="bq-run" class="primary">Generate and compare BHA candidates</button><button id="bq-cancel" disabled>Cancel</button><button id="bq-export" disabled>Export pre-design report</button></div><p id="bq-status" role="status"></p><div id="bq-results"></div><div id="bq-detail"></div><details><summary>Model scope and response import format</summary><p>The shortlist is Pareto-based on maximum summed wall reaction over sampled bit depths and peak bending stress: a candidate is retained when no other assessed candidate improves one without worsening the other. Unknown mechanical ratings and directional response remain unresolved. No globally optimal or operationally approved BHA is claimed.</p><p>Jar packages remain contiguous, but connection compatibility, neutral-zone placement, latch settings, hammer mass, magnetic spacing, tool directional ratings and formation response require review. Sparse survey/depth samples can miss local doglegs and contact peaks. Refine before interpreting.</p><p>Directional import: JSON schema <code>wellscope-candidate-responses/1</code>, with <code>entries</code> containing an exact <code>study</code> from the exported candidate, a <code>wellscope-directional-surface/1</code> surface and settings (mode, wobN, activation, toolface, inclination). Changes to study inputs invalidate association. Build/drop/DLS versus WOB are available only for an associated response; changing stabilizer positions does not generate a bit/rock response law.</p></details>`;
   $("bha").querySelector(".page-head").after(box);
   const style = document.createElement("style");
   style.textContent =
-    "#bha-quick input[type=checkbox]{width:auto}#bq-anatomy{display:flex;overflow:auto;gap:12px}#bq-anatomy>div{flex:0 0 130px;text-align:center}#bq-anatomy svg{height:140px;width:70px}#bha-quick td,#bha-quick th,#sp-workspace td,#sp-workspace th{padding:9px;border-bottom:1px solid #dce3e7;text-align:left}#bq-charts{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:12px}";
+    "#bha-quick input[type=checkbox]{width:auto}#bq-anatomy{overflow:auto}#bha-quick td,#bha-quick th,#sp-workspace td,#sp-workspace th{padding:9px;border-bottom:1px solid #dce3e7;text-align:left}#bq-charts{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:12px}";
   document.head.append(style);
   style.textContent +=
     "#bha-quick>.formgrid{grid-template-columns:repeat(4,minmax(0,1fr))}#bha-quick button:not(.primary),#sp-workspace button{padding:8px;border:1px solid #b8c8d0;border-radius:5px;background:#fff;color:#274453;cursor:pointer}#bha-quick button:disabled,#sp-workspace button:disabled{opacity:.5;cursor:default}@media(max-width:1100px){#bha-quick>.formgrid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:600px){#bha-quick>.formgrid{grid-template-columns:1fr}}";
@@ -88,7 +88,11 @@
     const c = report.candidates[index],
       complete = c.rows.every((r) => r.status === "SOLVED_SCREENING");
     $("bq-detail").innerHTML =
-      `<h3>${H.esc(c.name)}</h3><div id="bq-anatomy">${c.input.components.map((b) => `<div>${EquipmentDrawing.svg(b.family || b.type || "drill-collar")}<b>${H.esc(b.name)}</b><p>${fmt(b.length)} m · OD ${fmt(b.od, 0.001)} mm</p></div>`).join("")}</div><p>Missing required capabilities: ${H.esc(c.missing.join(", ") || "none declared missing")}. Directional response: ${H.esc(c.directional.status)}. Mechanical shortlist does not establish directional feasibility or safe limits.</p><p>Load curves use off-bottom pickup/slackoff (no rotation) and off-bottom rotation, with zero bit force and bit torque. Friction, mud, block weight and RPM come from the frozen study. Mechanical contact uses the original study load case, not these separate operating modes.</p><div class="bq-diagnostics"><h4>Why this result?</h4><p>${H.esc(c.comparisonReason)}</p><ul>${c.unresolved.map((x) => `<li>${H.esc(x)}</li>`).join("")}</ul><p>Change versus reference: contact ${fmt(c.deltaFromReference?.[0], 9806.65)} tf · bending ${fmt(c.deltaFromReference?.[1], 1e6)} MPa. Negative means lower; these differences do not quantify numerical uncertainty.</p></div><div id="bq-charts"></div><div id="bq-inspect"></div>`;
+      `<h3>${H.esc(c.name)}</h3><div id="bq-anatomy">${AssemblyDrawing.svg(c.input.components)}</div><p>Missing required capabilities: ${H.esc(c.missing.join(", ") || "none declared missing")}. Directional response: ${H.esc(c.directional.status)}. Mechanical shortlist does not establish directional feasibility or safe limits.</p><p>Load curves use off-bottom pickup/slackoff (no rotation) and off-bottom rotation, with zero bit force and bit torque. Friction, mud, block weight and RPM come from the frozen study. Mechanical contact uses the original study load case, not these separate operating modes.</p><div class="bq-diagnostics"><h4>Why this result?</h4><p>${H.esc(c.comparisonReason)}</p><ul>${c.unresolved.map((x) => `<li>${H.esc(x)}</li>`).join("")}</ul><p>Change versus reference: summed wall reaction ${fmt(c.deltaFromReference?.[0], 9806.65)} tf · bending ${fmt(c.deltaFromReference?.[1], 1e6)} MPa. Negative means lower; these differences do not quantify numerical uncertainty.</p></div><div id="bq-charts"></div><div id="bq-inspect"></div>`;
+    $("bq-charts").insertAdjacentHTML(
+      "beforebegin",
+      '<p class="curve-basis">Depth increases downward; each marker is a new solve at that bit depth, not a local load along one fixed string. No interpolated curve is claimed between stations. Wall-reaction sums are transverse forces, not hookload. Refine depth spacing and beam mesh to check sensitivity.</p>',
+    );
     const charts = $("bq-charts"),
       add = (html) =>
         charts.insertAdjacentHTML(
@@ -104,7 +108,12 @@
               points: c.rows.map((r) => ({ x: r.contactN / 9806.65, y: r.md })),
             },
           ],
-          { x: "Total contact reaction (tf)", y: "Bit MD (m)", depth: true },
+          {
+            x: "Sum of wall reactions (tf)",
+            y: "Bit depth (m MD)",
+            depth: true,
+            pointsOnly: true,
+          },
         ),
       );
       add(
@@ -120,8 +129,9 @@
           ],
           {
             x: "Peak sampled bending stress (MPa)",
-            y: "Bit MD (m)",
+            y: "Bit depth (m MD)",
             depth: true,
+            pointsOnly: true,
           },
         ),
       );
@@ -139,7 +149,12 @@
               y: report.depths[i],
             })),
           })),
-          { x: "Hookload (tf)", y: "Bit MD (m)", depth: true },
+          {
+            x: "Surface hookload (tf)",
+            y: "Bit depth (m MD)",
+            depth: true,
+            pointsOnly: true,
+          },
         ),
       );
       if (c.loads.every((r) => r.rotating))
@@ -154,7 +169,12 @@
                 })),
               },
             ],
-            { x: "Surface torque (tf.m)", y: "Bit MD (m)", depth: true },
+            {
+              x: "Surface torque (tf.m)",
+              y: "Bit depth (m MD)",
+              depth: true,
+              pointsOnly: true,
+            },
           ),
         );
     } else
@@ -254,7 +274,7 @@
   function render() {
     const g = report.geometry;
     $("bq-results").innerHTML =
-      `<p>Trajectory endpoint distance to target: ${fmt(g.targetDistanceM)} m · ${g.targetWithinTolerance ? "within requested tolerance" : "TARGET MISMATCH"}. ${g.violations.length} survey intervals exceed build/drop/DLS objectives. Max build ${fmt(g.maxBuild)}, drop ${fmt(g.maxDrop)}, DLS ${fmt(g.maxDLS)} °/30 m.</p><div style="overflow:auto"><table><thead><tr><th>Candidate</th><th>Mechanical comparison</th><th>Peak contact (tf)</th><th>Peak bending (MPa)</th><th>Required capabilities</th><th>Response surface</th></tr></thead><tbody>${report.candidates.map((c, i) => `<tr><td><button data-candidate="${i}">${H.esc(c.name)}</button></td><td>${c.mechanicalCandidate ? "Pareto candidate · preliminary" : "Not shortlisted · see reasons"}</td><td>${fmt(c.metrics?.[0], 9806.65)}</td><td>${fmt(c.metrics?.[1], 1e6)}</td><td>${H.esc(c.missing.join(", ") || (report.options.required.length ? "Present" : "None requested"))}</td><td>${H.esc(c.directional.status)}</td></tr>`).join("")}</tbody></table></div>`;
+      `<p>Trajectory endpoint distance to target: ${fmt(g.targetDistanceM)} m · ${g.targetWithinTolerance ? "within requested tolerance" : "TARGET MISMATCH"}. ${g.violations.length} survey intervals exceed build/drop/DLS objectives. Max build ${fmt(g.maxBuild)}, drop ${fmt(g.maxDrop)}, DLS ${fmt(g.maxDLS)} °/30 m.</p><div style="overflow:auto"><table><thead><tr><th>Candidate</th><th>Mechanical comparison</th><th>Max total wall reaction (tf)</th><th>Peak bending (MPa)</th><th>Required capabilities</th><th>Response surface</th></tr></thead><tbody>${report.candidates.map((c, i) => `<tr><td><button data-candidate="${i}">${H.esc(c.name)}</button></td><td>${c.mechanicalCandidate ? "Pareto candidate · preliminary" : "Not shortlisted · see reasons"}</td><td>${fmt(c.metrics?.[0], 9806.65)}</td><td>${fmt(c.metrics?.[1], 1e6)}</td><td>${H.esc(c.missing.join(", ") || (report.options.required.length ? "Present" : "None requested"))}</td><td>${H.esc(c.directional.status)}</td></tr>`).join("")}</tbody></table></div>`;
     draw(0);
   }
   $("bq-results").onclick = (e) => {

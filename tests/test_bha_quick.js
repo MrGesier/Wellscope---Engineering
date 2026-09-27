@@ -178,3 +178,30 @@ assert.match(missing.comparisonReason, /gamma/);
 console.log(
   "Comparison diagnostics, missing-data refusal, peak location and duplicate-response tests passed",
 );
+
+const chart = require("../app/engineering-charts");
+const sample = [
+  {
+    name: "Test",
+    points: [
+      { x: 0, y: 10 },
+      { x: 1, y: 20 },
+      { x: NaN, y: 30 },
+      { x: 3, y: 40 },
+      { x: 4, y: 50 },
+    ],
+  },
+];
+assert.equal(
+  (chart.svg(sample, { depth: true }).match(/<polyline/g) || []).length,
+  2,
+  "Missing stations must split a curve",
+);
+assert.equal(
+  (
+    chart.svg(sample, { depth: true, pointsOnly: true }).match(/<polyline/g) ||
+    []
+  ).length,
+  0,
+  "Discrete solves must not imply interpolation",
+);

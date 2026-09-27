@@ -23,6 +23,7 @@ const { chromium } = require("playwright-core"),
     await p.goto(
       pathToFileURL(path.resolve(__dirname, "../app/index.html")).href,
     );
+    await p.locator("#advanced-navigation > summary").click();
     await nav("studies");
     await p.waitForSelector("#studies.active");
     assert.equal(await p.locator(".study-card").count(), 16);
