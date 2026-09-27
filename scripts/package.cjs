@@ -14,6 +14,7 @@ for (const entry of [
   "research",
   "tests",
   "scripts",
+  "src",
   "README.md",
   "LAUNCH_WELLSCOPE.cmd",
   "package.json",
