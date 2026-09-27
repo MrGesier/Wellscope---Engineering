@@ -236,6 +236,7 @@
       $("bs-error").textContent = e.message;
     }
   }
+  const forceScale = () => forceUnit === "tf" ? 9806.65 : 1000;
   function metrics(r) {
     return `<td>${(r.maxOffset * 1000).toFixed(2)}</td><td>${(r.maxBendingPa / 1e6).toFixed(2)}</td><td>${((r.twistRad * 180) / Math.PI).toFixed(2)}</td><td>${r.contacts}</td>`;
   }
@@ -250,7 +251,7 @@
       JSON.stringify(baseline.input.survey) === JSON.stringify(input.survey) &&
       baseline.input.inc === input.inc;
     $("bs-summary").innerHTML =
-      `<table><tr><th>Design</th><th>Max eccentricity (mm)</th><th>Max bending stress (MPa)</th><th>Elastic twist (°)</th><th>Contact nodes</th></tr><tr><th>Current<br>${(input.wobN / 9806.65).toFixed(2)} tf / ${(input.torqueNm / 1000).toFixed(2)} kN·m</th>${metrics(result)}</tr>${baseline ? `<tr><th>A: ${esc(baseline.input.name)}<br>${(baseline.input.wobN / 9806.65).toFixed(2)} tf / ${(baseline.input.torqueNm / 1000).toFixed(2)} kN·m</th>${metrics(baseline.result)}</tr>` : ""}</table><p>Convergence residual ${result.residualN.toFixed(3)} N. Contact-node count is mesh dependent, not a count of physical tools.${baseline && !same ? " Comparison uses different geometry / boundaries: overlay disabled." : ""}</p>`;
+      `<table><tr><th>Design</th><th>Max eccentricity (mm)</th><th>Max bending stress (MPa)</th><th>Elastic twist (°)</th><th>Contact nodes</th></tr><tr><th>Current<br>${(input.wobN / forceScale()).toFixed(2)} ${forceUnit} / ${(input.torqueNm / forceScale()).toFixed(2)} ${forceUnit}·m</th>${metrics(result)}</tr>${baseline ? `<tr><th>A: ${esc(baseline.input.name)}<br>${(baseline.input.wobN / forceScale()).toFixed(2)} ${forceUnit} / ${(baseline.input.torqueNm / forceScale()).toFixed(2)} ${forceUnit}·m</th>${metrics(baseline.result)}</tr>` : ""}</table><p>Convergence residual ${result.residualN.toFixed(3)} N. Contact-node count is mesh dependent, not a count of physical tools.${baseline && !same ? " Comparison uses different geometry / boundaries: overlay disabled." : ""}</p>`;
     input.overlayCompatible = !!same;
     const max = Math.max(1, ...result.rows.map((r) => r.bendingPa / 1e6)),
       rows = result.rows;
@@ -272,7 +273,7 @@
     if (!result) return;
     const r = result.rows[Math.min(input.n, +$("bs-station").value)];
     $("bs-inspect").textContent =
-      `MD ${r.md.toFixed(2)} m · ${r.name} · eccentricity ${(r.offset * 1000).toFixed(2)} mm · bending ${(r.bendingPa / 1e6).toFixed(2)} MPa · ${r.x === 0 || r.x === input.length ? "Imposed end support" : r.contact ? "Wall contact" : "No wall contact"} · reaction ${(r.reactionN / 9806.65).toFixed(3)} tf`;
+      `MD ${r.md.toFixed(2)} m · ${r.name} · eccentricity ${(r.offset * 1000).toFixed(2)} mm · bending ${(r.bendingPa / 1e6).toFixed(2)} MPa · ${r.x === 0 || r.x === input.length ? "Imposed end support" : r.contact ? "Wall contact" : "No wall contact"} · reaction ${(r.reactionN / forceScale()).toFixed(3)} ${forceUnit}`;
   }
   function draw() {
     const c = $("bs-canvas");
