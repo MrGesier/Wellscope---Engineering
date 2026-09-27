@@ -31,7 +31,7 @@
       tf,
     ],
   ];
-  box.innerHTML = `<h3>Distributed loads → 3D shape</h3><p>Calculate the effective tension along this exact tally at the current bit depth. Loads are recalculated after geometry or depth changes. Positive bottom force pulls the string down; negative force represents effective bottom compression. This is not a conversion of measured WOB without a pressure/boundary reconciliation.</p><div class="work-toolbar"><label>Axial model <select id="sl-mode"><option value="constant">Prescribed constant tension</option><option value="soft-string">Distributed soft-string profile</option></select></label></div><div class="formgrid">${fields.map(([k, l, v]) => `<label>${l}<input id="sl-${k}" type="number" step="any" value="${v}"></label>`).join("")}<label>Load assumptions / revision<input id="sl-source" value="SYNTHETIC sensitivity assumptions"></label><label>Surface limits source / revision<input id="sl-limitSource" placeholder="Required to assess equipment limits"></label></div><button id="sl-apply">Apply loads / calculate shape</button><p id="sl-draft" role="status"></p><p id="sl-summary"></p><button id="sl-export" disabled>Export load profile CSV</button><div id="sl-chart"></div><div id="sl-actions"></div><details><summary>Selected component: sourced limits</summary><p>Use allowable (already derated) ratings. Tube-body von Mises checks include axial wall stress, pressure and torsion, but exclude bending. Ratings alone do not certify the combined loaded shape.</p><div id="sl-tool" class="formgrid"></div><button id="sl-save">Apply limits / recalculate</button><p id="sl-limit-status"></p></details><p>One-way coupling: soft-string tension drives transverse stiffness. 3D wall reactions do not feed back into torque/drag. Equal internal/external mud density, zero surface pressure, hydrostatic pressure, uniform string RPM. No dynamic, post-buckling, fatigue or wear prediction.</p><p><a href="https://www.aade.org/download_file/2710/491" target="_blank" rel="noopener">AADE: load and component limits</a> · <a href="https://www.hpinc.com/resources/technical-paper/stiff-string-casing-design-tortuosity-and-centralisation" target="_blank" rel="noopener">H&P: why stiffness and clearance matter</a></p>`;
+  box.innerHTML = `<h3>Distributed loads → 3D shape</h3><p>Calculate the effective tension along this exact tally at the current bit depth. Loads are recalculated after geometry or depth changes. Positive bottom force pulls the string down; negative force represents effective bottom compression. This is not a conversion of measured WOB without a pressure/boundary reconciliation.</p><div class="work-toolbar"><label>Axial model <select id="sl-mode"><option value="constant">Prescribed constant tension</option><option value="soft-string">Distributed soft-string profile</option></select></label></div><div class="formgrid">${fields.map(([k, l, v]) => `<label>${l}<input id="sl-${k}" type="number" step="any" value="${v}"></label>`).join("")}<label>Load assumptions / revision<input id="sl-source" value="SYNTHETIC sensitivity assumptions"></label><label>Surface limits source / revision<input id="sl-limitSource" placeholder="Required to assess equipment limits"></label></div><button id="sl-apply">Apply loads / calculate shape</button><p id="sl-draft" role="status"></p><p id="sl-summary"></p><button id="sl-export" disabled>Export load profile CSV</button><div id="sl-chart"></div><div id="sl-actions"></div><details><summary>Selected component: sourced limits</summary><p>Use allowable (already derated) ratings. The load-only checks below exclude bending. The separate Combined mechanics panel includes sampled beam bending for declared uniform tube bodies. G and Poisson ratio enable equivalent elastic twist and extension. Ratings alone do not certify the complete assembly.</p><div id="sl-tool" class="formgrid"></div><button id="sl-save">Apply limits / recalculate</button><p id="sl-limit-status"></p></details><p>One-way coupling: soft-string tension drives transverse stiffness. 3D wall reactions do not feed back into torque/drag. Equal internal/external mud density, zero surface pressure, hydrostatic pressure, uniform string RPM. No dynamic, post-buckling, fatigue or wear prediction.</p><p><a href="https://www.aade.org/download_file/2710/491" target="_blank" rel="noopener">AADE: load and component limits</a> · <a href="https://www.hpinc.com/resources/technical-paper/stiff-string-casing-design-tortuosity-and-centralisation" target="_blank" rel="noopener">H&P: why stiffness and clearance matter</a></p>`;
   $("sd-workspace").before(box);
   let key = "",
     selected = -1,
@@ -42,6 +42,8 @@
     ["allowableTorqueNm", "Allowable torque (tf.m)", tf],
     ["yieldPa", "Tube yield (MPa)", 1e6],
     ["designFactor", "Tube design factor", 1],
+    ["G", "Equivalent shear modulus G (GPa)", 1e9],
+    ["nu", "Poisson ratio ν (–)", 1],
   ];
   function edit() {
     const b = state.input.components[state.selected];
@@ -204,6 +206,7 @@
     try {
       const p = StringInHole.snapshot().input,
         b = p.components[state.selected];
+      const priorMaterial = JSON.stringify([b.G, b.nu]);
       for (const [k, , f] of ratings) {
         const v = $("sl-tool-" + k).value;
         if (v === "") delete b[k];
@@ -211,6 +214,9 @@
       }
       b.bodyModel = $("sl-body").value || undefined;
       b.limitSource = $("sl-tool-source").value;
+      if (priorMaterial !== JSON.stringify([b.G, b.nu]))
+        b.materialSource =
+          "User-entered elastic properties / source: " + b.limitSource;
       // Validate ratings even when the current preview is constant-tension.
       const temp = {
         ...p,
