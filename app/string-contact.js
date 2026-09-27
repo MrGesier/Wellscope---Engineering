@@ -1,8 +1,9 @@
-/* Preliminary whole-string transverse beam. Prescribed constant axial tension,
+/* Preliminary whole-string transverse beam. Constant or one-way distributed effective axial tension,
    fixed survey-normal planes, centred end pins and frictionless circular stops. */
 (function (root) {
   const E = root.WellEngine || require("./engine"),
-    A = root.BhaStatic || require("./bha-static");
+    A = root.BhaStatic || require("./bha-static"),
+    Loads = root.StringLoads || require("./string-loads");
   const dot = (a, b) => a.reduce((s, v, i) => s + v * b[i], 0),
     num = (v, name, lo, hi = Infinity) => {
       if (typeof v !== "number" || !Number.isFinite(v) || v < lo || v > hi)
@@ -218,6 +219,7 @@
   }
   function solve(p) {
     const { nodes, h, parts, count } = prepare(p),
+      axial = p.axial ? Loads.solve(p) : null,
       N = nodes.length,
       M = 2 * N,
       band = 5,
@@ -259,7 +261,14 @@
       );
     }
     for (let i = 0; i < N - 1; i++)
-      term([i, i + 1], [-1, 1], p.tensionN / (nodes[i + 1].md - nodes[i].md));
+      term(
+        [i, i + 1],
+        [-1, 1],
+        (axial
+          ? Loads.average(axial, nodes[i].md, nodes[i + 1].md)
+          : p.tensionN) /
+          (nodes[i + 1].md - nodes[i].md),
+      );
     nodes.forEach((n, i) =>
       n.axes.forEach(
         (axis, d) => (f[2 * i + d] += n.weight * n.cellWidth * axis[2]),
@@ -449,6 +458,7 @@
           );
       return {
         md: n.md,
+        effectiveN: axial ? Loads.at(axial, n.md) : p.tensionN,
         position: positions[i],
         center: n.center,
         axes: n.axes,
@@ -482,6 +492,7 @@
     }
     return {
       status: "PRELIMINARY TRANSVERSE EQUILIBRIUM",
+      axial,
       rows,
       parts,
       iterations,
@@ -492,7 +503,10 @@
       adaptive: !!p.adaptive,
       contacts: rows.filter((r) => r.contact).length,
       model:
-        "Prescribed constant tension, frictionless wall, fixed survey-normal planes, centred end pins; no axial/torsional coupling or dynamics",
+        (axial
+          ? "One-way soft-string effective tension profile; no transverse-contact feedback to drag/torque. "
+          : "Prescribed constant tension. ") +
+        "Frictionless transverse wall, fixed survey-normal planes, centred end pins; no torsion-shape coupling or dynamics",
     };
   }
   root.StringContact = { prepare, solve, surveyAt };

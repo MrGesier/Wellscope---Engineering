@@ -24,7 +24,8 @@
       p.sections,
       p.bitMD,
       p.rho,
-      p.tensionN,
+      p.axial ? null : p.tensionN,
+      p.axial,
       p.stepM,
       !!p.adaptive,
       p.fineStepM ?? 1,
@@ -124,7 +125,7 @@
     $("sd-compare").textContent = !baseline
       ? "Keep design A, then edit the selected component to calculate B."
       : compatible
-        ? "A/B: identical survey, architecture, depth, mud, prescribed tension and mesh settings. Geometry-sensitive station locations may differ."
+        ? "A/B: identical survey, architecture, depth, mud, axial boundary conditions and mesh settings. Geometry-sensitive station locations may differ."
         : "Comparison hidden: conditions differ from frozen A. Restore A or keep a new baseline before comparing.";
     if (!r) {
       currentView?.update(null, {});
@@ -201,7 +202,7 @@
     g.font = "12px sans-serif";
     g.fillText("Section at actual proportions", 20, 250);
     $("sd-contact").innerHTML =
-      `<b>${nearest.md.toFixed(2)} m MD · ${esc(b.name)}</b><p>${nearest.pin ? "Centred support" : nearest.contact ? "Wall contact" : "No wall reaction"} · ${(nearest.reactionN / 9806.65).toFixed(3)} tf</p><p>Eccentricity ${(nearest.offset * 1000).toFixed(2)} mm · conservative clearance ${Math.max(0, (nearest.gap - nearest.offset) * 1000).toFixed(2)} mm<br>Solid blue: body · dashed copper: cell contact envelope.<br>Section rounded to nearest calculated station; axes are local normal planes.</p>`;
+      `<b>${nearest.md.toFixed(2)} m MD · ${esc(b.name)}</b><p>${nearest.pin ? "Centred support" : nearest.contact ? "Wall contact" : "No wall reaction"} · ${(nearest.reactionN / 9806.65).toFixed(3)} tf</p><p>Effective axial force ${(nearest.effectiveN / 9806.65).toFixed(3)} tf (${p.axial ? "distributed profile" : "constant input"})</p><p>Eccentricity ${(nearest.offset * 1000).toFixed(2)} mm · conservative clearance ${Math.max(0, (nearest.gap - nearest.offset) * 1000).toFixed(2)} mm<br>Solid blue: body · dashed copper: cell contact envelope.<br>Section rounded to nearest calculated station; axes are local normal planes.</p>`;
     const m = metrics(r),
       a = compatible ? metrics(baseline.result) : null;
     $("sd-metrics").innerHTML =
