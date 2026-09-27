@@ -35,3 +35,7 @@ The legend spans zero to the maximum nodal value across the current design and t
 Enable Beam mesh to show circles at nodes, square element-midpoint targets and node labels. Click a target for the design identity, node/element index, MD, selected scalar and endpoint reactions. Dragging orbits without selecting. The depth slider returns inspection to the current design's nodes. Contact arrows use the computed two-plane reaction vector projected into the view, and lengths proportional to force on a shared 60-pixel maximum; they are schematic force glyphs, not displacement vectors. End-pin reactions remain available in inspection but are not drawn as wall contacts. Reactions aligned with the viewing direction may project to zero.
 
 Browser regression checks cover common A/B colour range, units, view-control invariance and clicking an element in the projected canvas.
+
+## Detailed mock manual import
+
+`app/assets/examples/bha-static-training.json` is a complete synthetic Northbank N-04 / Run 07 local-span study: four casing/open-hole intervals, six equivalent BHA components, survey, source labels, WOB, torque and mud density. `app/bha-import-example.js` bundles the same payload for offline use. The first module visit uses the same loader/calculation path as JSON upload; subsequent navigation preserves edits. Download the sample or use Load detailed mock import to restore it explicitly. `#bha-static` opens this module directly. All dimensions and tool stiffnesses are fictional assumptions, not vendor or client data.

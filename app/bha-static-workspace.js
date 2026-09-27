@@ -76,11 +76,26 @@
   nav.className = "nav";
   nav.dataset.page = page.id;
   nav.textContent = "Architecture & BHA deformation";
+  let firstVisit = true;
   nav.onclick = () => {
     WellApp.navigate(page.id);
     $("crumb").textContent = "ARCHITECTURE / BHA DEFORMATION";
+    if (firstVisit) {
+      firstVisit = false;
+      load(clone(window.BhaImportExample));
+    }
     draw();
   };
+  const importSample = document.createElement("button");
+  importSample.id = "bs-mock-import";
+  importSample.textContent = "Load detailed mock import";
+  importSample.onclick = () => load(clone(window.BhaImportExample));
+  $("bs-demo").before(importSample);
+  const sampleLink = document.createElement("a");
+  sampleLink.href = "assets/examples/bha-static-training.json";
+  sampleLink.download = "bha-static-training.json";
+  sampleLink.textContent = "Download mock import JSON";
+  $("bs-demo").after(sampleLink);
   document.querySelector('[data-page="bha"]').after(nav);
   const field = (id, label, v, type = "number") =>
     `<label>${label}<input id="${id}" type="${type}" ${type === "number" ? 'step="any"' : ""} value="${esc(v)}"></label>`;
@@ -749,4 +764,5 @@
     demo,
   };
   paint();
+  if (location.hash === "#bha-static") nav.onclick();
 })();

@@ -19,6 +19,27 @@ const { chromium } = require("playwright-core"),
       pathToFileURL(path.resolve(__dirname, "../app/index.html")).href,
     );
     await page.locator('[data-page="bha-static"]').click();
+    const imported = await page.evaluate(() => BhaStaticWorkspace.snapshot());
+    assert.equal(imported.input.components.length, 6);
+    assert.equal(imported.input.sections.length, 4);
+    assert.match(imported.input.source, /SYNTHETIC mock manual import/);
+    assert.ok(imported.result);
+    await page.locator("#bs-name").fill("Pending import replacement");
+    await page
+      .locator("#bs-import")
+      .setInputFiles(
+        path.resolve(
+          __dirname,
+          "../app/assets/examples/bha-static-training.json",
+        ),
+      );
+    await page.waitForFunction(
+      () => BhaStaticWorkspace.snapshot().result !== null,
+    );
+    assert.deepEqual(
+      await page.evaluate(() => BhaStaticWorkspace.snapshot().result),
+      imported.result,
+    );
     await page.locator("#bs-demo").click();
     assert.equal(await page.locator("#bs-error").textContent(), "");
     let s = await page.evaluate(() => BhaStaticWorkspace.snapshot());
@@ -86,14 +107,12 @@ const { chromium } = require("playwright-core"),
     });
     await page.locator("#bs-canvas").scrollIntoViewIfNeeded();
     const box = await page.locator("#bs-canvas").boundingBox();
-    await page
-      .locator("#bs-canvas")
-      .click({
-        position: {
-          x: (point[0] * box.width) / 1100,
-          y: (point[1] * box.height) / 430,
-        },
-      });
+    await page.locator("#bs-canvas").click({
+      position: {
+        x: (point[0] * box.width) / 1100,
+        y: (point[1] * box.height) / 430,
+      },
+    });
     assert.match(
       await page.locator("#bs-inspect").textContent(),
       /Current · element 8/,
