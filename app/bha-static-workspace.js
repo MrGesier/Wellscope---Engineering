@@ -211,6 +211,7 @@
     draw();
   }
   page.addEventListener("input", (e) => {
+    if (e.target.closest("#bs3-panel")) return;
     if (
       !["bs-scale", "bs-station", "bs-field", "bs-mesh", "bs-arrows"].includes(
         e.target.id,
@@ -345,6 +346,11 @@
       `MD ${r.md.toFixed(2)} m · ${r.name} · eccentricity ${(r.offset * 1000).toFixed(2)} mm · bending ${(r.bendingPa / 1e6).toFixed(2)} MPa · ${r.x === 0 || r.x === input.length ? "Imposed end support" : r.contact ? "Wall contact" : "No wall contact"} · reaction ${(r.reactionN / forceScale()).toFixed(3)} ${forceUnit}`;
   }
   function draw() {
+    window.dispatchEvent(
+      new CustomEvent("bha-static-update", {
+        detail: { input: clone(input), result: result ? clone(result) : null },
+      }),
+    );
     const c = $("bs-canvas");
     if (!c) return;
     const g = c.getContext("2d");
@@ -770,6 +776,11 @@
   };
   window.BhaStaticWorkspace = {
     snapshot: () => clone({ input, result, baseline }),
+    moveDepth: (md) => {
+      $("bs-md").value = md;
+      calculate();
+      return !!result;
+    },
     demo,
   };
   paint();
