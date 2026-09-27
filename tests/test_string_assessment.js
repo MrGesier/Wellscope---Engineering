@@ -128,6 +128,8 @@ split.components = [
 ];
 const ss = A.assess(split, S.solve(split));
 assert.equal(ss.rows.find((n) => n.md === 50).combined, null);
+assert.equal(ss.rows.find((n) => n.md === 50).momentNm, null);
+assert.ok(ss.rows.find((n) => n.md === 45).combined);
 console.log(
   "Combined stress tensor oracle, hydrostatic invariance, torsion/extension, source gates, interfaces and immutability passed",
 );

@@ -51,15 +51,17 @@
         interior =
           i > 0 &&
           i < shape.rows.length - 1 &&
-          p.bitMD - shape.rows[i - 1].md < b.end - 1e-7 &&
-          p.bitMD - shape.rows[i + 1].md > b.start + 1e-7;
+          distance > b.start + 1e-7 &&
+          distance < b.end - 1e-7 &&
+          p.bitMD - shape.rows[i - 1].md <= b.end + 1e-7 &&
+          p.bitMD - shape.rows[i + 1].md >= b.start - 1e-7;
       const base = {
         md: n.md,
         component: n.component,
         name: b.name,
         curvature: n.curvature,
         momentNm:
-          n.curvature == null
+          !interior || n.curvature == null
             ? null
             : ((b.E * R.section(b).J) / 2) * n.curvature,
         contactNperM: n.pin
