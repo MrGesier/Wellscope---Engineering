@@ -4,6 +4,12 @@
     A = root.BhaStatic || require("./bha-static");
   function solve(p) {
     A.architecture(p.sections);
+    for (const b of p.components) {
+      if (b.G != null && (!Number.isFinite(b.G) || b.G <= 0))
+        throw Error(b.name + ": shear modulus G must be positive");
+      if (b.nu != null && (!Number.isFinite(b.nu) || b.nu <= -1 || b.nu >= 0.5))
+        throw Error(b.name + ": Poisson ratio must be between -1 and 0.5");
+    }
     const a = p.axial;
     if (!a || a.mode !== "soft-string" || !a.source?.trim())
       throw Error("Axial model mode and source required");
