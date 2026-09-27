@@ -88,7 +88,7 @@
     const c = report.candidates[index],
       complete = c.rows.every((r) => r.status === "SOLVED_SCREENING");
     $("bq-detail").innerHTML =
-      `<h3>${H.esc(c.name)}</h3><div id="bq-anatomy">${c.input.components.map((b) => `<div>${EquipmentDrawing.svg(b.family || b.type || "drill-collar")}<b>${H.esc(b.name)}</b><p>${fmt(b.length)} m · OD ${fmt(b.od, 0.001)} mm</p></div>`).join("")}</div><p>Missing required capabilities: ${H.esc(c.missing.join(", ") || "none declared missing")}. Directional response: ${H.esc(c.directional.status)}. Mechanical shortlist does not establish directional feasibility or safe limits.</p><p>Load curves use off-bottom pickup/slackoff (no rotation) and off-bottom rotation, with zero bit force and bit torque. Friction, mud, block weight and RPM come from the frozen study. Mechanical contact uses the original study load case, not these separate operating modes.</p><div id="bq-charts"></div><div id="bq-inspect"></div>`;
+      `<h3>${H.esc(c.name)}</h3><div id="bq-anatomy">${c.input.components.map((b) => `<div>${EquipmentDrawing.svg(b.family || b.type || "drill-collar")}<b>${H.esc(b.name)}</b><p>${fmt(b.length)} m · OD ${fmt(b.od, 0.001)} mm</p></div>`).join("")}</div><p>Missing required capabilities: ${H.esc(c.missing.join(", ") || "none declared missing")}. Directional response: ${H.esc(c.directional.status)}. Mechanical shortlist does not establish directional feasibility or safe limits.</p><p>Load curves use off-bottom pickup/slackoff (no rotation) and off-bottom rotation, with zero bit force and bit torque. Friction, mud, block weight and RPM come from the frozen study. Mechanical contact uses the original study load case, not these separate operating modes.</p><div class="bq-diagnostics"><h4>Why this result?</h4><p>${H.esc(c.comparisonReason)}</p><ul>${c.unresolved.map((x) => `<li>${H.esc(x)}</li>`).join("")}</ul><p>Change versus reference: contact ${fmt(c.deltaFromReference?.[0], 9806.65)} tf · bending ${fmt(c.deltaFromReference?.[1], 1e6)} MPa. Negative means lower; these differences do not quantify numerical uncertainty.</p></div><div id="bq-charts"></div><div id="bq-inspect"></div>`;
     const charts = $("bq-charts"),
       add = (html) =>
         charts.insertAdjacentHTML(
@@ -225,7 +225,17 @@
     $("bq-inspect").innerHTML = c.rows
       .map(
         (r, i) =>
-          `<p>${fmt(r.md)} m · ${H.esc(r.error || r.status)} · body limits: ${H.esc(r.bodyStatus || "Not evaluated")} ${r.status === "SOLVED_SCREENING" ? `<button data-depth="${i}">Inspect in 3D</button>` : ""}</p>`,
+          `<p>${fmt(r.md)} m · ${H.esc(r.error || r.status)} · body limits: ${H.esc(r.bodyStatus || "Not evaluated")} ${
+            r.status === "SOLVED_SCREENING"
+              ? ["peakContact", "peakBending"]
+                  .filter((k) => r[k])
+                  .map(
+                    (k) =>
+                      `<button data-depth="${i}" data-field="${k}">Inspect ${k === "peakContact" ? "peak contact" : "peak bending"} · ${H.esc(r[k].name)} at ${fmt(r[k].md)} m</button>`,
+                  )
+                  .join(" ")
+              : ""
+          }</p>`,
       )
       .join("");
     $("bq-inspect").onclick = (e) => {
@@ -234,6 +244,9 @@
       const p = structuredClone(c.input);
       p.bitMD = report.depths[+b.dataset.depth];
       StringInHole.applyStudy(p);
+      const point = c.rows[+b.dataset.depth][b.dataset.field];
+      if (point && StringInHole.snapshot().result)
+        StringInHole.select(point.component, point.md);
       document.querySelector('[data-page="bha-static"]').click();
       $("sd-workspace").scrollIntoView();
     };
@@ -241,7 +254,7 @@
   function render() {
     const g = report.geometry;
     $("bq-results").innerHTML =
-      `<p>Trajectory endpoint distance to target: ${fmt(g.targetDistanceM)} m · ${g.targetWithinTolerance ? "within requested tolerance" : "TARGET MISMATCH"}. ${g.violations.length} survey intervals exceed build/drop/DLS objectives. Max build ${fmt(g.maxBuild)}, drop ${fmt(g.maxDrop)}, DLS ${fmt(g.maxDLS)} °/30 m.</p><div style="overflow:auto"><table><thead><tr><th>Candidate</th><th>Mechanical comparison</th><th>Peak contact (tf)</th><th>Peak bending (MPa)</th><th>Required capabilities</th><th>Response surface</th></tr></thead><tbody>${report.candidates.map((c, i) => `<tr><td><button data-candidate="${i}">${H.esc(c.name)}</button></td><td>${c.mechanicalCandidate ? "Pareto candidate · preliminary" : "Not shortlisted / unresolved"}</td><td>${fmt(c.metrics?.[0], 9806.65)}</td><td>${fmt(c.metrics?.[1], 1e6)}</td><td>${H.esc(c.missing.join(", ") || "Present")}</td><td>${H.esc(c.directional.status)}</td></tr>`).join("")}</tbody></table></div>`;
+      `<p>Trajectory endpoint distance to target: ${fmt(g.targetDistanceM)} m · ${g.targetWithinTolerance ? "within requested tolerance" : "TARGET MISMATCH"}. ${g.violations.length} survey intervals exceed build/drop/DLS objectives. Max build ${fmt(g.maxBuild)}, drop ${fmt(g.maxDrop)}, DLS ${fmt(g.maxDLS)} °/30 m.</p><div style="overflow:auto"><table><thead><tr><th>Candidate</th><th>Mechanical comparison</th><th>Peak contact (tf)</th><th>Peak bending (MPa)</th><th>Required capabilities</th><th>Response surface</th></tr></thead><tbody>${report.candidates.map((c, i) => `<tr><td><button data-candidate="${i}">${H.esc(c.name)}</button></td><td>${c.mechanicalCandidate ? "Pareto candidate · preliminary" : "Not shortlisted · see reasons"}</td><td>${fmt(c.metrics?.[0], 9806.65)}</td><td>${fmt(c.metrics?.[1], 1e6)}</td><td>${H.esc(c.missing.join(", ") || (report.options.required.length ? "Present" : "None requested"))}</td><td>${H.esc(c.directional.status)}</td></tr>`).join("")}</tbody></table></div>`;
     draw(0);
   }
   $("bq-results").onclick = (e) => {
@@ -267,7 +280,14 @@
         data.entries.length > 50
       )
         throw Error("Invalid response bundle");
+      const seenStudies = new Set();
       for (const x of data.entries) {
+        const key = Q.identity(x.study);
+        if (seenStudies.has(key))
+          throw Error(
+            "Duplicate response association: keep one surface per study.",
+          );
+        seenStudies.add(key);
         if (!x.study?.components)
           throw Error("Exact study association required");
         DirectionalResponse.validate(x.surface);

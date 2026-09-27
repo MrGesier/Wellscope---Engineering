@@ -140,13 +140,11 @@ const { chromium } = require("playwright-core"),
         },
       ],
     }));
-    await page
-      .locator("#bq-response")
-      .setInputFiles({
-        name: "responses.json",
-        mimeType: "application/json",
-        buffer: Buffer.from(JSON.stringify(bundle)),
-      });
+    await page.locator("#bq-response").setInputFiles({
+      name: "responses.json",
+      mimeType: "application/json",
+      buffer: Buffer.from(JSON.stringify(bundle)),
+    });
     await page.waitForFunction(() =>
       document
         .getElementById("bq-status")
@@ -175,6 +173,42 @@ const { chromium } = require("playwright-core"),
         "Pareto candidate",
       ),
     );
+    assert.ok(
+      (await page.locator(".bq-diagnostics").innerText()).includes(
+        "misses the target",
+      ),
+    );
+    const duplicate = {
+      ...bundle,
+      entries: [bundle.entries[0], bundle.entries[0]],
+    };
+    await page
+      .locator("#bq-response")
+      .setInputFiles({
+        name: "duplicate.json",
+        mimeType: "application/json",
+        buffer: Buffer.from(JSON.stringify(duplicate)),
+      });
+    await page.waitForFunction(() =>
+      document
+        .getElementById("bq-status")
+        .textContent.includes("Duplicate response"),
+    );
+    assert.equal(await page.locator("#bq-export").isDisabled(), false);
+    const expected = await page.evaluate(
+      () => StringPhase.sample(StringInHole.snapshot().input, 60).peakBending,
+    );
+    await page
+      .locator('#bq-inspect [data-field="peakBending"]')
+      .first()
+      .click();
+    const selected = await page.evaluate(() => {
+      const s = StringInHole.snapshot();
+      return { component: s.selected, md: s.inspectMD };
+    });
+    assert.equal(selected.component, expected.component);
+    assert.ok(Math.abs(selected.md - expected.md) < 0.01);
+    await page.locator("#string-in-hole > button").first().click();
     await page.setViewportSize({ width: 390, height: 844 });
     assert.ok(await page.locator("#bq-run").isVisible());
     assert.deepEqual(errors, []);

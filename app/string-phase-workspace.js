@@ -111,6 +111,10 @@
       p = structuredClone(v.input);
     p.bitMD = v.rows[+b.dataset.r].md;
     StringInHole.applyStudy(p);
+    const row = v.rows[+b.dataset.r],
+      point = row.peakContact || row.peakBending;
+    if (point && StringInHole.snapshot().result)
+      StringInHole.select(point.component, point.md);
     $("sd-workspace").scrollIntoView({ behavior: "smooth" });
   };
   $("sp-export").onclick = () => {

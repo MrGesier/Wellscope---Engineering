@@ -156,9 +156,14 @@
     }
   }
   function directional(candidate, entries, options) {
-    const entry = entries.find(
+    const matches = entries.filter(
       (e) => identity(e.study) === identity(candidate.input),
     );
+    if (matches.length > 1)
+      throw Error(
+        "Ambiguous directional input: multiple surfaces for the same study. Keep one selected response per study.",
+      );
+    const entry = matches[0];
     if (!entry)
       return {
         status: "MISSING_BHA_RESPONSE",
@@ -182,35 +187,97 @@
     };
   }
   function shortlist(candidates) {
-    const valid = candidates.filter(
-      (c) =>
-        !c.missing.length &&
-        c.geometry.targetWithinTolerance &&
-        !c.geometry.violations.length &&
-        c.rows.every(
+    const numeric = (c) =>
+      c.rows.length > 0 &&
+      c.rows.every(
+        (r) =>
+          r.status === "SOLVED_SCREENING" &&
+          Number.isFinite(r.contactN) &&
+          r.contactN >= 0 &&
+          Number.isFinite(r.bendingPa) &&
+          r.bendingPa >= 0,
+      );
+    for (const c of candidates) {
+      c.blockers = [];
+      c.unresolved = [];
+      if (c.missing.length)
+        c.blockers.push(
+          "Missing required capabilities: " + c.missing.join(", "),
+        );
+      if (!c.geometry.targetWithinTolerance)
+        c.blockers.push(
+          "Planned trajectory misses the target tolerance. Revise the trajectory.",
+        );
+      if (c.geometry.violations.length)
+        c.blockers.push(
+          c.geometry.violations.length +
+            " survey intervals exceed the directional objectives.",
+        );
+      if (!numeric(c))
+        c.blockers.push(
+          "Incomplete mechanical sweep: inspect failed depths or refine unassessed bending stations.",
+        );
+      if (c.rows.some((r) => r.bodyStatus === "EXCEEDED"))
+        c.blockers.push("A supplied tube-body limit is exceeded.");
+      if (c.rows.some((r) => r.axialStatus === "EXCEEDED"))
+        c.blockers.push(
+          "A supplied limit is exceeded in the original load case used for the contact calculation.",
+        );
+      if (c.loads.some((r) => r.status === "NOT_SOLVED"))
+        c.blockers.push(
+          "At least one load calculation failed. Check its inputs.",
+        );
+      if (
+        c.loads.some((r) =>
+          ["pickup", "slackoff", "rotating"].some(
+            (k) => r[k]?.status === "EXCEEDED",
+          ),
+        )
+      )
+        c.blockers.push("A supplied load-case limit is exceeded.");
+      if (
+        !c.loads.length ||
+        c.loads.some((r) => r.status === "MISSING_LOAD_INPUTS")
+      )
+        c.unresolved.push(
+          "Supply distributed load inputs to calculate pickup/slackoff and torque.",
+        );
+      if (c.rows.some((r) => r.bodyStatus !== "WITHIN_SAMPLED_BODY_LIMITS"))
+        c.unresolved.push(
+          "Tube-body ratings or coverage are incomplete; inspect Combined mechanics.",
+        );
+      if (
+        c.loads.some(
           (r) =>
-            r.status === "SOLVED_SCREENING" &&
-            r.bendingPa != null &&
-            r.bodyStatus !== "EXCEEDED",
-        ) &&
-        !c.loads.some(
-          (r) =>
-            r.status === "NOT_SOLVED" ||
+            r.status === "CALCULATED" &&
             ["pickup", "slackoff", "rotating"].some(
-              (k) => r[k]?.status === "EXCEEDED",
+              (k) => !r[k] || r[k].status === "NOT_FULLY_EVALUABLE",
             ),
-        ),
-    );
+        )
+      )
+        c.unresolved.push(
+          "Load-case ratings or rotation evaluation are incomplete.",
+        );
+      if (!c.directional?.rows)
+        c.unresolved.push(
+          "Import a directional response associated with this exact study.",
+        );
+      else if (!c.directional.windows.length)
+        c.unresolved.push(
+          "No WOB interval meets the objectives in the associated response.",
+        );
+      else if (c.directional.status === "SYNTHETIC")
+        c.unresolved.push(
+          "Directional response is synthetic, not a calibrated prediction.",
+        );
+    }
+    const valid = candidates.filter((c) => !c.blockers.length);
     const metrics = (c) => [
       Math.max(...c.rows.map((r) => r.contactN)),
       Math.max(...c.rows.map((r) => r.bendingPa)),
     ];
     for (const c of candidates) {
-      c.metrics = c.rows.every(
-        (r) => r.status === "SOLVED_SCREENING" && r.bendingPa != null,
-      )
-        ? metrics(c)
-        : null;
+      c.metrics = numeric(c) ? metrics(c) : null;
       c.mechanicalCandidate =
         valid.includes(c) &&
         !valid.some((other) => {
@@ -219,7 +286,16 @@
           return a.every((v, i) => v <= b[i]) && a.some((v, i) => v < b[i]);
         });
       c.approval = "PRELIMINARY_ONLY";
+      c.comparisonReason = c.blockers.length
+        ? c.blockers.join(" ")
+        : c.mechanicalCandidate
+          ? "No assessed eligible candidate improves contact or bending without worsening the other. Refine the mesh and depth spacing before interpreting small differences."
+          : "Another eligible candidate improves at least one mechanical metric without worsening the other.";
     }
+    const baseline = candidates[0]?.metrics;
+    for (const c of candidates)
+      c.deltaFromReference =
+        c.metrics && baseline ? c.metrics.map((v, i) => v - baseline[i]) : null;
     return candidates;
   }
   root.BhaQuick = {
