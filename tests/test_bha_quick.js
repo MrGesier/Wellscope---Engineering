@@ -142,3 +142,39 @@ Q.shortlist(ranking);
 assert.equal(ranking[0].mechanicalCandidate, false);
 assert.equal(JSON.stringify(p), before);
 console.log("Phase and quick BHA analytical tests passed");
+
+assert.equal(r.peakContact, null);
+assert.ok(r.peakBending.md > 0 && r.peakBending.md < 100);
+assert.equal(typeof r.peakBending.name, "string");
+assert.throws(
+  () => Q.directional({ input: p }, [curve, structuredClone(curve)], opt),
+  /Ambiguous/,
+);
+for (const invalid of [
+  [],
+  [{ status: "SOLVED_SCREENING", contactN: NaN, bendingPa: 1 }],
+  [{ status: "SOLVED_SCREENING", contactN: 1, bendingPa: Infinity }],
+]) {
+  const row = c(1, 1);
+  row.rows = invalid;
+  Q.shortlist([row]);
+  assert.equal(row.mechanicalCandidate, false);
+  assert.equal(row.metrics, null);
+  assert.ok(row.blockers.some((s) => s.includes("Incomplete mechanical")));
+}
+const exceededAxial = c(1, 1);
+exceededAxial.rows[0].axialStatus = "EXCEEDED";
+Q.shortlist([exceededAxial]);
+assert.equal(exceededAxial.mechanicalCandidate, false);
+assert.match(exceededAxial.comparisonReason, /load case/);
+const diagnosed = Q.shortlist([c(1, 3), c(2, 4)]);
+assert.deepEqual(diagnosed[1].deltaFromReference, [1, 1]);
+assert.match(diagnosed[1].comparisonReason, /Another eligible/);
+assert.ok(diagnosed[0].unresolved.some((s) => s.includes("distributed load")));
+const missing = c(1, 1);
+missing.missing = ["gamma"];
+Q.shortlist([missing]);
+assert.match(missing.comparisonReason, /gamma/);
+console.log(
+  "Comparison diagnostics, missing-data refusal, peak location and duplicate-response tests passed",
+);

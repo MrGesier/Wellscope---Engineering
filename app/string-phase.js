@@ -89,12 +89,32 @@
             (y.md - x.md),
         );
       }
+      const peakContact = shape.rows
+          .filter((r) => r.contact && !r.pin)
+          .reduce((a, b) => (!a || b.reactionN > a.reactionN ? b : a), null),
+        peakBending = bending.reduce(
+          (a, b) => (!a || b.bendingPa > a.bendingPa ? b : a),
+          null,
+        ),
+        station = (r) =>
+          r
+            ? {
+                md: r.md,
+                component: r.component,
+                name: shape.parts[r.component].name,
+                reactionN: r.reactionN,
+                bendingPa: r.bendingPa,
+              }
+            : null;
       return {
         md,
         status: "SOLVED_SCREENING",
         bodyStatus: assessment.status,
+        axialStatus: shape.axial?.status ?? "NOT_EVALUATED",
         neutralMD: assessment.neutralMD,
         utilization: assessment.worst?.utilization ?? null,
+        peakContact: station(peakContact),
+        peakBending: station(peakBending),
         jarNeutral: shape.parts
           .filter((b) => /jar/.test(b.family || b.type || "") && b.start < md)
           .map((b) => ({
