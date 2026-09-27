@@ -93,3 +93,6 @@ retain work. Local Drive report extracts and the contents of `outputs/` are not 
 Railway detects the root Dockerfile. Build context is allowlisted by `.dockerignore`.
 The online service can run the reviewed feature branch until that PR is merged; switch
 the Railway source branch to main after merging to follow subsequent releases.
+## Local BHA deformation study
+
+The **Architecture & BHA deformation** page adds an editable cased/open-hole architecture snapshot, a local two-plane static beam/contact solver, an orbitable 3D projection, unit conversions and design-A comparison. Start with **Fictional example**. Read [model assumptions and verification](docs/BHA-STATIC.md) before using imported geometry. This preliminary span model rejects buckling and does not establish a field operating window.

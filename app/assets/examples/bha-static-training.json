@@ -1,0 +1,132 @@
+{
+  "version": 1,
+  "name": "Northbank N-04 / Run 07 / imported training BHA",
+  "source": "SYNTHETIC mock manual import · NB04-R07 rev 1 · MD from rotary table · not field data",
+  "bitMD": 3000,
+  "length": 12,
+  "n": 40,
+  "inc": 65,
+  "wobN": 15000,
+  "torqueNm": 5000,
+  "rho": 1260,
+  "survey": [
+    {
+      "md": 0,
+      "inc": 0,
+      "azi": 30
+    },
+    {
+      "md": 2600,
+      "inc": 65,
+      "azi": 30
+    },
+    {
+      "md": 2988,
+      "inc": 65,
+      "azi": 30
+    },
+    {
+      "md": 3000,
+      "inc": 65,
+      "azi": 30
+    }
+  ],
+  "sections": [
+    {
+      "from": 0,
+      "to": 800,
+      "kind": "CASED",
+      "diameter": 0.3153,
+      "source": "SYNTHETIC surface casing internal diameter / rev 1"
+    },
+    {
+      "from": 800,
+      "to": 2600,
+      "kind": "CASED",
+      "diameter": 0.2244,
+      "source": "SYNTHETIC intermediate casing ID / shoe at 2600 m"
+    },
+    {
+      "from": 2600,
+      "to": 2994,
+      "kind": "OPEN",
+      "diameter": 0.219,
+      "source": "SYNTHETIC caliper interval: slightly enlarged hole"
+    },
+    {
+      "from": 2994,
+      "to": 3100,
+      "kind": "OPEN",
+      "diameter": 0.216,
+      "source": "SYNTHETIC 8.5 in nominal section, rounded to 216 mm"
+    }
+  ],
+  "components": [
+    {
+      "name": "PDC bit — equivalent body",
+      "length": 0.3,
+      "od": 0.2,
+      "id": 0.06,
+      "contactOD": 0.216,
+      "mass": 155,
+      "E": 210000000000,
+      "G": 80000000000,
+      "source": "SYNTHETIC training import, revision 1; equivalent stiffness assumed, not OEM data / tally item 1"
+    },
+    {
+      "name": "Bit sub",
+      "length": 0.6,
+      "od": 0.171,
+      "id": 0.071,
+      "contactOD": 0.171,
+      "mass": 149,
+      "E": 210000000000,
+      "G": 80000000000,
+      "source": "SYNTHETIC training import, revision 1; equivalent stiffness assumed, not OEM data / tally item 2"
+    },
+    {
+      "name": "Steering tool — equivalent tube",
+      "length": 3.8,
+      "od": 0.171,
+      "id": 0.08,
+      "contactOD": 0.171,
+      "mass": 130,
+      "E": 210000000000,
+      "G": 80000000000,
+      "source": "SYNTHETIC training import, revision 1; equivalent stiffness assumed, not OEM data / tally item 3"
+    },
+    {
+      "name": "Near-bit stabilizer",
+      "length": 0.4,
+      "od": 0.171,
+      "id": 0.071,
+      "contactOD": 0.212,
+      "mass": 180,
+      "E": 210000000000,
+      "G": 80000000000,
+      "source": "SYNTHETIC training import, revision 1; equivalent stiffness assumed, not OEM data / tally item 4"
+    },
+    {
+      "name": "MWD collar — equivalent tube",
+      "length": 3.9,
+      "od": 0.171,
+      "id": 0.08,
+      "contactOD": 0.171,
+      "mass": 115,
+      "E": 210000000000,
+      "G": 80000000000,
+      "source": "SYNTHETIC training import, revision 1; equivalent stiffness assumed, not OEM data / tally item 5"
+    },
+    {
+      "name": "Upper drill collar",
+      "length": 3,
+      "od": 0.171,
+      "id": 0.071,
+      "contactOD": 0.171,
+      "mass": 149,
+      "E": 210000000000,
+      "G": 80000000000,
+      "source": "SYNTHETIC training import, revision 1; equivalent stiffness assumed, not OEM data / tally item 6"
+    }
+  ]
+}
