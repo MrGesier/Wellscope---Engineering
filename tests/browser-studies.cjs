@@ -18,12 +18,11 @@ const { chromium } = require("playwright-core"),
     p.on("request", (r) => {
       if (/^https?:/.test(r.url())) requests.push(r.url());
     });
-    const nav = (id) => p.locator(`.nav[data-page="${id}"]`).click(),
+    const nav = (id) => p.evaluate(id => WellWorkflow.open(id), id),
       click = (id) => p.locator("#" + id).click();
     await p.goto(
       pathToFileURL(path.resolve(__dirname, "../app/index.html")).href,
     );
-    await p.locator("#advanced-navigation > summary").click();
     await nav("studies");
     await p.waitForSelector("#studies.active");
     assert.equal(await p.locator(".study-card").count(), 16);

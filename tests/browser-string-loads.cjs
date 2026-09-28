@@ -18,6 +18,7 @@ const { chromium } = require("playwright-core"),
       pathToFileURL(path.resolve(__dirname, "../app/index.html")).href +
         "#string-in-hole",
     );
+    for(const summary of await p.locator("#bha-static details.workflow-fold > summary").all()) await summary.click();
     await p.locator("#sl-mode").selectOption("soft-string");
     await p.locator("#sl-apply").click();
     let snap = await p.evaluate(() => StringInHole.snapshot());

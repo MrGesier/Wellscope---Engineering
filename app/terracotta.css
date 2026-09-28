@@ -9,6 +9,215 @@
   --walnut: #352b27;
   --teal: #627665;
 }
+[hidden] {
+  display: none !important;
+}
+.workflow-fold {
+  margin: 14px 0;
+  border: 1px solid #d9cbbb;
+  border-radius: 6px;
+}
+.workflow-fold > summary {
+  cursor: pointer;
+  padding: 16px;
+  font-weight: 600;
+  background: #eee2d4;
+}
+.workflow-fold > .panel {
+  margin-top: 0;
+}
+.workflow-scope {
+  color: #78665b;
+  font-size: 12px;
+  margin: 4px 0 18px;
+}
+.wf-hero {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 24px;
+  align-items: center;
+  background: #eeddc9;
+  border: 1px solid #d7b99c;
+  border-radius: 10px;
+  padding: 28px;
+}
+.wf-hero h1 {
+  font-family: Georgia, serif;
+  font-size: 36px;
+}
+#wf-preview svg {
+  max-height: 290px;
+  width: 100%;
+}
+.wf-strata {
+  display: flex;
+  flex-direction: column;
+  transform: rotate(-6deg);
+  border-radius: 32% 15% 20% 8%;
+  overflow: hidden;
+  margin: 20px;
+}
+.wf-strata span {
+  padding: 28px;
+  background: #bb7453;
+  color: #fff5e8;
+}
+.wf-strata span:nth-child(2) {
+  background: #8d5840;
+}
+.wf-strata span:nth-child(3) {
+  background: #d5aa7c;
+  color: #48342a;
+}
+.wf-steps {
+  display: flex;
+  gap: 8px;
+  margin: 22px 0;
+}
+.wf-steps button {
+  padding: 14px 20px;
+  background: #f7eee3;
+  color: #704733;
+  border: 1px solid #cbb6a3;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.wf-steps [aria-current="step"] {
+  background: #a54e35;
+  color: white;
+}
+.wf-input-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 22px;
+}
+#well-setup textarea {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  font: 12px/1.6 monospace;
+  padding: 12px;
+  margin: 8px 0;
+  border: 1px solid #cdb6a5;
+  border-radius: 4px;
+}
+#well-setup label {
+  display: block;
+  margin: 12px 0;
+}
+#well-setup .panel {
+  padding: 24px;
+}
+#wf-required {
+  display: flex;
+  gap: 22px;
+  border: 1px solid #d9cbbb;
+}
+#wf-required input {
+  width: auto;
+}
+#wf-error {
+  color: #a43826;
+  font-weight: 600;
+}
+.wf-board {
+  display: grid;
+  grid-template-columns: minmax(260px, 0.8fr) minmax(400px, 1.3fr);
+  gap: 24px;
+  align-items: start;
+}
+#wf-section-map {
+  position: sticky;
+  top: 10px;
+  background: #fcf8f1;
+  border-radius: 8px;
+  padding: 10px;
+}
+#wf-section-map svg {
+  width: 100%;
+}
+#wf-section-map [role="button"] {
+  cursor: pointer;
+}
+#wf-section-map [role="button"]:focus rect {
+  stroke: #402c22;
+  stroke-width: 3;
+}
+#wf-cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+.wf-value {
+  padding: 14px;
+  border: 1px solid #d9cbbb;
+  border-radius: 6px;
+  background: #fffaf2;
+}
+.wf-value span {
+  display: block;
+  color: #78665b;
+  font-size: 12px;
+}
+.wf-value strong {
+  display: block;
+  font-size: 23px;
+  margin: 8px 0;
+}
+.wf-value small {
+  font-size: 12px;
+}
+.wf-value p {
+  font-size: 12px;
+  margin: 0;
+}
+.wf-over {
+  border-color: #ad432f;
+  box-shadow: inset 3px 0 #ad432f;
+}
+#well-dashboard #wf-depth {
+  flex: 1;
+  min-width: 120px;
+  accent-color: #a54e35;
+}
+#well-dashboard .work-toolbar {
+  flex-wrap: wrap;
+}
+#well-dashboard details > summary {
+  cursor: pointer;
+  padding: 16px;
+  background: #eee2d4;
+}
+@media (max-width: 900px) {
+  .wf-hero,
+  .wf-board,
+  .wf-input-grid {
+    grid-template-columns: 1fr;
+  }
+  #wf-section-map {
+    position: static;
+  }
+  #wf-section-map svg {
+    max-height: 400px;
+  }
+}
+@media (max-width: 500px) {
+  .wf-hero {
+    padding: 18px;
+  }
+  .wf-hero h1 {
+    font-size: 28px;
+  }
+  .wf-steps {
+    flex-direction: column;
+  }
+  #wf-cards {
+    grid-template-columns: 1fr 1fr;
+  }
+  #wf-required {
+    flex-wrap: wrap;
+  }
+}
 body {
   background: #f3eee7 !important;
   color: #382e29 !important;

@@ -347,6 +347,7 @@
   }
   function demo(study) {
     study = clone(study);
+    study.rho = 1200;
     if (!study.axial) {
       study.quality = "SYNTHETIC";
       study.axial = {

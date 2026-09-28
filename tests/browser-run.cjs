@@ -17,7 +17,7 @@ const { chromium } = require("playwright-core"),
     await p.goto(
       pathToFileURL(path.resolve(__dirname, "../app/index.html")).href,
     );
-    await p.locator('[data-page="run-mechanics"]').click();
+    await p.evaluate(id => WellWorkflow.open(id), "run-mechanics");
     await p.locator("#run-demo").click();
     assert.equal(await p.locator("#run-error").textContent(), "");
     const r = await p.evaluate(() => RunWorkspace.snapshot());
@@ -79,7 +79,7 @@ const { chromium } = require("playwright-core"),
     assert.equal(backup.active_run.id, r.input.id);
     assert.equal(backup.run_studies.at(-1).comparison.metrics[0].rmse, 0);
     await p.evaluate((p) => WellEvidence.loadProject(p), backup);
-    await p.locator('[data-page="run-mechanics"]').click();
+    await p.evaluate(id => WellWorkflow.open(id), "run-mechanics");
     await p.locator("#run-load").click();
     assert.equal(
       (await p.evaluate(() => RunWorkspace.snapshot())).input.id,
