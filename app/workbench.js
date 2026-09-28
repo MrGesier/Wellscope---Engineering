@@ -585,7 +585,7 @@
       'legacy', 'reference', 'wells', 'bha', 'measurements', 'limits',
       'directional_response_cases', 'cuttings_samples', 'completion_intervals',
       'external_motor_curves', 'matched_weight_comparisons', 'measured_spectrum',
-      'observed_directional_intervals', 'study_runs', 'engineering_cases', 'directional_sensitivity_runs', 'equipment_register', 'operating_window_studies', 'active_run', 'run_studies'
+      'observed_directional_intervals', 'study_runs', 'engineering_cases', 'directional_sensitivity_runs', 'equipment_register', 'operating_window_studies', 'active_run', 'run_studies', 'drilling_program'
     ].map(key => [key, p[key] ?? null]));
   }
   async function exportProject() {

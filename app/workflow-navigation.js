@@ -11,11 +11,13 @@
         ["studies", "Study library"],
         ["dataqc", "Data & QC"],
         ["trajectory", "Trajectory & targets"],
+        ["dp-lithology", "Lithology & formations", "drilling-program"],
       ],
     ],
     [
       "02 · DESIGN",
       [
+        ["drilling-program", "Drilling programme"],
         ["bha", "BHA assembly"],
         ["bha-quick", "Quick BHA comparison", "bha"],
         ["bha-static", "Architecture & deformation"],
@@ -40,6 +42,10 @@
       ],
     ],
   ];
+  const theme = document.createElement("link");
+  theme.rel = "stylesheet";
+  theme.href = "terracotta.css";
+  document.head.append(theme);
   nav.replaceChildren();
   function route(id, parent = id) {
     const original = buttons.get(parent);
@@ -154,6 +160,8 @@
     const id = location.hash.slice(1),
       entry = groups.flatMap((g) => g[1]).find((e) => e[0] === id);
     if (entry) route(id, entry[2] || id);
+    else if (["dp-context", "dp-settings", "dp-results"].includes(id))
+      route(id, "drilling-program");
     else if (buttons.has(id)) {
       advanced.open = advanced.contains(buttons.get(id));
       route(id);
