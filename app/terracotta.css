@@ -1,0 +1,271 @@
+/* Warm geological palette. Warning/status colours keep their semantic meaning. */
+:root {
+  --paper: #f3eee7;
+  --surface: #fffdf9;
+  --ink: #382e29;
+  --muted: #78665b;
+  --line: #d9cbbb;
+  --accent: #a54e35;
+  --walnut: #352b27;
+  --teal: #627665;
+}
+body {
+  background: #f3eee7 !important;
+  color: #382e29 !important;
+}
+.sidebar {
+  background: #352b27 !important;
+  border-right: 1px solid #62483c;
+}
+.brand small {
+  color: #d8b6a0 !important;
+}
+.nav {
+  color: #eedfd2 !important;
+}
+.nav.active {
+  background: #774635 !important;
+  box-shadow: inset 3px 0 #e6af7e !important;
+}
+.nav:hover {
+  background: #523a30 !important;
+}
+.nav-heading {
+  color: #d7ae91 !important;
+}
+.sidebar-footer {
+  background: #40312b !important;
+  color: #e6cbbb !important;
+}
+.sidebar-footer p {
+  color: #d8b7a0 !important;
+}
+.content {
+  background: #f3eee7;
+}
+.top {
+  background: #fffaf2 !important;
+}
+.notice {
+  background: #ebe0d2 !important;
+  border-left-color: #b96d48 !important;
+  color: #675247 !important;
+}
+.notice strong {
+  color: #604737 !important;
+}
+.panel,
+.eng-card {
+  background: #fffdf9 !important;
+  border-color: #dacbbc !important;
+}
+.primary {
+  background: #a54e35 !important;
+  border-color: #a54e35 !important;
+  color: #fffaf3 !important;
+}
+.primary:hover {
+  background: #873d2b !important;
+}
+.smallbutton,
+.filebtn {
+  background: #fffaf3 !important;
+  color: #88432e !important;
+  border-color: #cdb6a5 !important;
+}
+h1,
+h2,
+h3,
+h4,
+.page-head h1 {
+  color: #48342a !important;
+}
+input,
+select,
+textarea {
+  border-color: #d3bfae !important;
+  color: #42332c !important;
+  background: #fffdf9 !important;
+}
+input:focus,
+select:focus,
+textarea:focus {
+  outline: 2px solid #b86b48;
+  outline-offset: 1px;
+}
+.work-note,
+.eng-caption {
+  color: #796252 !important;
+}
+a {
+  color: #a34d35;
+}
+.dp-hero {
+  background: linear-gradient(120deg, #eed8bf, #f6ece0 65%);
+  padding: 30px;
+  border: 1px solid #d7b99c;
+  border-radius: 8px;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 18px;
+}
+.dp-hero:after {
+  content: "";
+  position: absolute;
+  right: -35px;
+  top: -90px;
+  width: 260px;
+  height: 260px;
+  border: 1px solid #c9936b;
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 18px #0000,
+    0 0 0 19px #d1a37f,
+    0 0 0 42px #0000,
+    0 0 0 43px #dbb697;
+  opacity: 0.5;
+  pointer-events: none;
+}
+.dp-hero h1 {
+  font-family: Georgia, serif;
+  font-weight: 500;
+  font-size: clamp(26px, 3vw, 42px);
+  margin: 12px 0;
+}
+.dp-hero p {
+  max-width: 620px;
+}
+.dp-steps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  position: relative;
+  z-index: 1;
+}
+.dp-steps a {
+  display: block;
+  padding: 10px 14px;
+  border: 1px solid #c8a589;
+  border-radius: 4px;
+  background: #fff9ef;
+  text-decoration: none;
+  color: #7c422d;
+  font-weight: 600;
+}
+#drilling-program .panel {
+  padding: 22px;
+  margin: 16px 0;
+}
+#drilling-program details {
+  margin: 16px 0;
+}
+#drilling-program summary {
+  cursor: pointer;
+  font-weight: 600;
+  padding: 12px;
+  background: #f4e9dc;
+}
+#drilling-program textarea {
+  width: 100%;
+  box-sizing: border-box;
+}
+#drilling-program button {
+  padding: 9px 13px;
+  cursor: pointer;
+  border: 1px solid #cbb6a3;
+  background: #fff9f1;
+  color: #75432e;
+  border-radius: 4px;
+}
+#drilling-program button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+#dp-error,
+.dp-exceeded {
+  color: #a43826;
+  font-weight: 700;
+}
+.dp-unknown {
+  color: #82633b;
+}
+.dp-limit-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(185px, 1fr));
+  gap: 12px;
+  margin: 14px 0;
+}
+.dp-limit-grid > div {
+  border: 1px solid #e0d2c3;
+  padding: 12px;
+  border-radius: 5px;
+}
+.dp-limit-grid label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-top: 8px;
+}
+.dp-limit-grid input {
+  width: 95px;
+  min-width: 0;
+}
+.dp-window-table {
+  overflow: auto;
+}
+.dp-window-table td,
+.dp-window-table th {
+  padding: 10px;
+  border-bottom: 1px solid #ded0c0;
+  text-align: left;
+  vertical-align: top;
+}
+.dp-charts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+.dp-charts svg,
+#dp-log-track svg {
+  width: 100%;
+  height: auto;
+}
+#dp-log-track {
+  max-width: 920px;
+  margin: 18px auto;
+}
+#drilling-program .eyebrow {
+  color: #9b573d;
+}
+.workflow-jumps button {
+  border-color: #d4ba9f;
+  color: #83412f;
+  background: #fffaf3;
+}
+@media (max-width: 760px) {
+  .dp-charts {
+    grid-template-columns: 1fr;
+  }
+  .dp-hero {
+    padding: 20px;
+  }
+  .dp-limit-grid {
+    grid-template-columns: 1fr;
+  }
+  #drilling-program .panel {
+    padding: 14px;
+  }
+}
+
+#dp-required {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  border: 1px solid #d7c2ac;
+  padding: 14px;
+  margin: 16px 0;
+}
+#dp-required input {
+  width: auto;
+}

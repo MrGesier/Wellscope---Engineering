@@ -70,6 +70,18 @@
         maximumSignificantDigits: 7,
       });
     let out = `<svg xmlns="http://www.w3.org/2000/svg" class="engineering-chart study-plot" viewBox="0 0 ${w} ${h}" role="img" aria-label="${esc(opt.x)} versus ${esc(opt.y)}" data-depth-down="${!!opt.depth}" data-points-only="${!!opt.pointsOnly}"><rect width="760" height="${h}" fill="white"/><g font-family="Segoe UI,Arial,sans-serif" font-size="12" fill="#607789">`;
+    for (const region of opt.regions || []) {
+      if (
+        ![region.min, region.max, region.from, region.to].every(Number.isFinite)
+      )
+        continue;
+      const xa = X(Math.max(x0, region.min)),
+        xb = X(Math.min(x1, region.max)),
+        ya = Y(Math.max(y0, region.from)),
+        yb = Y(Math.min(y1, region.to));
+      if (xb >= xa)
+        out += `<rect class="entered-envelope" x="${xa}" y="${Math.min(ya, yb)}" width="${xb - xa}" height="${Math.abs(yb - ya)}" fill="#d9bb8c" opacity=".24"/>`;
+    }
     for (let j = 0; j <= 5; j++) {
       const x = x0 + ((x1 - x0) * j) / 5,
         y = y0 + ((y1 - y0) * j) / 5;
@@ -79,12 +91,12 @@
       out += `<path d="M${X(x0)} ${Y(0)}H${X(x1)}" stroke="#a3b3be" stroke-dasharray="4 4"/>`;
     out += `<text x="${w / 2}" y="${opt.depth ? 53 : h - 12}" text-anchor="middle">${esc(opt.x)}</text><text transform="translate(18 ${h / 2}) rotate(-90)" text-anchor="middle">${esc(opt.y)}</text>`;
     series.forEach((s, i) => {
-      const color = colors[i % colors.length],
+      const color = s.color || colors[i % colors.length],
         points = s.points.filter(
           (p) => Number.isFinite(p.x) && Number.isFinite(p.y),
         );
       out +=
-        `<path d="M${24 + i * 185} 22h17" stroke="${color}" stroke-width="2"/><text x="${46 + i * 185}" y="26">${esc(s.name)}</text>${
+        `<path d="M${24 + i * 185} 22h17" stroke="${esc(color)}" stroke-width="2" stroke-dasharray="${esc(s.dash || "")}"/><text x="${46 + i * 185}" y="26">${esc(s.name)}</text>${
           opt.pointsOnly
             ? ""
             : s.points
@@ -100,14 +112,14 @@
                 .filter((segment) => segment.length > 1)
                 .map(
                   (segment) =>
-                    `<polyline points="${segment.map((p) => X(p.x) + "," + Y(p.y)).join(" ")}" fill="none" stroke="${color}" stroke-width="2"/>`,
+                    `<polyline points="${segment.map((p) => X(p.x) + "," + Y(p.y)).join(" ")}" fill="none" stroke="${esc(color)}" stroke-width="2" stroke-dasharray="${esc(s.dash || "")}"/>`,
                 )
                 .join("")
         }` +
         points
           .map(
             (p) =>
-              `<circle cx="${X(p.x)}" cy="${Y(p.y)}" r="2.7" fill="white" stroke="${color}"><title>${esc(s.name)}: ${f(p.x)}, ${f(p.y)}</title></circle>`,
+              `<circle cx="${X(p.x)}" cy="${Y(p.y)}" r="2.7" fill="white" stroke="${esc(color)}"><title>${esc(s.name)}: ${f(p.x)}, ${f(p.y)}</title></circle>`,
           )
           .join("");
     });
