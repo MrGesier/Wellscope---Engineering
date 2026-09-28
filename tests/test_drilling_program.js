@@ -44,6 +44,16 @@ const p = M.demo(study),
   before = JSON.stringify(p),
   md = (r.from + r.to) / 2,
   row = M.sample(p, r, md, st);
+const withoutLoads = structuredClone(study);
+delete withoutLoads.axial;
+const completeDemo = M.demo(withoutLoads);
+assert.equal(withoutLoads.axial, undefined, "Demo must not mutate input study");
+assert.match(completeDemo.study.axial.source, /SYNTHETIC/);
+assert.ok(
+  Number.isFinite(
+    M.sample(completeDemo, completeDemo.intervals[0], md, st).values.pickupTf,
+  ),
+);
 assert.equal(JSON.stringify(p), before);
 assert.ok(Math.abs(row.hydrostaticBar - (1200 * 9.80665 * md) / 1e5) < 1e-10);
 assert.ok(Math.abs(row.values.bottomBar - (row.hydrostaticBar + 9)) < 1e-10);

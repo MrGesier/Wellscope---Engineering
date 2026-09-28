@@ -32,6 +32,16 @@ const { chromium } = require("playwright-core"),
     );
     const snap = await p.evaluate(() => DrillingProgramWorkspace.snapshot());
     assert.equal(snap.report.segments.length, 3);
+    assert.ok(
+      snap.report.segments.every((s) =>
+        s.rows.every((r) =>
+          ["pickupTf", "slackoffTf", "torqueTfm"].every((k) =>
+            Number.isFinite(r.values[k]),
+          ),
+        ),
+      ),
+      "Worked example must calculate every off-bottom load track",
+    );
     await p.locator("#dp-save").click();
     assert.equal(
       await p.evaluate(() => WellEvidence.project().drilling_program.schema),
