@@ -1,6 +1,6 @@
 # WellScope Engineering Studio — 0.10
 
-An offline workspace organized around engineering questions, source data and reproducible study reports. The default workspace opens a fully populated fictional Torque & Drag case. The study library contains 16 workflows: nine transparent local calculations and seven clearly labelled external-result reviews. Geometry, BHA editing, cuttings, measured dynamics and the evidence/limits workbench remain available.
+A local engineering workspace with a guided well setup, BHA preparation and a section dashboard. The default page collects trajectory, architecture, lithology and an existing tally or a preliminary generated assembly. Six main navigation entries keep specialist tools contextual.
 
 ## Start on Windows
 
@@ -16,15 +16,13 @@ The installer uses `%LOCALAPPDATA%\Programs\WellScope` and the actual Windows de
 
 ## First study
 
-1. Open **Torque & Drag study**: a fictional 3,800 m well, 153 survey stations, 12 string components and 19 mock connection records are already populated.
-2. Choose **Metric**, **SI** or **Oilfield** units. Customize individual dimensions if needed. Metric uses metres, millimetres, tonnes-force and tonne-force metres; mass remains tonnes.
-3. In **Well & conditions**, change cased/open-hole friction and apply. The axial curves change; mock observations remain fixed.
-4. Inspect the component drawings and full tally in **BHA & drillstring**, then compare the connection log.
-5. In **Report & export**, add an interpretation and export unit-aware CSV, standalone HTML or Print / Save PDF. Export the case JSON for an editable backup. **Save case** adds an immutable snapshot to the project; **Export Project** includes these snapshots.
+1. Open **Prepare the well** and choose **Try the complete example**, or enter your survey, architecture and lithology CSVs.
+2. Supply your complete tally or select **Generate and compare a starter BHA**, with required instruments.
+3. Enter operating targets and friction, then prepare and calculate.
+4. Move along the **Section dashboard** to inspect formation intervals, sourced bounds, loads and directional response when available. Missing limits remain unknown.
+5. Export the report and **Export Project** to keep your editable work. Projects remain in browser memory until exported.
 
-See [training case and units](docs/TRAINING_CASE.md) for the exact model boundary and conversion factors.
-
-For real observations, create a USER_DATA project in **Data & QC**, then use a study's CSV template. Import sets QC to unchecked; the author must review units, source and matching basis. No synthetic examples or default approval thresholds are silently inserted into real projects.
+The starter compares assumed geometries at sampled depths; it is not a validated OEM design. See [workflow scope](docs/CONCRETE_WORKFLOW.md) and [lithology programme](docs/LITHOLOGY_PROGRAMME.md).
 
 ## Included
 
@@ -32,14 +30,14 @@ For real observations, create a USER_DATA project in **Data & QC**, then use a s
 - MSE/DOC, observed directional intervals, operations residuals, ECD from supplied losses, pressure-area force conversion, axial friction matrices, standoff geometry, measured wall loss and plan/actual residuals.
 - External result records for BHA prediction, modal/vibration, fatigue, completion running, sag/local doglegs, casing design and dysfunction interpretation.
 - Versioned reports with well/run context, source/QC, chart, result table, input snapshot, interpretation and limitations. Changed inputs invalidate results.
-- Restrained slate/neutral engineering layout, depth-down plots, technical tool illustrations, desktop/mobile views and original branding.
-- Existing minimum-curvature geometry, nominal segment proximity, 23-tool BHA catalog, source-backed completion data, vendor-table interpolation, measured spectra, sieve distributions and versioned limits.
+- Terracotta/ivory engineering layout, depth-down plots, technical tool illustrations, desktop/mobile views and original branding.
+- Existing minimum-curvature geometry, nominal segment proximity, 72-tool BHA catalog, source-backed completion data, vendor-table interpolation, measured spectra, sieve distributions and versioned limits.
 
 See [study guide](docs/STUDY_GUIDE.md), [model ledger](docs/MODEL_LEDGER.md), [validation record](docs/SCIENCE_VALIDATION.md), [specification coverage](docs/SPEC_COVERAGE.md) and [release limitations](docs/RELEASE_STATUS.md).
 
 ## BHA design and directional sensitivity
 
-All 23 equipment families use the same original technical illustration system in the searchable catalog, inspector and assembled string. Source-backed dimensions remain editable; expanded properties stay available in a disclosure. The global slate/white engineering theme also covers legacy workspaces and charts.
+All 72 equipment types use the same original technical illustration system in the searchable catalog, inspector and assembled string. Source-backed dimensions remain editable; expanded properties stay available in a disclosure. The global terracotta/ivory engineering theme also covers legacy workspaces and charts.
 
 In **Directional Response Lab**, inspect DLS versus WOB, a build/right-curvature steering envelope, and signed build/azimuth-turn curves. Choose rotating, motor sliding blend or RSS, toolface and activation. The initial surface is explicitly fictional. Import a source-labelled external response surface to review an independently calculated BHA. No response is inferred from editing the component geometry. Export a standalone HTML report or CSV and save the complete case in project backups.
 
@@ -47,7 +45,7 @@ See [directional model, chart conventions and sources](docs/DIRECTIONAL_SENSITIV
 
 ## Honest model scope
 
-This is an independent exploratory implementation. It does not reproduce proprietary commercial solvers or establish operational approval. Local models are preliminary. External results remain attributed to their source model. No stiff-string contact/buckling solver, predictive bit-rock/RSS model, modal/fatigue engine, calibrated casing rating, cement displacement or geodetic/ISCWSA model is supplied. The original unavailable directional/cuttings addendum remains an acceptance gap.
+This is an independent exploratory implementation. It does not reproduce proprietary commercial solvers or establish operational approval. Local models are preliminary. External results remain attributed to their source model. The contact/bending models are preliminary screening models, not a validated full stiff-string solution. No predictive bit-rock/RSS model, modal/fatigue engine, calibrated casing rating, cement displacement or geodetic/ISCWSA model is supplied. The original unavailable directional/cuttings addendum remains an acceptance gap.
 
 Private source documents, customer examples and proprietary software are excluded from this repository and runtime package. All included demonstrations are independently created synthetic data.
 

@@ -9,7 +9,10 @@
     baseline = {},
     busy = false,
     cancelled = false,
-    dashboard = null;
+    dashboard = null,
+    dashboardSurvey = null,
+    inspectionFrame = null;
+  const depthCache = new Map();
   const page = document.createElement("section");
   page.id = "well-setup";
   page.className = "page";
@@ -380,6 +383,10 @@
   };
   $("wf-export").onclick = () => $("dp-report").click();
   function resetDashboard() {
+    if (inspectionFrame !== null) cancelAnimationFrame(inspectionFrame);
+    inspectionFrame = null;
+    depthCache.clear();
+    dashboardSurvey = null;
     dashboard = null;
     $("wf-board").hidden = true;
     $("wf-empty").hidden = false;
@@ -388,13 +395,15 @@
   }
   window.addEventListener("wellscope:programme-invalidated", resetDashboard);
   function inspect(value) {
+    if (inspectionFrame !== null) cancelAnimationFrame(inspectionFrame);
+    inspectionFrame = null;
     if (!dashboard) return;
     const p = dashboard.programme,
       md = Math.max(0, Math.min(p.study.survey.at(-1).md, Number(value)));
     if (!Number.isFinite(md)) return;
     $("wf-md").value = md;
     $("wf-depth").value = md;
-    $("wf-section-map").innerHTML = WellSynoptic.svg(p, md);
+    $("wf-section-map").innerHTML = WellSynoptic.svg(p, md, dashboardSurvey);
     const r = DrillingProgram.intervalAt(p.intervals, md);
     if (!r) {
       $("wf-formation").textContent = "Unlogged section";
@@ -404,12 +413,13 @@
       $("wf-limit-source").textContent = "";
       return;
     }
-    const row = DrillingProgram.sample(
-      p,
-      r,
-      md,
-      WellEngine.survey(p.study.survey),
-    );
+    let row = depthCache.get(md);
+    if (!row) {
+      row = DrillingProgram.sample(p, r, md, dashboardSurvey);
+      if (depthCache.size >= 32)
+        depthCache.delete(depthCache.keys().next().value);
+      depthCache.set(md, row);
+    }
     $("wf-formation").textContent = `${r.lithology} · ${r.from}–${r.to} m MD`;
     const exceeded = Object.keys(row.checks).filter(
       (k) => row.checks[k].status === "EXCEEDED",
@@ -455,7 +465,14 @@
       ". RPM/WOB/flow/ROP are entered targets; loads are off-bottom calculations.";
   }
   $("wf-md").oninput = (e) => inspect(e.target.value);
-  $("wf-depth").oninput = (e) => inspect(e.target.value);
+  $("wf-depth").oninput = (e) => {
+    const value = e.target.value;
+    if (inspectionFrame !== null) cancelAnimationFrame(inspectionFrame);
+    inspectionFrame = requestAnimationFrame(() => {
+      inspectionFrame = null;
+      inspect(value);
+    });
+  };
   const pick = (e) => {
     const g = e.target.closest("[data-section-md]");
     if (g && (e.type === "click" || ["Enter", " "].includes(e.key))) {
@@ -468,6 +485,8 @@
   window.addEventListener("wellscope:programme-calculated", () => {
     dashboard = DrillingProgramWorkspace.snapshot().report;
     if (!dashboard) return;
+    depthCache.clear();
+    dashboardSurvey = WellEngine.survey(dashboard.programme.study.survey);
     $("wf-empty").hidden = true;
     $("wf-board").hidden = false;
     $("wf-depth").min = 0;

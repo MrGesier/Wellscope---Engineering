@@ -30,6 +30,11 @@
     if (original) original.click();
     else WellApp.navigate(parent);
     const target = document.getElementById(id);
+    const title = document
+      .getElementById(parent)
+      ?.querySelector("h1")?.textContent;
+    if (title)
+      document.getElementById("crumb").textContent = title.toUpperCase();
     let ancestor = target?.parentElement;
     while (ancestor) {
       if (ancestor.matches("details")) ancestor.open = true;
@@ -88,9 +93,6 @@
   const quick = document.getElementById("bha-quick"),
     builder = document.querySelector(".bha-design-studio");
   if (quick && builder) quick.before(builder);
-  const style = document.createElement("style");
-  style.textContent = `#navigation .nav-heading{margin:14px 0 5px;padding:0 10px;font-size:10px}#navigation .nav{min-height:34px;padding:8px 10px;font-size:13px;line-height:1.3}#advanced-navigation{margin:18px 8px;color:#b4c4cd}#advanced-navigation summary{cursor:pointer;font-size:12px;padding:10px 0}#advanced-navigation p{font-size:11px;line-height:1.5}#advanced-navigation .nav{font-size:12px}.connected-assembly{display:block;width:100%;height:auto;max-width:500px;margin:auto}.connected-assembly [role=button]{cursor:pointer}.connected-assembly [role=button]:focus rect{stroke:#b77842;stroke-width:2}#connected-bha,#engineering-anatomy,#bq-anatomy{display:block!important;max-height:620px;overflow:auto;background:white;border:1px solid #dce3e7;border-radius:5px}#bq-anatomy > svg{width:100%!important;height:auto!important}#bha-quick .curve-basis{border-left:3px solid #b77842;padding:12px;background:#f5f2eb}.workflow-jumps{display:flex;flex-wrap:wrap;gap:6px;padding:10px 0;margin-bottom:12px}.workflow-jumps button{padding:8px 12px;border:1px solid #becbd1;background:white;color:#284654;border-radius:4px;cursor:pointer}`;
-  document.head.append(style);
   for (const [page, links] of [
     [
       "bha",
