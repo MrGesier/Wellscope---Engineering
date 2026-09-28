@@ -62,6 +62,7 @@ body {
 .primary {
   background: #a54e35 !important;
   border-color: #a54e35 !important;
+  color: #fffaf3 !important;
 }
 .primary:hover {
   background: #873d2b !important;
