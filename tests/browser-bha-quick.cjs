@@ -20,6 +20,7 @@ const { chromium } = require("playwright-core"),
       pathToFileURL(path.resolve(__dirname, "../app/index.html")).href +
         "#string-in-hole",
     );
+    for(const summary of await page.locator("#bha-static details.workflow-fold > summary").all()) await summary.click();
     assert.equal(await page.locator("#bha-quick").count(), 1);
     await page.evaluate(() => {
       const b = {

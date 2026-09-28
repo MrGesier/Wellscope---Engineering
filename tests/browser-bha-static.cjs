@@ -18,7 +18,8 @@ const { chromium } = require("playwright-core"),
     await page.goto(
       pathToFileURL(path.resolve(__dirname, "../app/index.html")).href,
     );
-    await page.locator('[data-page="bha-static"]').click();
+    await page.evaluate(id => WellWorkflow.open(id), "bha-static");
+    for(const summary of await page.locator("#bha-static details.workflow-fold > summary").all()) await summary.click();
     const imported = await page.evaluate(() => BhaStaticWorkspace.snapshot());
     assert.equal(imported.input.components.length, 6);
     assert.equal(imported.input.sections.length, 4);

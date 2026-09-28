@@ -42,6 +42,7 @@
   }
   function invalid(message = "Inputs changed. Apply edits and recalculate.") {
     report = null;
+    window.dispatchEvent(new CustomEvent("wellscope:programme-invalidated"));
     $("dp-results").innerHTML = "";
     for (const id of ["dp-save", "dp-report"]) $(id).disabled = true;
     $("dp-status").textContent = message;
@@ -581,6 +582,7 @@
         : "<p>No missing calculation inputs at sampled stations. Supplied bounds and model scope still apply.</p>"
     }</article>`;
     $("dp-results").innerHTML = html;
+    window.dispatchEvent(new CustomEvent("wellscope:programme-calculated"));
     $("dp-status").textContent =
       "Programme calculated. Review exceeded bounds and missing evidence.";
   }
@@ -590,6 +592,8 @@
     download("WellScope-programme-client-draft.html", html, true);
   };
   window.DrillingProgramWorkspace = {
+    calculate: () => $("dp-run").onclick(),
+    invalidate: invalid,
     snapshot: () => copy({ draft, report }),
     load: (p) => {
       M.validate(p);

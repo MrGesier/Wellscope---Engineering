@@ -6,39 +6,15 @@
     );
   const groups = [
     [
-      "01 · PREPARE",
+      "WORKSPACE",
       [
-        ["studies", "Study library"],
-        ["dataqc", "Data & QC"],
-        ["trajectory", "Trajectory & targets"],
-        ["dp-lithology", "Lithology & formations", "drilling-program"],
-      ],
-    ],
-    [
-      "02 · DESIGN",
-      [
-        ["drilling-program", "Drilling programme"],
-        ["bha", "BHA assembly"],
-        ["bha-quick", "Quick BHA comparison", "bha"],
-        ["bha-static", "Architecture & deformation"],
-        ["string-in-hole", "String in hole · 3D", "bha-static"],
-        ["sp-workspace", "Phase & placement", "bha-static"],
-      ],
-    ],
-    [
-      "03 · CALCULATE",
-      [
-        ["run-mechanics", "Torque, drag & pull"],
-        ["sl-workspace", "Loads for 3D string", "bha-static"],
-        ["sa-workspace", "Combined stress & limits", "bha-static"],
-        ["directional", "Build / drop & DLS"],
-      ],
-    ],
-    [
-      "04 · DELIVER",
-      [
+        ["well-setup", "1 · Prepare the well"],
+        ["well-dashboard", "2 · Section dashboard"],
+
+        ["bha", "Build BHA"],
+        ["string-in-hole", "Contacts & movement", "bha-static"],
+        ["run-mechanics", "Torque & drag"],
         ["casebook", "Saved reports"],
-        ["methodology", "Methods & report guide"],
       ],
     ],
   ];
@@ -47,18 +23,27 @@
   theme.href = "terracotta.css";
   document.head.append(theme);
   nav.replaceChildren();
-  function route(id, parent = id) {
+  function route(id, parent) {
+    if (id === "well-setup") window.WellFlow?.syncSetup();
+    parent ||= document.getElementById(id)?.closest(".page")?.id || id;
     const original = buttons.get(parent);
     if (original) original.click();
     else WellApp.navigate(parent);
     const target = document.getElementById(id);
+    let ancestor = target?.parentElement;
+    while (ancestor) {
+      if (ancestor.matches("details")) ancestor.open = true;
+      ancestor = ancestor.parentElement;
+    }
     target?.scrollIntoView({ block: "start" });
     history.replaceState(null, "", "#" + id);
     sync(id);
   }
   function sync(id) {
     nav.querySelectorAll("button").forEach((b) => {
-      const active = (b.dataset.route || b.dataset.page) === id;
+      const section = document.getElementById(id)?.closest(".page")?.id;
+      const main = section === "bha-static" ? "string-in-hole" : section;
+      const active = (b.dataset.route || b.dataset.page) === (main || id);
       b.classList.toggle("active", active);
       if (active) b.setAttribute("aria-current", "page");
       else b.removeAttribute("aria-current");
@@ -90,31 +75,12 @@
     nav.append(title);
     entries.forEach((e) => item(e, nav));
   }
-  const advanced = document.createElement("details");
-  advanced.id = "advanced-navigation";
-  advanced.innerHTML =
-    "<summary>Additional & legacy tools</summary><p>Independent studies and reference tools. These do not inherit the 3D string automatically.</p>";
-  nav.append(advanced);
-  for (const [id, label] of [
-    ["case-study", "T&D demonstration"],
-    ["overview", "Well overview"],
-    ["collision", "Anticollision"],
-    ["study", "Current library study"],
-    ["td", "Legacy axial screening"],
-    ["dynamics", "Vibration reference"],
-    ["operating-windows", "Independent operating envelope"],
-    ["cuttings", "Cuttings analysis"],
-    ["limits", "Manual limits register"],
-    ["report", "Project report & sources"],
-    ["science", "Help & science"],
-  ])
-    if (buttons.has(id)) item([id, label], advanced);
-  // Keep any extension reachable without cluttering the main workflow.
-  for (const [id, b] of buttons)
-    if (!nav.contains(b)) {
-      advanced.append(b);
-      b.addEventListener("click", () => sync(id));
-    }
+  // Retired modules retain their inputs and old bookmarks, but are no longer menu choices.
+  const retired = document.createElement("div");
+  retired.id = "retired-navigation";
+  retired.hidden = true;
+  document.body.append(retired);
+  for (const [id, b] of buttons) if (!nav.contains(b)) retired.append(b);
   document.querySelectorAll("button").forEach((b) => {
     if (b.textContent === "Open operating windows →") b.remove();
   });
@@ -129,7 +95,8 @@
     [
       "bha",
       [
-        ["bha-quick", "Quick comparison"],
+        ["bha-quick", "Compare BHA alternatives"],
+        ["directional", "Build / drop curves"],
         ["connected-bha", "Connected assembly"],
       ],
     ],
@@ -150,24 +117,71 @@
     links.forEach(([id, label]) => {
       const b = document.createElement("button");
       b.textContent = label;
-      b.onclick = () => route(id, page);
+      b.dataset.route = id;
+      b.onclick = () => route(id);
       bar.append(b);
     });
     document.getElementById(page).querySelector(".page-head")?.after(bar);
   }
+  function fold(element, label) {
+    if (!element) return;
+    const box = document.createElement("details");
+    box.className = "workflow-fold";
+    const summary = document.createElement("summary");
+    summary.textContent = label;
+    box.append(summary);
+    element.before(box);
+    box.append(element);
+  }
+  fold(quick, "Compare BHA alternatives");
+  for (const id of [
+    "sd-workspace",
+    "sl-workspace",
+    "sa-workspace",
+    "sp-workspace",
+  ]) {
+    const el = document.getElementById(id);
+    fold(el, el?.querySelector("h2")?.textContent || "Study settings");
+  }
+  document
+    .querySelectorAll("#bha-static > .panel, #bha-static > .twocol")
+    .forEach((el) => {
+      if (el.id !== "string-in-hole")
+        fold(
+          el,
+          el.querySelector("h2")?.textContent ||
+            "Local bending model · additional inputs",
+        );
+    });
+  document.querySelectorAll("#string-in-hole > button").forEach((b) => {
+    if (b.textContent.includes("BHA pre-design"))
+      b.onclick = () => route("bha-quick");
+  });
+  const scope = document.createElement("p");
+  scope.className = "workflow-scope";
+  scope.textContent =
+    "Preliminary calculations · use sourced inputs. The prepared well feeds the dashboard and 3D inspection; other workspaces use explicit imports.";
+  document.querySelector(".content > .notice")?.replaceWith(scope);
+  const axes = document.getElementById("evidence-axes");
+  if (axes) {
+    document.getElementById("report").append(axes);
+    fold(axes, "Project record");
+  }
+  window.WellWorkflow = { open: route };
   // Old bookmarks remain useful, including the independent envelope study.
   function deepLink() {
     const id = location.hash.slice(1),
       entry = groups.flatMap((g) => g[1]).find((e) => e[0] === id);
-    if (entry) route(id, entry[2] || id);
-    else if (["dp-context", "dp-settings", "dp-results"].includes(id))
+    if (entry) route(id, entry[2]);
+    else if (
+      ["dp-context", "dp-lithology", "dp-settings", "dp-results"].includes(id)
+    )
       route(id, "drilling-program");
-    else if (buttons.has(id)) {
-      advanced.open = advanced.contains(buttons.get(id));
+    else if (document.getElementById(id)?.closest(".page")) {
       route(id);
     }
   }
   window.addEventListener("hashchange", deepLink);
   if (location.hash) deepLink();
-  else sync(document.querySelector(".page.active")?.id);
+  else route("well-setup");
 })();

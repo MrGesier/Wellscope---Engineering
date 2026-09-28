@@ -17,8 +17,7 @@ const { chromium } = require("playwright-core"),
     await p.goto(
       pathToFileURL(path.resolve(__dirname, "../app/index.html")).href,
     );
-    await p.locator("#advanced-navigation > summary").click();
-    const nav = (id) => p.locator(`[data-page="${id}"]`).click();
+    const nav = (id) => p.evaluate(id => WellWorkflow.open(id), id);
     const shot = async (name) => {
       fs.mkdirSync(path.resolve(__dirname, "../screenshots/v07"), {
         recursive: true,

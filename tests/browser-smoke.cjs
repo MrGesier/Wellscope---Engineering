@@ -25,11 +25,10 @@ const { chromium } = require("playwright-core"),
     await page.goto(
       pathToFileURL(path.resolve(__dirname, "../app/index.html")).href,
     );
-    await page.locator("#advanced-navigation > summary").click();
-    await page.locator('[data-page="overview"]').click();
+    await page.evaluate((id) => WellWorkflow.open(id), "evidence-axes");
     await page.waitForSelector("#evidence-axes");
     const click = (sel) => page.locator(sel).click();
-    const nav = (id) => click('[data-page="' + id + '"]');
+    const nav = (id) => page.evaluate((id) => WellWorkflow.open(id), id);
     assert.match(
       await page.locator("#evidence-axes").textContent(),
       /SYNTHETIC/,
@@ -109,7 +108,9 @@ const { chromium } = require("playwright-core"),
     );
     await nav("report");
     await click("#build-report-v4");
-    await page.waitForFunction(() => document.getElementById('report-v4').textContent.includes('input_sha256'));
+    await page.waitForFunction(() =>
+      document.getElementById("report-v4").textContent.includes("input_sha256"),
+    );
     assert.match(
       await page.locator("#report-v4").textContent(),
       /input_sha256/,
@@ -124,7 +125,9 @@ const { chromium } = require("playwright-core"),
     assert.equal(project.input_hash.length, 64);
     await nav("dataqc");
     await page.locator("#load-project-v4").setInputFiles(filepath);
-    await page.waitForFunction(() => document.getElementById('data-result').textContent.includes('Imported'));
+    await page.waitForFunction(() =>
+      document.getElementById("data-result").textContent.includes("Imported"),
+    );
     assert.match(await page.locator("#data-result").textContent(), /Imported/);
     const refs = JSON.parse(await page.locator("#reference-json").inputValue());
     refs["OFFSET A"].vertical_reference = "MSL";

@@ -17,8 +17,7 @@ const { chromium } = require("playwright-core"),
     await p.goto(
       pathToFileURL(path.resolve(__dirname, "../app/index.html")).href,
     );
-    await p.locator("#advanced-navigation > summary").click();
-    await p.locator('[data-page="operating-windows"]').click();
+    await p.evaluate(id => WellWorkflow.open(id), "operating-windows");
     await p.selectOption("#window-unit", "kN");
     assert.equal(await p.locator("#window-error").textContent(), "");
     await p.locator("#window-example").click();
@@ -77,7 +76,7 @@ const { chromium } = require("playwright-core"),
       (await p.evaluate(() => WindowWorkspace.snapshot())).input.modal.span,
       10,
     );
-    await p.locator('[data-page="td"]').click();
+    await p.evaluate(id => WellWorkflow.open(id), "td");
     await p.selectOption("#td-force-unit", "tf");
     await p.locator("#bitforce").fill("10");
     await p.locator("#applytd").click();
@@ -133,16 +132,16 @@ const { chromium } = require("playwright-core"),
       Number(await p.locator('[data-key="wob_kN"]').first().inputValue()),
       10,
     );
-    await p.locator('[data-page="operating-windows"]').click();
+    await p.evaluate(id => WellWorkflow.open(id), "operating-windows");
     await p.evaluate(()=>{const b=WellApp.snapshot().state.bha;b[0].family='pdc-bit';b[0].body_rating_n=98066.5;b[0].source='Synthetic rating conversion test';WellApp.setBha(b);});
-    await p.locator('[data-page="bha"]').click();
+    await p.evaluate(id => WellWorkflow.open(id), "bha");
     const rating=p.locator('[data-property="body_rating_n"]');
     assert.ok(Math.abs(Number(await rating.inputValue())-10)<1e-8);
     await p.selectOption('#bha-rating-unit','kN');
     assert.ok(Math.abs(Number(await rating.inputValue())-98.0665)<1e-8);
     await p.locator('#save-component').click();
     assert.ok(Math.abs((await p.evaluate(()=>WellApp.snapshot().state.bha[0].body_rating_n))-98066.5)<1e-6);
-    await p.locator('[data-page="operating-windows"]').click();
+    await p.evaluate(id => WellWorkflow.open(id), "operating-windows");
     await p.setViewportSize({ width: 390, height: 844 });
     assert.ok(
       await p.evaluate(

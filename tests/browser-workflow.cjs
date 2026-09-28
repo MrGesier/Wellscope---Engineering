@@ -18,27 +18,18 @@ const { chromium } = require("playwright-core"),
     await p.goto(
       pathToFileURL(path.resolve(__dirname, "../app/index.html")).href,
     );
-    assert.equal(
-      await p.locator("#advanced-navigation").getAttribute("open"),
-      null,
-    );
+    assert.equal(await p.locator("#navigation button").count(), 6);
+    assert.equal(await p.locator("#advanced-navigation").count(), 0);
     assert.equal(
       await p.locator('[data-page="operating-windows"]').isVisible(),
       false,
     );
-    for (const id of [
-      "bha-quick",
-      "string-in-hole",
-      "sp-workspace",
-      "sl-workspace",
-      "sa-workspace",
-    ]) {
-      await p.locator(`[data-route="${id}"]`).click();
+    await p.locator('#navigation [data-route="string-in-hole"]').click();
+    assert.ok(await p.locator("#string-in-hole").isVisible());
+    assert.equal(await p.locator("#sl-workspace").isVisible(), false);
+    for (const id of ["sp-workspace", "sl-workspace", "sa-workspace"]) {
+      await p.locator(`.workflow-jumps [data-route="${id}"]`).click();
       assert.ok(await p.locator("#" + id).isVisible());
-      assert.equal(
-        await p.locator(`[data-route="${id}"]`).getAttribute("aria-current"),
-        "page",
-      );
     }
     await p.locator('[data-page="bha"]').click();
     const geometry = await p
@@ -119,12 +110,11 @@ const { chromium } = require("playwright-core"),
         () => document.documentElement.scrollWidth <= innerWidth + 2,
       ),
     );
-    await p.locator("#advanced-navigation > summary").click();
-    await p.locator('[data-page="operating-windows"]').click();
+    await p.evaluate(() => WellWorkflow.open("operating-windows"));
     assert.ok(await p.locator("#window-example").isVisible());
     assert.deepEqual(errors, []);
     console.log(
-      "PASS: workflow navigation, legacy disclosure, connected component selection/reorder and mobile",
+      "PASS: focused navigation, contextual advanced sections, preserved legacy bookmarks, connected component selection/reorder and mobile",
     );
   } finally {
     await browser.close();
