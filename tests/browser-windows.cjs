@@ -128,6 +128,7 @@ const { chromium } = require("playwright-core"),
           "md_m,bit_diameter_m,wob_tf,torque_tfm,rpm,rop_m_h\n1000,0.216,10,1,120,20",
         ),
       });
+    await p.waitForFunction(() => Number(document.querySelector('[data-key="wob_kN"]').value) === 10);
     assert.equal(
       Number(await p.locator('[data-key="wob_kN"]').first().inputValue()),
       10,
