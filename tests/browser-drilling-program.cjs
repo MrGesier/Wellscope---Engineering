@@ -60,6 +60,11 @@ const { chromium } = require("playwright-core"),
       mimeType: "text/csv",
       buffer: Buffer.from("from_m,to_m,lithology,source\n90,10,Shale,S"),
     });
+    await p.waitForFunction(() =>
+      document
+        .getElementById("dp-error")
+        .textContent.includes("positive length"),
+    );
     assert.match(await p.locator("#dp-error").textContent(), /positive length/);
     assert.equal(
       await p.evaluate(() =>

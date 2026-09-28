@@ -190,12 +190,18 @@
         number(a[k], k);
       if (a.mudKgM3 <= 0 || a.mudKgM3 > 3000)
         throw Error("Mud density outside supported range");
+      if (r.hydraulics) hydraulic(r.hydraulics, r.from, a);
+      if (r.response) D.validate(r.response.surface);
     }
     return st;
   }
   function hydraulic(h, md, plan) {
     if (!h) return { status: "MISSING_PROFILE" };
     if (!h.source?.trim()) throw Error("Hydraulic source required");
+    number(h.flowLpm, "Hydraulic profile flow");
+    number(h.mudKgM3, "Hydraulic profile density");
+    if (h.mudKgM3 <= 0)
+      throw Error("Hydraulic profile density must be positive");
     if (!Array.isArray(h.rows) || h.rows.length < 2)
       throw Error("Hydraulics needs at least two depth stations");
     let last = -Infinity;

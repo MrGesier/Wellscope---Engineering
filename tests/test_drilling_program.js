@@ -91,6 +91,9 @@ assert.throws(
   /WRAP.NO/,
 );
 const altered = structuredClone(p);
+const brokenProfile = structuredClone(p);
+delete brokenProfile.intervals[0].hydraulics.rows;
+assert.throws(() => M.validate(brokenProfile), /depth stations/);
 delete altered.intervals[0].hydraulics;
 delete altered.intervals[0].limits;
 const unknown = M.sample(altered, altered.intervals[0], md, st);
