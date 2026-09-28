@@ -346,6 +346,23 @@
     );
   }
   function demo(study) {
+    study = clone(study);
+    if (!study.axial) {
+      study.quality = "SYNTHETIC";
+      study.axial = {
+        mode: "soft-string",
+        source:
+          "SYNTHETIC training assumptions: open/cased friction 0.25/0.15, no block weight",
+        stepM: 15,
+        muOpen: 0.25,
+        muCased: 0.15,
+        bottomForceN: 0,
+        bottomTorqueNm: 0,
+        axialSpeedMps: 0.1,
+        rpm: 100,
+        blockN: 0,
+      };
+    }
     const end = Math.min(study.bitMD, study.survey.at(-1).md),
       start = Math.max(1, end - 600),
       span = (end - start) / 3;

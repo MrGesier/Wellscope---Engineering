@@ -569,6 +569,17 @@
       .join(
         "",
       )}</article><details><summary>Station details and margins</summary><div class="dp-window-table"><table><thead><tr><th>MD / formation</th><th>Quantity</th><th>Value</th><th>Check</th><th>Margin to nearest entered bound</th></tr></thead><tbody>${rows.flatMap((r) => Object.entries(r.checks).map(([k, c]) => `<tr><td>${r.md.toFixed(1)} m · ${esc(r.lithology)}</td><td>${esc(M.fields[k].join(" / "))}</td><td>${r.values[k] == null ? "Not calculated" : r.values[k].toFixed(3)}</td><td>${c.status}</td><td>${c.margin == null ? "Unknown" : c.margin.toFixed(3)}</td></tr>`)).join("")}</tbody></table></div></details>`;
+    html += `<article class="panel"><h3>Load assumptions & calculation notes</h3><p>${esc(draft.study.axial?.source || "No off-bottom load inputs supplied: open Edit BHA / load inputs, configure loads, then recapture the study.")}</p>${
+      rows.some((r) => r.notes.length)
+        ? `<ul>${rows
+            .filter((r) => r.notes.length)
+            .map(
+              (r) =>
+                `<li>${r.md.toFixed(1)} m · ${esc(r.lithology)}: ${esc(r.notes.join("; "))}</li>`,
+            )
+            .join("")}</ul>`
+        : "<p>No missing calculation inputs at sampled stations. Supplied bounds and model scope still apply.</p>"
+    }</article>`;
     $("dp-results").innerHTML = html;
     $("dp-status").textContent =
       "Programme calculated. Review exceeded bounds and missing evidence.";
