@@ -9,11 +9,24 @@
       y = (d) => T + (d / td) * (B - T),
       max = Math.max(1, ...rows.map((r) => Math.hypot(r.n, r.e))),
       x = (r) => 130 + (Math.hypot(r.n, r.e) / max) * 310;
-    const palette = ["#b86547", "#d9a17b", "#86614d", "#e5c7a0", "#a78060"];
+    const rockColor = (name) =>
+      /interbedded/i.test(name)
+        ? "#c79c73"
+        : /sandstone/i.test(name)
+          ? "#dfb57c"
+          : /shale/i.test(name)
+            ? "#aa8a79"
+            : /limestone/i.test(name)
+              ? "#ddd5be"
+              : /marl/i.test(name)
+                ? "#b3ab8b"
+                : /clay/i.test(name)
+                  ? "#bd8067"
+                  : "#d3c9bc";
     const bands = p.intervals
       .map(
         (r, i) =>
-          `<g role="button" tabindex="0" data-section-md="${(r.from + r.to) / 2}" aria-label="${H.esc(r.lithology)} ${r.from} to ${r.to} metres"><rect x="70" y="${y(r.from)}" width="420" height="${Math.max(1, y(r.to) - y(r.from))}" fill="${palette[i % palette.length]}" opacity=".70"/><path d="M70 ${y(r.from)}H490" stroke="#725441" stroke-width="1"/><text x="82" y="${y(r.from) + 14}" font-size="10" fill="#392b24">${H.esc(r.lithology)}</text></g>`,
+          `<g role="button" tabindex="0" data-section-md="${(r.from + r.to) / 2}" aria-label="${H.esc(r.lithology)} ${r.from} to ${r.to} metres"><rect x="70" y="${y(r.from)}" width="420" height="${Math.max(1, y(r.to) - y(r.from))}" fill="${rockColor(r.lithology)}" opacity=".92"/><path d="M70 ${y(r.from)}H490" stroke="#725441" stroke-width="1"/><text x="82" y="${y(r.from) + 14}" font-size="14" font-weight="600" fill="#392b24"><title>${H.esc(r.lithology)} · ${r.from}–${r.to} m MD</title>${H.esc(r.lithology.length > 29 ? r.lithology.slice(0, 27) + "…" : r.lithology)}</text></g>`,
       )
       .join("");
     const line = rows
