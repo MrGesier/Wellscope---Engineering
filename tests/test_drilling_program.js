@@ -96,6 +96,7 @@ delete brokenProfile.intervals[0].hydraulics.rows;
 assert.throws(() => M.validate(brokenProfile), /depth stations/);
 delete altered.intervals[0].hydraulics;
 delete altered.intervals[0].limits;
+delete altered.intervals[0].response;
 const unknown = M.sample(altered, altered.intervals[0], md, st);
 assert.equal(unknown.values.bottomBar, undefined);
 assert.equal(unknown.status, "INCOMPLETE");

@@ -359,6 +359,18 @@
           lithology,
           source: "SYNTHETIC lithology for training",
           plan: { ropMph: [18, 12, 8][i] },
+          response: {
+            study: clone(study),
+            flowLpm: 1200,
+            mudKgM3: 1200,
+            rpm: 100,
+            surface: {
+              ...D.demo(),
+              source:
+                "SYNTHETIC teaching response, identical in every formation; not rock-calibrated",
+            },
+            settings: { mode: "rss", activation: 0.5, toolface: 0 },
+          },
           limits: {
             source:
               "SYNTHETIC illustrative bounds — not formation/OEM recommendations",

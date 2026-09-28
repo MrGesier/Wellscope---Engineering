@@ -540,7 +540,7 @@
             },
             r = DirectionalPlanning.sample(d.surface, settings, 12);
           return (
-            `<h4>${esc(s.interval.lithology)} · ${esc(d.surface.quality)}</h4>` +
+            `<h4>${esc(s.interval.lithology)} · ${esc(d.surface.quality)}</h4><p>${esc(d.surface.source)}</p>` +
             H.svg(
               ["build", "dls"].flatMap((k) => [
                 {
