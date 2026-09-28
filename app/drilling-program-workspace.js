@@ -38,7 +38,7 @@
     mudKgM3: ["Mud density", "kg/m³"],
   };
   function input(id, label, value) {
-    return `<label>${esc(label)}<input type="number" step="any" id="${id}" value="${value ?? ""}"></label>`;
+    return `<label>${esc(label)}<input type="number" step="any" id="${id}" value="${esc(value ?? "")}"></label>`;
   }
   function invalid(message = "Inputs changed. Apply edits and recalculate.") {
     report = null;
