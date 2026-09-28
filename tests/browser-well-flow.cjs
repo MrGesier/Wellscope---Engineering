@@ -13,11 +13,34 @@ const { chromium } = require("playwright-core"),
     const p = await b.newPage({ viewport: { width: 1450, height: 1000 } }),
       errors = [];
     p.on("pageerror", (e) => errors.push(e.message));
+    await p.addInitScript(() => {
+      window.startupLeaks = [];
+      new MutationObserver(() => {
+        const shell = document.querySelector(".shell");
+        if (
+          document.body?.classList.contains("booting") &&
+          shell &&
+          getComputedStyle(shell).visibility !== "hidden"
+        )
+          window.startupLeaks.push("legacy shell visible");
+      }).observe(document, {
+        childList: true,
+        subtree: true,
+        attributes: true,
+        attributeFilter: ["class"],
+      });
+    });
     await p.goto(
       pathToFileURL(path.resolve(__dirname, "../app/index.html")).href,
     );
     assert.ok(await p.locator("#well-setup").isVisible());
     assert.equal(await p.locator("#navigation button").count(), 6);
+    assert.equal(await p.locator("body.booting").count(), 0);
+    assert.deepEqual(await p.evaluate(() => window.startupLeaks), []);
+    assert.match(await p.locator("#wf-name").inputValue(), /Northbank/);
+    assert.ok(
+      (await p.locator("#wf-survey").inputValue()).split("\n").length > 100,
+    );
     assert.equal(await p.locator("#advanced-navigation").count(), 0);
     await p.locator("#wf-demo").click();
     await p.locator('[data-wf-step="2"]').click();
@@ -25,7 +48,7 @@ const { chromium } = require("playwright-core"),
     await p.waitForFunction(() =>
       document.getElementById("well-dashboard").classList.contains("active"),
     );
-    assert.equal(await p.locator("#wf-cards .wf-value").count(), 11);
+    assert.equal(await p.locator("#wf-cards .wf-value").count(), 12);
     assert.equal(await p.locator("#crumb").textContent(), "SECTION DASHBOARD");
     const cacheCheck = await p.evaluate(() => {
       const original = DrillingProgram.sample;
@@ -64,6 +87,53 @@ const { chromium } = require("playwright-core"),
     assert.match(await p.locator("#wf-formation").textContent(), /Sandstone/);
     await p.locator("#wf-section-map [data-section-md]").last().press("Enter");
     assert.match(await p.locator("#wf-formation").textContent(), /Limestone/);
+    assert.ok(await p.locator("#wf-assembly").isVisible());
+    assert.equal(
+      await p.locator("#wf-directional svg").first().getAttribute("data-x-min"),
+      "0",
+    );
+    assert.equal(
+      await p
+        .locator("#wf-graphs svg[data-depth-down=true]")
+        .first()
+        .getAttribute("data-y-min"),
+      "0",
+    );
+    assert.equal(
+      await p.evaluate(
+        () =>
+          DrillingProgramWorkspace.snapshot().report.programme.intervals[0]
+            .from,
+      ),
+      0,
+    );
+    assert.match(
+      await p.locator("#wf-directional").textContent(),
+      /Drop · TF 180/,
+    );
+    await p.locator("#wf-friction").fill("0.45");
+    await p.locator("#wf-friction-run").click();
+    assert.match(
+      await p.locator("#wf-friction-result").textContent(),
+      /Reference/,
+    );
+    const frictionRows = await p
+      .locator("#wf-friction-result tbody tr")
+      .allTextContents();
+    assert.equal(frictionRows.length, 3);
+    const deltas = await p
+      .locator("#wf-friction-result tbody tr td:last-child")
+      .allTextContents();
+    assert.ok(Number(deltas[0]) > 0, "more open-hole friction raises pickup");
+    assert.ok(Number(deltas[1]) < 0, "more open-hole friction lowers slackoff");
+    assert.ok(Number(deltas[2]) > 0, "more open-hole friction raises torque");
+    await p.locator("#wf-contacts-run").click();
+    await p.waitForFunction(() =>
+      document
+        .getElementById("wf-contacts-result")
+        .textContent.includes("wall-contact stations"),
+    );
+    assert.ok(await p.locator("#wf-contacts-result tbody tr").count());
     const before = await p.evaluate(
       () => DrillingProgramWorkspace.snapshot().report.programme,
     );

@@ -462,6 +462,7 @@
         x: M.fields[k].join(" (") + ")",
         y: "Bit measured depth (m) ↓",
         depth: true,
+        yMin: 0,
         regions: report.segments.map((s) => ({
           from: s.interval.from,
           to: s.interval.to,
@@ -518,55 +519,13 @@
       .join(
         "",
       )}</div><article class="panel"><h3>Build/drop and DLS versus WOB · by formation</h3>${report.segments
-      .map((s) => {
-        const d = s.interval.response,
-          a = { ...draft.plan, ...s.interval.plan };
-        if (!d)
-          return `<p>${esc(s.interval.lithology)}: no associated response. Open Directional Response Lab; do not infer this curve from lithology or SPP.</p>`;
-        if (
-          BhaQuick.identity(d.study) !== BhaQuick.identity(draft.study) ||
-          d.flowLpm !== a.flowLpm ||
-          d.mudKgM3 !== a.mudKgM3 ||
-          d.rpm !== a.rpm
-        )
-          return `<p>${esc(s.interval.lithology)}: response conditions mismatch.</p>`;
-        try {
-          const settings = {
-              ...d.settings,
-              wobN: a.wobTf * 9806.65,
-              inclination: WellEngine.interp(
-                WellEngine.survey(draft.study.survey),
-                (s.interval.from + s.interval.to) / 2,
-              ).inc,
-            },
-            r = DirectionalPlanning.sample(d.surface, settings, 12);
-          return (
-            `<h4>${esc(s.interval.lithology)} · ${esc(d.surface.quality)}</h4><p>${esc(d.surface.source)}</p>` +
-            H.svg(
-              ["build", "dls"].flatMap((k) => [
-                {
-                  name: k,
-                  points: r.map((x) => ({ x: x.wobN / 9806.65, y: x[k] })),
-                },
-                ...["min", "max"]
-                  .filter((b) => Number.isFinite(s.interval.limits?.[k]?.[b]))
-                  .map((b) => ({
-                    name: `${k} ${b} · entered bound`,
-                    color: "#a54e35",
-                    dash: "6 4",
-                    points: [r[0], r.at(-1)].map((x) => ({
-                      x: x.wobN / 9806.65,
-                      y: s.interval.limits[k][b],
-                    })),
-                  })),
-              ]),
-              { x: "WOB (tf)", y: "Rate (°/30 m)" },
-            )
-          );
-        } catch (e) {
-          return `<p>${esc(e.message)}</p>`;
-        }
-      })
+      .map((s) =>
+        WellResults.directional(
+          draft,
+          s.interval,
+          (s.interval.from + s.interval.to) / 2,
+        ),
+      )
       .join(
         "",
       )}</article><details><summary>Station details and margins</summary><div class="dp-window-table"><table><thead><tr><th>MD / formation</th><th>Quantity</th><th>Value</th><th>Check</th><th>Margin to nearest entered bound</th></tr></thead><tbody>${rows.flatMap((r) => Object.entries(r.checks).map(([k, c]) => `<tr><td>${r.md.toFixed(1)} m · ${esc(r.lithology)}</td><td>${esc(M.fields[k].join(" / "))}</td><td>${r.values[k] == null ? "Not calculated" : r.values[k].toFixed(3)}</td><td>${c.status}</td><td>${c.margin == null ? "Unknown" : c.margin.toFixed(3)}</td></tr>`)).join("")}</tbody></table></div></details>`;

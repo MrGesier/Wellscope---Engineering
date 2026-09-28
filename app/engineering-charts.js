@@ -49,11 +49,19 @@
       x0 = y0 = -r;
       x1 = y1 = r;
     }
+    if (Number.isFinite(opt.xMin))
+      x0 = Math.min(opt.xMin, ...all.map((p) => p.x));
+    if (Number.isFinite(opt.yMin))
+      y0 = Math.min(opt.yMin, ...all.map((p) => p.y));
+    if (Number.isFinite(opt.xMax))
+      x1 = Math.max(opt.xMax, ...all.map((p) => p.x));
+    if (Number.isFinite(opt.yMax))
+      y1 = Math.max(opt.yMax, ...all.map((p) => p.y));
     const w = 760,
       h = opt.depth ? 520 : 420,
       l = 82,
       r = 25,
-      t = 82,
+      t = 58 + Math.ceil(series.length / 3) * 24,
       b = 62,
       pw = w - l - r,
       ph = h - t - b;
@@ -66,10 +74,10 @@
         (opt.depth ? (y - y0) / (y1 - y0) : 1 - (y - y0) / (y1 - y0)) *
           (side || ph);
     const f = (v) =>
-      Number(v.toPrecision(7)).toLocaleString("en-US", {
-        maximumSignificantDigits: 7,
+      Number(v.toPrecision(4)).toLocaleString("en-US", {
+        maximumSignificantDigits: 4,
       });
-    let out = `<svg xmlns="http://www.w3.org/2000/svg" class="engineering-chart study-plot" viewBox="0 0 ${w} ${h}" role="img" aria-label="${esc(opt.x)} versus ${esc(opt.y)}" data-depth-down="${!!opt.depth}" data-points-only="${!!opt.pointsOnly}"><rect width="760" height="${h}" fill="white"/><g font-family="Segoe UI,Arial,sans-serif" font-size="12" fill="#607789">`;
+    let out = `<svg xmlns="http://www.w3.org/2000/svg" class="engineering-chart study-plot" viewBox="0 0 ${w} ${h}" role="img" aria-label="${esc(opt.x)} versus ${esc(opt.y)}" data-x-min="${x0}" data-y-min="${y0}" data-depth-down="${!!opt.depth}" data-points-only="${!!opt.pointsOnly}"><rect width="760" height="${h}" fill="white"/><g font-family="Segoe UI,Arial,sans-serif" font-size="12" fill="#607789">`;
     for (const region of opt.regions || []) {
       if (
         ![region.min, region.max, region.from, region.to].every(Number.isFinite)
@@ -96,7 +104,7 @@
           (p) => Number.isFinite(p.x) && Number.isFinite(p.y),
         );
       out +=
-        `<path d="M${24 + i * 185} 22h17" stroke="${esc(color)}" stroke-width="2" stroke-dasharray="${esc(s.dash || "")}"/><text x="${46 + i * 185}" y="26">${esc(s.name)}</text>${
+        `<path d="M${24 + (i % 3) * 245} ${20 + Math.floor(i / 3) * 24}h17" stroke="${esc(color)}" stroke-width="2" stroke-dasharray="${esc(s.dash || "")}"/><text x="${46 + (i % 3) * 245}" y="${24 + Math.floor(i / 3) * 24}">${esc(s.name)}</text>${
           opt.pointsOnly
             ? ""
             : s.points
@@ -116,7 +124,7 @@
                 )
                 .join("")
         }` +
-        points
+        (opt.markers === false ? [] : points)
           .map(
             (p) =>
               `<circle cx="${X(p.x)}" cy="${Y(p.y)}" r="2.7" fill="white" stroke="${esc(color)}"><title>${esc(s.name)}: ${f(p.x)}, ${f(p.y)}</title></circle>`,

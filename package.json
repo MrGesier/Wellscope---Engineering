@@ -8,7 +8,9 @@
     "test:browser": "node tests/browser-smoke.cjs && node tests/browser-data.cjs && node tests/browser-studies.cjs && node tests/browser-case.cjs && node tests/browser-directional.cjs && node tests/browser-tools.cjs && node tests/browser-windows.cjs && node tests/browser-run.cjs && node tests/browser-bha-static.cjs && node tests/browser-bha-solid.cjs && node tests/browser-string-in-hole.cjs && node tests/browser-string-design.cjs && node tests/browser-string-loads.cjs && node tests/browser-string-assessment.cjs && node tests/browser-bha-quick.cjs && node tests/browser-workflow.cjs && node tests/browser-drilling-program.cjs && node tests/browser-well-flow.cjs",
     "package": "node scripts/package.cjs",
     "build:3d": "node scripts/build-string-3d.cjs",
-    "build:brand": "node scripts/build-brand.cjs"
+    "build:brand": "node scripts/build-brand.cjs",
+    "build:runtime": "node scripts/build-runtime.cjs",
+    "pretest:browser": "npm run build:runtime"
   },
   "devDependencies": {
     "@resvg/resvg-js": "^2.6.2",

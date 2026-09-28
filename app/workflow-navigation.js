@@ -186,4 +186,10 @@
   window.addEventListener("hashchange", deepLink);
   if (location.hash) deepLink();
   else route("well-setup");
+  const ready = () => {
+    document.body.classList.remove("booting");
+    window.dispatchEvent(new Event("wellscope:ready"));
+  };
+  if (document.readyState === "complete") ready();
+  else window.addEventListener("load", ready, { once: true });
 })();

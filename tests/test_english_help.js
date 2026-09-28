@@ -17,7 +17,7 @@ assert.ok(Object.keys(h.HELP).length>=75,'Expected comprehensive engineering des
 assert.equal(Object.keys(h.FAMILIES).length,11,'Expected a detailed description for each BHA family');
 assert.equal(Object.keys(h.TERMS).length,26,'Expected contextual help for all module headings');
 assert.match(html,/<html lang="en">/);
-assert.ok(html.indexOf('src="tooltips.js"') < html.indexOf('src="app.js"'),'Help glossary must load before dynamic tool-card creation');
+assert.ok(require('../scripts/runtime-sources.json').indexOf('tooltips.js') < require('../scripts/runtime-sources.json').indexOf('app.js'),'Help glossary must load before dynamic tool-card creation');
 for(const id of ['mud','friction','steel','bitforce','hookref','hookcap','sref','srefE','srefV','soff','soffE','soffV','rref','roff','offnorth','offeast','acfocus','refcsv','offcsv','sidefile','offBfile','scene','acscene','accross','acplan','tdscene','tdplot','bhaplot']){
  assert.match(html,new RegExp(`id="${id}"`),`Expected interface element ${id}`);
  assert.ok(typeof h.HELP[id]==='string'&&h.HELP[id].length>90,`Expected detailed contextual help for ${id}`);

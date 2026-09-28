@@ -16,7 +16,7 @@ The installer uses `%LOCALAPPDATA%\Programs\WellScope` and the actual Windows de
 
 ## First study
 
-1. Open **Prepare the well** and choose **Try the complete example**, or enter your survey, architecture and lithology CSVs.
+1. Open **Prepare the well**: the fictional Northbank N-04 project is already populated. Calculate it, or choose **New well** and use the CSV templates to enter your survey, architecture and lithology.
 2. Supply your complete tally or select **Generate and compare a starter BHA**, with required instruments.
 3. Enter operating targets and friction, then prepare and calculate.
 4. Move along the **Section dashboard** to inspect formation intervals, sourced bounds, loads and directional response when available. Missing limits remain unknown.
@@ -53,6 +53,8 @@ Private source documents, customer examples and proprietary software are exclude
 
 ```powershell
 npm ci
+npm run build:3d
+npm run build:runtime
 npm test
 npm run test:browser
 node scripts/package.cjs <new-staging-directory>

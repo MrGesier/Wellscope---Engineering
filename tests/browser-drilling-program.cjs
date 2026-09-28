@@ -105,10 +105,7 @@ const { chromium } = require("playwright-core"),
     });
     await p.locator("#dp-run").click();
     await p.waitForFunction(() => !!DrillingProgramWorkspace.snapshot().report);
-    assert.match(
-      await p.locator("#dp-results").textContent(),
-      /dls max · entered bound/,
-    );
+    assert.match(await p.locator("#dp-results").textContent(), /DLS maximum/);
     await p.setViewportSize({ width: 390, height: 844 });
     assert.ok(
       await p.evaluate(

@@ -21,7 +21,7 @@
   page.innerHTML = `<header class="wf-hero"><div><span class="eng-kicker">WELLSCOPE / WELL PREPARATION</span><h1>One well. One working study.</h1><p>Import the well, choose an assembly, then inspect the limits along the hole.</p><button id="wf-demo" class="primary">Try the complete example</button><button id="wf-new">New well</button><label class="filebtn">Open prepared study<input id="wf-import" type="file" accept=".json" hidden></label><p id="wf-quality">Your inputs stay on this device. Start below or load the fictional example.</p></div><div id="wf-preview"><div class="wf-strata"><span>Trajectory</span><span>Lithology</span><span>BHA</span></div></div></header><nav class="wf-steps" aria-label="Well preparation"><button data-wf-step="0">1 · Well & geology</button><button data-wf-step="1">2 · BHA</button><button data-wf-step="2">3 · Conditions</button></nav>
  <article class="panel wf-step" data-wf-panel="0"><h2>Define the well</h2><div class="workform"><label>Well name<input id="wf-name"></label><label>Input source / revision<input id="wf-source" placeholder="Survey, tally and drilling programme revision"></label></div><div class="wf-input-grid"><label>Survey · md,inc,azi (m, degrees)<textarea id="wf-survey" rows="8" placeholder="md,inc,azi&#10;0,0,0"></textarea><input data-wf-file="survey" type="file" accept=".csv"></label><label>Architecture · from_m,to_m,diameter_mm,kind<textarea id="wf-architecture" rows="8" placeholder="from_m,to_m,diameter_mm,kind&#10;0,1000,216,OPEN"></textarea><input data-wf-file="architecture" type="file" accept=".csv"></label></div><label>Lithology · from_m,to_m,lithology,source<textarea id="wf-lithology" rows="4" placeholder="Optional interpreted intervals; blanks remain unknown"></textarea><input data-wf-file="lithology" type="file" accept=".csv"></label><p>Architecture kinds: CASED or OPEN. All depths use the same MD origin. Unlogged intervals remain unknown.</p><button data-wf-next="1" class="primary">Continue to BHA →</button></article>
  <article class="panel wf-step" data-wf-panel="1" hidden><h2>Use your BHA or generate a starting assembly</h2><label>Assembly source<select id="wf-mode"><option value="existing">Use my tally</option><option value="starter">Generate and compare a starter BHA</option></select></label><fieldset id="wf-required"><legend>Required instruments / steering</legend>${["gamma", "mwd", "lwd", "rss"].map((k) => `<label><input id="wf-${k}" type="checkbox">${k.toUpperCase()}</label>`).join("")}</fieldset><div id="wf-tally-editor"><label>Complete tally, bit → surface<textarea id="wf-tally" rows="8" placeholder="name,type,length_m,od_mm,id_mm,contact_od_mm,kg_m,E_GPa,source,capabilities"></textarea><input data-wf-file="tally" type="file" accept=".csv"></label><button id="wf-builder">Use the assembly builder tally</button></div><p id="wf-starter-note" hidden>Creates assumed annular steel geometry, then compares stabilizer/jar placements. Tool dimensions, connections and ratings must be reviewed. This is a preliminary mechanical proposal; geology alone does not determine the correct BHA.</p><button data-wf-next="2" class="primary">Continue to conditions →</button></article>
- <article class="panel wf-step" data-wf-panel="2" hidden><h2>Set the proposed operating conditions</h2><div class="workform">${field("wobTf", "WOB target (tf)")}${field("rpm", "Rotation target (rpm)")}${field("ropMph", "ROP target (m/h)")}${field("flowLpm", "Flow target (L/min)")}${field("mudKgM3", "Mud density (kg/m³)")}${field("muOpen", "Open-hole friction")}${field("muCased", "Cased-hole friction")}</div><details><summary>BHA comparison objectives</summary><div class="workform">${field("build", "Maximum build (°/30 m)", 3)}${field("drop", "Maximum drop (°/30 m)", 3)}${field("dls", "Maximum DLS (°/30 m)", 4)}${field("samples", "Comparison depth stations", 7)}</div><p>Target = imported trajectory endpoint. Placement comparison minimizes sampled wall reaction within the mechanical shortlist, with bending as a tie-breaker. Objectives are not tool ratings.</p></details><p>Targets describe your proposed programme. Formation limits and source pressure/response profiles can be added in the section dashboard. Blank limits remain unknown.</p><button id="wf-prepare" class="primary">Prepare study & calculate →</button><button id="wf-cancel" disabled>Cancel</button></article><p id="wf-status" role="status"></p><p id="wf-error" role="alert"></p><div id="wf-comparison"></div>`;
+ <article class="panel wf-step" data-wf-panel="2" hidden><h2>Set the proposed operating conditions</h2><div class="workform">${field("wobTf", "WOB target (tf)")}${field("rpm", "Rotation target (rpm)")}${field("ropMph", "ROP target (m/h)")}${field("flowLpm", "Flow target (L/min)")}${field("mudKgM3", "Mud density (kg/m³)")}${field("muOpen", "Open-hole friction")}${field("muCased", "Cased-hole friction")}</div><details><summary>BHA comparison objectives</summary><div class="workform">${field("build", "Maximum build (°/30 m)", 3)}${field("drop", "Maximum drop (°/30 m)", 3)}${field("dls", "Maximum DLS (°/30 m)", 4)}${field("samples", "Comparison depth stations", 7)}</div><p>Target = imported trajectory endpoint. Placement comparison minimizes sampled wall reaction within the mechanical shortlist, with bending as a tie-breaker. Objectives are not tool ratings.</p></details><p>Targets describe your proposed programme. Formation limits and source pressure/response profiles can be added in the section dashboard. Blank limits remain unknown.</p><button id="wf-prepare" class="primary">Prepare study & calculate →</button><button id="wf-cancel" disabled>Cancel</button></article><p id="wf-status" role="status"></p><p id="wf-error" role="alert"></p><div id="wf-comparison"></div><div id="wf-input-preview" class="wf-result-grid"></div>`;
   document.querySelector(".content").append(page);
   function step(n) {
     page
@@ -133,12 +133,12 @@
       $("wf-" + k).checked = (p.required || []).includes(k);
     $("wf-quality").textContent = p.quality + " · " + p.study.source;
     $("wf-preview").innerHTML = WellSynoptic.svg(p, p.study.bitMD);
+    $("wf-input-preview").innerHTML = WellResults.geometry(p);
     step(0);
     baseline = formState();
     if (invalidate) DrillingProgramWorkspace.invalidate();
   }
-  $("wf-demo").onclick = () =>
-    populate(DrillingProgram.demo(StringInHole.snapshot().input));
+  $("wf-demo").onclick = () => populate(WellTraining.programme());
   $("wf-builder").onclick = () => {
     dirty();
     $("wf-tally").value = tallyCSV(WellApp.snapshot().state.bha);
@@ -360,7 +360,7 @@
   const view = document.createElement("section");
   view.id = "well-dashboard";
   view.className = "page";
-  view.innerHTML = `<header class="page-head"><div><h1>Section dashboard</h1><p>Move along the well to inspect entered targets, calculated loads and sourced bounds.</p></div><button id="wf-edit">Edit well inputs</button></header><div id="wf-empty">Prepare a well first. No operating recommendation is inferred from a rock name.</div><div id="wf-board" hidden><div class="work-toolbar"><label>Bit MD (m)<input id="wf-md" type="number" step="1"></label><input id="wf-depth" aria-label="Inspect well depth" type="range" step="1"><button id="wf-limits">Edit formation limits / response</button><button id="wf-export">Export report</button><button id="wf-view3d">Inspect this depth in 3D</button></div><div class="wf-board"><div id="wf-section-map"></div><div><h2 id="wf-formation"></h2><p id="wf-governing"></p><div id="wf-cards"></div><p id="wf-limit-source"></p></div></div><details class="workflow-fold"><summary>Prepared BHA · connected components</summary><div id="wf-assembly"></div></details><div id="wf-graphs" class="dp-charts"></div><details><summary>All calculated tracks, sources and station margins</summary><div id="wf-all-results"></div></details></div>`;
+  view.innerHTML = `<header class="page-head"><div><h1>Section dashboard</h1><p>Move along the well to inspect entered targets, calculated loads and sourced bounds.</p></div><button id="wf-edit">Edit well inputs</button></header><div id="wf-empty">Prepare a well first. No operating recommendation is inferred from a rock name.</div><div id="wf-board" hidden><div class="work-toolbar"><label>Bit MD (m)<input id="wf-md" type="number" step="1"></label><input id="wf-depth" aria-label="Inspect well depth" type="range" step="1"><button id="wf-limits">Edit formation limits / response</button><button id="wf-export">Export report</button><button id="wf-view3d">Inspect this depth in 3D</button></div><div class="wf-board"><div id="wf-section-map"></div><div><h2 id="wf-formation"></h2><p id="wf-governing"></p><div id="wf-cards"></div><p id="wf-limit-source"></p></div></div><details class="workflow-fold" open><summary>Prepared BHA · connected components</summary><div id="wf-assembly"></div></details><article class="panel"><h2>Friction impact at selected depth</h2><p>Compare open-hole friction while holding trajectory, BHA, mud and cased-hole friction fixed.</p><label>Trial open-hole μ<input id="wf-friction" type="number" min="0" max="1" step="0.05" value="0.35"></label><button id="wf-friction-run">Compare friction</button><div id="wf-friction-result" role="status"></div></article><article class="panel"><h2>Wall contacts at selected bit depth</h2><p>Calculate the current assembly inside the bore. Contacts are beam stations with wall reaction, not a count of tools or a sticking verdict.</p><button id="wf-contacts-run">Calculate wall contacts</button><div id="wf-contacts-result" role="status"></div></article><article class="panel" id="wf-directional"></article><div id="wf-graphs" class="wf-result-grid"></div><details><summary>All calculated tracks, sources and station margins</summary><div id="wf-all-results"></div></details></div>`;
   document.querySelector(".content").append(view);
   $("wf-edit").onclick = () => WellWorkflow.open("well-setup");
   $("wf-view3d").onclick = () => {
@@ -404,7 +404,10 @@
     $("wf-md").value = md;
     $("wf-depth").value = md;
     $("wf-section-map").innerHTML = WellSynoptic.svg(p, md, dashboardSurvey);
+    $("wf-friction-result").replaceChildren();
+    $("wf-contacts-result").replaceChildren();
     const r = DrillingProgram.intervalAt(p.intervals, md);
+    $("wf-directional").innerHTML = WellResults.directional(p, r, md);
     if (!r) {
       $("wf-formation").textContent = "Unlogged section";
       $("wf-governing").textContent =
@@ -444,7 +447,6 @@
       "slackoffTf",
       "torqueTfm",
       "dls",
-      "build",
       "sppBar",
       "bottomBar",
     ]
@@ -455,6 +457,14 @@
         return `<article class="wf-value ${row.checks[k].status === "EXCEEDED" ? "wf-over" : ""}"><span>${esc(label)}</span><strong>${Number.isFinite(v) ? v.toFixed(1) : "Unknown"} <small>${u}</small></strong><p>${b ? `${b.min != null ? "Min " + b.min + " " + u : ""} ${b.max != null ? "Max " + b.max + " " + u : ""}` : "Limit not supplied"}</p></article>`;
       })
       .join("");
+    if (Number.isFinite(row.values.build)) {
+      const drop = Math.max(0, -row.values.build),
+        build = Math.max(0, row.values.build);
+      $("wf-cards").insertAdjacentHTML(
+        "beforeend",
+        `<article class="wf-value"><span>Build rate · selected TF</span><strong>${build.toFixed(2)} <small>°/30 m</small></strong><p>${Number.isFinite(r.limits?.build?.max) ? "Max " + Math.max(0, r.limits.build.max) + " °/30 m" : "Limit not supplied"}</p></article><article class="wf-value"><span>Drop rate · selected TF</span><strong>${drop.toFixed(2)} <small>°/30 m</small></strong><p>${Number.isFinite(r.limits?.build?.min) ? "Max " + Math.max(0, -r.limits.build.min) + " °/30 m" : "Limit not supplied"}</p></article>`,
+      );
+    }
     $("wf-limit-source").textContent =
       "Limits: " +
       (r.limits?.source || "missing") +
@@ -464,6 +474,53 @@
       p.study.quality +
       ". RPM/WOB/flow/ROP are entered targets; loads are off-bottom calculations.";
   }
+  $("wf-contacts-run").onclick = async () => {
+    if (!dashboard) return;
+    const captured = dashboard,
+      md = Number($("wf-md").value),
+      p = copy(dashboard.programme.study);
+    $("wf-contacts-result").textContent = "Calculating contact equilibrium…";
+    await new Promise((r) => setTimeout(r, 0));
+    try {
+      if (md <= 0)
+        throw Error(
+          "Choose a bit depth greater than zero to calculate contacts.",
+        );
+      p.bitMD = md;
+      const r = StringContact.solve(p),
+        contacts = r.rows
+          .filter((x) => x.contact && !x.pin)
+          .sort((a, b) => b.reactionN - a.reactionN);
+      if (dashboard !== captured || Number($("wf-md").value) !== md) return;
+      $("wf-contacts-result").innerHTML =
+        `<p>${contacts.length} wall-contact stations at bit MD ${md.toFixed(0)} m · strongest reactions first. Centred end supports excluded.</p><table><thead><tr><th>Component</th><th>Contact MD (m)</th><th>Reaction (tf)</th><th>Radial gap (mm)</th></tr></thead><tbody>${contacts
+          .slice(0, 20)
+          .map(
+            (x) =>
+              `<tr><td>${esc(r.parts[x.component].name)}</td><td>${x.md.toFixed(1)}</td><td>${(x.reactionN / 9806.65).toFixed(3)}</td><td>${(x.gap * 1000).toFixed(2)}</td></tr>`,
+          )
+          .join(
+            "",
+          )}</tbody></table><p>Top 20 stations. Mesh-dependent preliminary transverse model; use Inspect this depth in 3D to locate these stations. Axial friction does not feed back from these reactions.</p>`;
+    } catch (e) {
+      if (dashboard === captured)
+        $("wf-contacts-result").textContent = e.message;
+    }
+  };
+  $("wf-friction-run").onclick = () => {
+    if (!dashboard) return;
+    try {
+      if (!$("wf-friction").value.trim())
+        throw Error("Enter a trial open-hole friction coefficient.");
+      $("wf-friction-result").innerHTML = WellResults.friction(
+        dashboard.programme,
+        Number($("wf-md").value),
+        Number($("wf-friction").value),
+      );
+    } catch (e) {
+      $("wf-friction-result").textContent = e.message;
+    }
+  };
   $("wf-md").oninput = (e) => inspect(e.target.value);
   $("wf-depth").oninput = (e) => {
     const value = e.target.value;
@@ -497,14 +554,8 @@
     );
     const original = $("dp-results");
     $("wf-all-results").innerHTML = original.innerHTML;
-    const tracks = original.querySelectorAll(".dp-charts article");
-    $("wf-graphs").replaceChildren();
-    for (const i of [4, 5, 6])
-      if (tracks[i]) $("wf-graphs").append(tracks[i].cloneNode(true));
-    const directional = [...original.querySelectorAll("article")].find((a) =>
-      a.querySelector("h3")?.textContent.includes("Build/drop"),
-    );
-    if (directional) $("wf-graphs").append(directional.cloneNode(true));
+    $("wf-graphs").innerHTML =
+      WellResults.loads(dashboard) + WellResults.geometry(dashboard.programme);
     inspect(dashboard.programme.study.bitMD);
   });
   window.addEventListener("string-shape-update", (e) => {
@@ -532,6 +583,7 @@
     mode();
     step(0);
     $("wf-preview").replaceChildren();
+    $("wf-input-preview").replaceChildren();
     $("wf-comparison").replaceChildren();
     $("wf-quality").textContent = "New well · enter your source data";
     DrillingProgramWorkspace.invalidate();
@@ -565,5 +617,36 @@
       $("wf-error").textContent = e.message;
     }
   }
+  if (!saved) {
+    populate(WellTraining.programme());
+    $("wf-quality").textContent =
+      "Prepared fictional project · Northbank N-04 · source inputs already loaded; calculate or replace with your data.";
+  }
+  const templates = {
+    survey: "md,inc,azi\n0,0,0\n100,0,0",
+    architecture: "from_m,to_m,diameter_mm,kind\n0,100,216,OPEN",
+    lithology:
+      "from_m,to_m,lithology,source\n0,100,Sandstone,Interpreted log revision",
+    tally:
+      "name,type,length_m,od_mm,id_mm,contact_od_mm,kg_m,E_GPa,source,capabilities\nBit,pdc-bit,0.3,200,50,216,150,210,OEM sheet revision,",
+  };
+  page.querySelectorAll("[data-wf-file]").forEach((input) => {
+    const kind = input.dataset.wfFile,
+      button = document.createElement("button");
+    button.type = "button";
+    button.textContent = "Download " + kind + " CSV template";
+    button.onclick = () => {
+      const url = URL.createObjectURL(
+          new Blob([templates[kind]], { type: "text/csv" }),
+        ),
+        a = document.createElement("a");
+      a.href = url;
+      a.download = "WellScope-" + kind + "-template.csv";
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    };
+    input.after(button);
+    input.setAttribute("aria-label", "Import " + kind + " CSV");
+  });
   step(0);
 })();

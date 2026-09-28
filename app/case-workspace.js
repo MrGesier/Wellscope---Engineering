@@ -635,7 +635,6 @@
   });
   new MutationObserver(() => document.body.classList.toggle("case-active", host.classList.contains("active"))).observe(host, {attributes:true, attributeFilter:["class"]});
   render();
-  nav.click();
   window.CaseWorkspace = {
     snapshot: () => structuredClone(c),
     results: () => structuredClone(result),

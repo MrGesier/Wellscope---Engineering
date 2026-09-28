@@ -17,5 +17,7 @@ jobs:
       - run: git diff --exit-code -- app/assets/wellscope-logo.png app/assets/wellscope-strata-v3.ico
       - run: npm run build:3d
       - run: git diff --exit-code -- app/string-view3d.bundle.js
+      - run: npm run build:runtime
+      - run: git diff --exit-code -- app/runtime.bundle.js
       - run: npm test
       - run: npm run test:browser
