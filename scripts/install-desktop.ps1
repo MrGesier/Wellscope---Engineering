@@ -24,7 +24,15 @@ if (Test-Path -LiteralPath $edge) {
 }
 $shortcut.WorkingDirectory = $target
 $shortcut.Description = 'WellScope Engineering — offline evidence and geometry workbench'
-$shortcut.IconLocation = (Join-Path $target 'app\assets\wellscope-scope-v2.ico') + ',0'
+$shortcut.IconLocation = (Join-Path $target 'app\assets\wellscope-strata-v3.ico') + ',0'
 $shortcut.Save()
+# Remove only superseded application icons after the shortcut points to the current one.
+foreach ($oldIcon in @('wellscope-scope-v2.ico', 'wellscope.ico')) {
+    $oldIconPath = Join-Path $target ('app\assets\' + $oldIcon)
+    if (Test-Path -LiteralPath $oldIconPath -PathType Leaf) {
+        Remove-Item -LiteralPath $oldIconPath
+    }
+}
+
 Write-Output "Installed: $target"
 Write-Output "Desktop shortcut: $shortcutPath"

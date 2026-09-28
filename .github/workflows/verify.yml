@@ -13,6 +13,8 @@ jobs:
           node-version: "22"
           cache: npm
       - run: npm ci
+      - run: npm run build:brand
+      - run: git diff --exit-code -- app/assets/wellscope-logo.png app/assets/wellscope-strata-v3.ico
       - run: npm run build:3d
       - run: git diff --exit-code -- app/string-view3d.bundle.js
       - run: npm test

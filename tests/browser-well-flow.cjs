@@ -26,6 +26,38 @@ const { chromium } = require("playwright-core"),
       document.getElementById("well-dashboard").classList.contains("active"),
     );
     assert.equal(await p.locator("#wf-cards .wf-value").count(), 11);
+    assert.equal(await p.locator("#crumb").textContent(), "SECTION DASHBOARD");
+    const cacheCheck = await p.evaluate(() => {
+      const original = DrillingProgram.sample;
+      let calls = 0;
+      DrillingProgram.sample = (...args) => {
+        calls++;
+        return original(...args);
+      };
+      const field = document.getElementById("wf-md");
+      for (const md of [3311, 3312, 3311]) {
+        field.value = md;
+        field.dispatchEvent(new Event("input"));
+      }
+      DrillingProgram.sample = original;
+      return calls;
+    });
+    assert.equal(
+      cacheCheck,
+      2,
+      "revisiting depth reuses the same frozen calculation",
+    );
+    await p.evaluate(() => {
+      const slider = document.getElementById("wf-depth");
+      for (const value of [3320, 3340, 3360]) {
+        slider.value = value;
+        slider.dispatchEvent(new Event("input"));
+      }
+    });
+    await p.waitForFunction(
+      () => document.getElementById("wf-md").value === "3360",
+    );
+
     assert.match(await p.locator("#wf-cards").textContent(), /Pickup/);
     await p.locator("#wf-md").fill("3300");
     assert.match(await p.locator("#wf-governing").textContent(), /ROP/);

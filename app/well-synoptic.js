@@ -1,9 +1,8 @@
 (function (root) {
   const E = root.WellEngine || require("./engine"),
     H = root.EngineeringCharts || require("./engineering-charts");
-  function svg(p, md) {
-    const rows = E.survey(p.study.survey),
-      td = rows.at(-1).md,
+  function svg(p, md, rows = E.survey(p.study.survey)) {
+    const td = rows.at(-1).md,
       W = 520,
       T = 30,
       B = 410,

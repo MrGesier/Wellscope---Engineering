@@ -1,22 +1,9 @@
-# WellScope identity — Scope / Copper trajectory
+# WellScope identity — Strata
 
-Selected direction: 02, explicitly chosen by the user.
+Original vector symbol: terracotta strata crossed by an ivory directional well, on a deep earth tile. The compact geometry is designed for the sidebar, favicon and Windows launcher.
 
-The original concept board was produced with the built-in image generation tool.
-The production symbol is a clean, independently drawn SVG: open ivory scope,
-copper directional trajectory and dark slate rounded application tile.
+Colours: earth #38291F, terracotta #A84932, clay #CB7654, sandstone #E6AE83, ivory #FFF1DA.
 
-Colours: slate #192d3d; ivory #fff5e8; copper #c38a5b.
-SVG is the app/sidebar and favicon source. PNG is a 1024 px render. ICO contains
-16, 24, 32, 48, 64, 128 and 256 px images. The desktop installer uses the versioned
-wellscope-scope-v2.ico filename so Windows does not reuse the old icon cache entry.
-The legacy wellscope.ico is also refreshed for existing consumers.
+Source: app/assets/wellscope-logo.svg. Run `npm run build:brand` to reproduce the 1024 px PNG and the seven-resolution Windows ICO (16–256 px). The installer uses wellscope-strata-v3.ico to avoid the old Windows icon cache. The superseded circle icon and duplicate ICO have been removed.
 
-Concept prompt: Create a premium brand identity exploration board for WELLSCOPE,
-a professional directional drilling and BHA engineering software. Three original
-proposals: geometric W with trajectory, open circular scope with deviated trajectory,
-and geological curves forming S. Warm ivory, dark slate and copper; restrained flat
-vector-like graphics, legible app icons, no derricks, oil droplets, gears or 3D effects.
-
-The selected production geometry is stored in app/assets/wellscope-logo.svg;
-no generated concept-board bitmap is required by the application.
+The production asset is drawn directly in SVG; it needs no external fonts, network requests or runtime renderer. The resvg renderer is a development-only dependency.
